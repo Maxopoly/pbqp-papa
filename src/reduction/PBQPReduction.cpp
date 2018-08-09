@@ -9,8 +9,5 @@
 
 PBQP_Reduction::PBQP_Reduction(PBQP_Graph* graph) {
 	this->graph = graph;
-}
-
-PBQP_Reduction::~PBQP_Reduction() {
-	// TODO Auto-generated destructor stub
+	result = new std::vector<PBQP_Graph*>(1);
 }

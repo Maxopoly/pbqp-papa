@@ -11,16 +11,19 @@
 #include <vector>
 
 class PBQP_Graph;
+class PBQP_Solution;
 
 class PBQP_Reduction {
 protected:
 	PBQP_Graph* graph;
+	std::vector<PBQP_Graph*> result;
 
 public:
 	PBQP_Reduction(PBQP_Graph*);
 	virtual ~PBQP_Reduction();
 
 	virtual std::vector<PBQP_Graph*>* reduce();
+	virtual PBQP_Solution* solve(PBQP_Solution*);
 };
 
 #endif /* REDUCTION_PBQPREDUCTION_HPP_ */

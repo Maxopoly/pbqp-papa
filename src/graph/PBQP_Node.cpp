@@ -9,8 +9,9 @@
 #include <algorithm>
 #include "graph/PBQP_Edge.hpp"
 #include "graph/Matrix.hpp"
+#include "graph/Vektor.hpp"
 
-PBQP_Node::PBQP_Node(int index, Matrix* matrix) {
+PBQP_Node::PBQP_Node(int index, Vektor* matrix) {
 	this->index = index;
 	this->values = matrix;
 }
@@ -30,8 +31,8 @@ void PBQP_Node::removeEdge(PBQP_Edge* edge) {
 			adjacentEdges.end());
 }
 
-std::vector<int>* PBQP_Node::getValue() {
-	return &values;
+Vektor* PBQP_Node::getValue() {
+	return values;
 }
 
 std::vector<PBQP_Edge*>* PBQP_Node::getAdjacentEdges(bool respectDirection) {
@@ -78,6 +79,6 @@ int PBQP_Node::getDegree() {
 	return adjacentEdges.size();
 }
 
-Matrix* PBQP_Node::getMatrix() {
+Vektor* PBQP_Node::getVektor() {
 	return values;
 }

@@ -11,30 +11,30 @@
 #include <vector>
 
 class PBQP_Edge;
-class Matrix;
+class Vektor;
 
 class PBQP_Node {
 private:
 	//TODO make this generic
-	Matrix* values;
+	Vektor* values;
 	std::vector<PBQP_Edge*> adjacentEdges;
 	int index;
 
 public:
-	PBQP_Node(int index, Matrix* values);
+	PBQP_Node(int index, Vektor* values);
 	virtual ~PBQP_Node();
 	//Should only be used by PBQP_Graph
 	void addEdge(PBQP_Edge* edge);
 	void removeEdge(PBQP_Edge* edge);
 
 	//Can be used by anyone
-	std::vector<int>* getValue();
+	Vektor* getValue();
 	std::vector<PBQP_Edge*>* getAdjacentEdges(bool respectDirection);
 	std::vector<PBQP_Node*>* getAdjacentNodes(bool respectDirection);
 	int getIndex();
 	int getVectorDegree();
 	int getDegree();
-	Matrix* getMatrix();
+	Vektor* getVektor();
 };
 
 #endif /* PBQPNODE_H_ */

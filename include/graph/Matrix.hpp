@@ -12,10 +12,10 @@
 
 class Matrix {
 
-private:
-	const int rows;
-	const int columns;
-	const double* content;
+protected:
+	int rows;
+	int columns;
+	double* content;
 	int contentLength;
 
 	void allocDataSpace();
@@ -32,6 +32,8 @@ public:
 
 	//calculations producing a new matrix
 	Matrix* transpose();
+	//single vector containing the diagonal elements (0,0 ; 1,1 etc.)
+	Matrix* getDiagonal();
 
 	//getter
 	double get(int row, int column);

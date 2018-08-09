@@ -8,6 +8,7 @@
 #include "graph/PBQP_Graph.hpp"
 #include "graph/PBQP_Edge.hpp"
 #include "graph/PBQP_Node.hpp"
+#include "graph/Vektor.hpp"
 
 #include <algorithm>
 
@@ -21,7 +22,7 @@ PBQP_Graph::~PBQP_Graph() {
 	// TODO Auto-generated destructor stub
 }
 
-PBQP_Node* PBQP_Graph::addNode(Matrix* matrix) {
+PBQP_Node* PBQP_Graph::addNode(Vektor* matrix) {
 	PBQP_Node* node = new PBQP_Node(nodeIndexCounter++, matrix);
 	nodes->push_back(node);
 	return node;

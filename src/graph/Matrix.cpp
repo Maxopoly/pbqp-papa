@@ -6,8 +6,9 @@
  */
 
 #include "graph/Matrix.hpp"
+#include <algorithm>
 
-Matrix::Matrix(int rows, int columns, double* data) {
+Matrix::Matrix(int columns, int rows, double* data) {
 	this->rows = rows;
 	this->columns = columns;
 	content = data;
@@ -49,7 +50,7 @@ Matrix* Matrix::operator/=(double quotient) {
 	return this;
 }
 
-double Matrix::get(int row, int column) {
+double Matrix::get(int column, int row) {
 	return content [(row * columns) + column];
 }
 
@@ -62,13 +63,22 @@ int Matrix::getColumnCount() {
 }
 
 Matrix* Matrix::transpose() {
-	double resultData = new double [columns * rows];
+	double* resultData = new double [columns * rows];
 	const int size = columns * rows;
 	for(int n = 0; n < size; n++) {
 		int i = n / columns;
 		int j = n % columns;
 		resultData [n] = content [rows * j + i];
 	}
-	return new Matrix(columns, rows, resultData);
+	return new Matrix(rows, columns, resultData);
+}
+
+Matrix* Matrix::getDiagonal() {
+	int diagonalLength = std::min(rows,columns);
+	double* resultData = new double [diagonalLength];
+	for(int i = 0; i < diagonalLength; i++) {
+		resultData [i] = get(i,i);
+	}
+	return new Matrix(1, diagonalLength, resultData);
 }
 

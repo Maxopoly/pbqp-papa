@@ -11,12 +11,3 @@ PBQPValidator::PBQPValidator(PBQP_Graph* graph) {
 	this->graph = graph;
 
 }
-
-PBQPValidator::~PBQPValidator() {
-	// TODO Auto-generated destructor stub
-}
-
-bool PBQPValidator::check() {
-
-}
-

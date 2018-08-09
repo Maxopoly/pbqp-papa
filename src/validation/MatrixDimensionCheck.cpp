@@ -14,8 +14,6 @@
 
 MatrixDimensionCheck::MatrixDimensionCheck(PBQP_Graph* graph) :
 		PBQPValidator(graph) {
-	// TODO Auto-generated constructor stub
-
 }
 
 bool MatrixDimensionCheck::check() {

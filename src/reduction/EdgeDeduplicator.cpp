@@ -23,7 +23,7 @@ EdgeDeduplicator::~EdgeDeduplicator() {
 	// TODO Auto-generated destructor stub
 }
 
-PBQP_Graph* EdgeDeduplicator::solve() {
+PBQP_Graph* EdgeDeduplicator::reduce() {
 	for (PBQP_Node* node : *graph->getNodes()) {
 		//sort edges into a map where the adjacent node is the key. If we find an edge which already has entry for its node, we found a duplicate
 		std::map<PBQP_Node*, PBQP_Edge*> adjacencyMap = new std::map<PBQP_Node*,
@@ -54,4 +54,9 @@ PBQP_Graph* EdgeDeduplicator::solve() {
 		}
 	}
 	return graph;
+}
+
+PBQP_Solution* EdgeDeduplicator::solve(PBQP_Solution* solution) {
+	//we dont actually modify any nodes
+	return solution;
 }

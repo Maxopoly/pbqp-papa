@@ -13,6 +13,7 @@
 class PBQP_Edge;
 class PBQP_Node;
 class Matrix;
+class Vektor;
 
 class PBQP_Graph {
 private:
@@ -25,7 +26,7 @@ private:
 public:
 	PBQP_Graph();
 	virtual ~PBQP_Graph();
-	PBQP_Node* addNode(Matrix*);
+	PBQP_Node* addNode(Vektor*);
 	void addEdge(PBQP_Node*, PBQP_Node*, Matrix*);
 	void removeNode(PBQP_Node*);
 	void removeEdge(PBQP_Edge*);

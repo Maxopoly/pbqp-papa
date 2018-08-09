@@ -10,13 +10,16 @@
 
 class PBQP_Reduction;
 class PBQP_Graph;
+class PBQP_Solution;
 
 class EdgeDeduplicator : public PBQP_Reduction {
 public:
 	EdgeDeduplicator(PBQP_Graph*);
 	virtual ~EdgeDeduplicator();
 
-	PBQP_Graph* solve();
+	PBQP_Graph* reduce();
+
+	PBQP_Solution* solve(PBQP_Solution*);
 };
 
 #endif /* REDUCTION_EDGEDEDUPLICATOR_HPP_ */
