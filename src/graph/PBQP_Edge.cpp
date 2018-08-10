@@ -37,3 +37,6 @@ PBQP_Node* PBQP_Edge::getTarget() {
 	return target;
 }
 
+Matrix* PBQP_Edge::getMatrix() {
+	return matrix;
+}

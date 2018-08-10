@@ -8,13 +8,15 @@
 #ifndef VALIDATION_MATRIXDIMENSIONCHECK_HPP_
 #define VALIDATION_MATRIXDIMENSIONCHECK_HPP_
 
+#include "validation/PBQPValidator.hpp"
+
 class PBQPValidator;
 class PBQP_Graph;
 
 class MatrixDimensionCheck : public PBQPValidator {
 public:
 	MatrixDimensionCheck(PBQP_Graph* graph);
-
+	~MatrixDimensionCheck();
 	bool check();
 };
 

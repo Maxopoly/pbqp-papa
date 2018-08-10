@@ -5,9 +5,12 @@
  *      Author: Max
  */
 
-#include "PBQPValidator.hpp"
+#include "validation/PBQPValidator.hpp"
 
 PBQPValidator::PBQPValidator(PBQP_Graph* graph) {
 	this->graph = graph;
+}
+
+PBQPValidator::~PBQPValidator() {
 
 }

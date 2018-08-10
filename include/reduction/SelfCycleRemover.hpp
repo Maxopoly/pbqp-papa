@@ -8,6 +8,9 @@
 #ifndef REDUCTION_SELFCYCLEREMOVER_HPP_
 #define REDUCTION_SELFCYCLEREMOVER_HPP_
 
+#include "vector"
+#include "reduction/PBQPReduction.hpp"
+
 class PBQP_Reduction;
 class PBQP_Graph;
 class PBQP_Solution;
@@ -16,7 +19,7 @@ class SelfCycleRemover : public PBQP_Reduction {
 public:
 	SelfCycleRemover(PBQP_Graph*);
 
-	PBQP_Graph* reduce();
+	std::vector<PBQP_Graph*>* reduce();
 
 	PBQP_Solution* solve(PBQP_Solution*);
 };

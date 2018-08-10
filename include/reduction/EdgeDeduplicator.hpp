@@ -8,6 +8,8 @@
 #ifndef REDUCTION_EDGEDEDUPLICATOR_HPP_
 #define REDUCTION_EDGEDEDUPLICATOR_HPP_
 
+#include "reduction/PBQPReduction.hpp"
+
 class PBQP_Reduction;
 class PBQP_Graph;
 class PBQP_Solution;
@@ -15,9 +17,9 @@ class PBQP_Solution;
 class EdgeDeduplicator : public PBQP_Reduction {
 public:
 	EdgeDeduplicator(PBQP_Graph*);
-	virtual ~EdgeDeduplicator();
+	~EdgeDeduplicator();
 
-	PBQP_Graph* reduce();
+	std::vector<PBQP_Graph*>* reduce();
 
 	PBQP_Solution* solve(PBQP_Solution*);
 };

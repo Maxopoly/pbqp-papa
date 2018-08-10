@@ -5,29 +5,28 @@
  *      Author: Max
  */
 
-#include "SelfCycleRemover.hpp"
+#include "reduction/SelfCycleRemover.hpp"
 
-#include "PBQP_Graph.hpp";
-#include "PBQP_Node.hpp";
-#include "PBQP_Edge.hpp";
-#include "Matrix.hpp";
-#include <vector>
-#include "PBQPReduction.hpp"
+#include "graph/PBQP_Graph.hpp"
+#include "graph/PBQP_Node.hpp"
+#include "graph/PBQP_Edge.hpp"
+#include "graph/Vektor.hpp"
 
 SelfCycleRemover::SelfCycleRemover(PBQP_Graph* graph) :
 		PBQP_Reduction(graph) {
 }
 
-PBQP_Graph* SelfCycleRemover::solve() {
+std::vector<PBQP_Graph*>* SelfCycleRemover::reduce() {
 	for(int i = 0; i < graph->getEdgeCount(); i++) {
-		PBQP_Edge* edge = *(graph->getEdges()) [i];
+		PBQP_Edge* edge = (*(graph->getEdges())) [i];
 		if(edge->getSource() == edge->getTarget()) {
-			edge->getSource()->getVektor() += edge->getMatrix()->getDiagonal();
+			*(edge->getSource()->getVektor()) +=  *(edge->getMatrix()->getDiagonal());
 			graph->removeEdge(edge);
 			i--;
 		}
 	}
-	return graph;
+	result->push_back(graph);
+	return result;
 }
 
 

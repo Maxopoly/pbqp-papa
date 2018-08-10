@@ -5,9 +5,7 @@
  *      Author: Max
  */
 
-#include "Vektor.hpp"
-
-#include "Matrix.hpp"
+#include "graph/Vektor.hpp"
 
 Vektor::Vektor(int length, double* data) : Matrix(1, length, data){
 }

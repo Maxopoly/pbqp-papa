@@ -10,6 +10,8 @@
 
 #include <vector>
 
+class Vektor;
+
 class Matrix {
 
 protected:
@@ -33,7 +35,7 @@ public:
 	//calculations producing a new matrix
 	Matrix* transpose();
 	//single vector containing the diagonal elements (0,0 ; 1,1 etc.)
-	Matrix* getDiagonal();
+	Vektor* getDiagonal();
 
 	//getter
 	double get(int row, int column);

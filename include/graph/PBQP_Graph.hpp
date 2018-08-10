@@ -25,7 +25,7 @@ private:
 
 public:
 	PBQP_Graph();
-	virtual ~PBQP_Graph();
+	~PBQP_Graph();
 	PBQP_Node* addNode(Vektor*);
 	void addEdge(PBQP_Node*, PBQP_Node*, Matrix*);
 	void removeNode(PBQP_Node*);

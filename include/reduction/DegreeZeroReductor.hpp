@@ -9,19 +9,19 @@
 #define VALIDATION_DEGREEZEROREDUCTOR_HPP_
 
 #include <vector>
+#include <reduction/PBQPReduction.hpp>
 
-class PBQP_Reduction;
 class PBQP_Graph;
 class Dependent_Solution;
 class PBQP_Solution;
 
 class DegreeZeroReductor : public PBQP_Reduction {
 private:
-	Dependent_Solution solution;
+	Dependent_Solution* solution;
 
 public:
 	DegreeZeroReductor(PBQP_Graph*);
-	virtual ~DegreeZeroReductor();
+	~DegreeZeroReductor();
 
 	std::vector<PBQP_Graph*>* reduce();
 	PBQP_Solution* solve(PBQP_Solution*);

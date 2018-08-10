@@ -33,7 +33,10 @@
 *.out
 *.app
 
-#Eclipse
+# Eclipse
 .cproject
 .project
 .settings/
+
+# Build folder
+build/

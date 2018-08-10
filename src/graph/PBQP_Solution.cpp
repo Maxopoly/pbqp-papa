@@ -25,10 +25,10 @@ bool PBQP_Solution::isFinished() {
 }
 
 void PBQP_Solution::setSolution(int nodeIndex, int solution) {
-	selection [nodeIndex] = solution;
+	(*selection) [nodeIndex] = solution;
 }
 
 int PBQP_Solution::getSolution(int nodeIndex) {
-	return selection [nodeIndex];
+	return (*selection) [nodeIndex];
 }
 

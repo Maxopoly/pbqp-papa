@@ -20,7 +20,7 @@ private:
 
 public:
 	PBQP_Edge(PBQP_Node*, PBQP_Node*, Matrix*);
-	virtual ~PBQP_Edge();
+	~PBQP_Edge();
 	bool isSource(PBQP_Node*);
 	PBQP_Node* getOtherEnd(PBQP_Node*);
 	Matrix* getMatrix();

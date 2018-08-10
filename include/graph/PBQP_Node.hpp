@@ -22,7 +22,7 @@ private:
 
 public:
 	PBQP_Node(int index, Vektor* values);
-	virtual ~PBQP_Node();
+	~PBQP_Node();
 	//Should only be used by PBQP_Graph
 	void addEdge(PBQP_Edge* edge);
 	void removeEdge(PBQP_Edge* edge);

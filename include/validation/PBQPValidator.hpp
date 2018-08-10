@@ -18,7 +18,7 @@ public:
 	PBQPValidator(PBQP_Graph*);
 	virtual ~PBQPValidator();
 
-	virtual bool check();
+	virtual bool check() = 0;
 };
 
 #endif /* VALIDATION_PBQPVALIDATOR_HPP_ */

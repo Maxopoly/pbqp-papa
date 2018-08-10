@@ -5,15 +5,18 @@
  *      Author: Max
  */
 
-#include "MatrixDimensionCheck.hpp"
-#include "PBQP_Graph.hpp"
-#include "PBQP_Edge.hpp"
-#include "PBQP_Node.hpp"
-#include "PBQPValidator.hpp"
-#include "Matrix.hpp"
+#include "validation/MatrixDimensionCheck.hpp"
+#include "graph/PBQP_Graph.hpp"
+#include "graph/PBQP_Edge.hpp"
+#include "graph/PBQP_Node.hpp"
+#include "graph/Matrix.hpp"
 
 MatrixDimensionCheck::MatrixDimensionCheck(PBQP_Graph* graph) :
 		PBQPValidator(graph) {
+}
+
+MatrixDimensionCheck::~MatrixDimensionCheck() {
+
 }
 
 bool MatrixDimensionCheck::check() {

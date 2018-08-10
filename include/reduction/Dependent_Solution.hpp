@@ -15,9 +15,9 @@ class PBQP_Node;
 
 class Dependent_Solution {
 private:
-	std::vector<int> dependencyIndices;
-	std::vector<int> solutionIndices;
-	std::vector<int> dependencyDegrees;
+	std::vector<int>* dependencyIndices;
+	std::vector<int>* solutionIndices;
+	std::vector<int>* dependencyDegrees;
 	int* solutions;
 
 	int resolveIndex(std::vector<int>* dependencySelections);

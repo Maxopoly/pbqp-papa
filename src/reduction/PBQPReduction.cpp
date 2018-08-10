@@ -5,9 +5,12 @@
  *      Author: Max
  */
 
-#include "PBQPReduction.hpp"
+#include "reduction/PBQPReduction.hpp"
 
 PBQP_Reduction::PBQP_Reduction(PBQP_Graph* graph) {
 	this->graph = graph;
 	result = new std::vector<PBQP_Graph*>(1);
+}
+
+PBQP_Reduction::~PBQP_Reduction() {
 }

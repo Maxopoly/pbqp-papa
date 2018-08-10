@@ -5,7 +5,7 @@
  *      Author: Max
  */
 
-#include "graph/Matrix.hpp"
+#include "graph/Vektor.hpp"
 #include <algorithm>
 
 Matrix::Matrix(int columns, int rows, double* data) {
@@ -73,12 +73,12 @@ Matrix* Matrix::transpose() {
 	return new Matrix(rows, columns, resultData);
 }
 
-Matrix* Matrix::getDiagonal() {
+Vektor* Matrix::getDiagonal() {
 	int diagonalLength = std::min(rows,columns);
 	double* resultData = new double [diagonalLength];
 	for(int i = 0; i < diagonalLength; i++) {
 		resultData [i] = get(i,i);
 	}
-	return new Matrix(1, diagonalLength, resultData);
+	return new Vektor(diagonalLength, resultData);
 }
 
