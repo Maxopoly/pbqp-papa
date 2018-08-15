@@ -20,8 +20,6 @@ protected:
 	double* content;
 	int contentLength;
 
-	void allocDataSpace();
-
 public:
 	Matrix(int, int, double*);
 	virtual ~Matrix();

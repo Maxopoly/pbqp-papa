@@ -5,6 +5,8 @@ CXX ?= g++
 # path #
 SRC_PATH = src
 BUILD_PATH = build
+TEST_PATH = test
+TEST_BUILD_PATH = test_build
 BIN_PATH = $(BUILD_PATH)/bin
 
 # executable # 
@@ -12,20 +14,26 @@ BIN_NAME = runner
 
 # extensions #
 SRC_EXT = cpp
+TEST_EXEC = runtest
 
 # code lists #
 # Find all source files in the source directory, sorted by
 # most recently modified
 SOURCES = $(shell find $(SRC_PATH) -name '*.$(SRC_EXT)' | sort -k 1nr | cut -f2-)
+#Find all test source files
+TESTS = $(shell find $(TEST_PATH) -name '*.$(SRC_EXT)')
 # Set the object file names, with the source directory stripped
 # from the path, and the build path prepended in its place
 OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
+# Set the object file names, with the source directory stripped
+# from the path, and the build path prepended in its place
+TEST_OBJECTS = $(TESTS:$(TEST_PATH)/%.$(SRC_EXT)=$(TEST_BUILD_PATH)/%.o)
 # Set the dependency files that will be used to add header dependencies
 DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g
-INCLUDES = -I include/ -I /usr/local/include
+INCLUDES = -I include/
 # Space-separated pkg-config libraries used by this project
 LIBS =
 
@@ -42,6 +50,7 @@ dirs:
 	@echo "Creating directories"
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
+	@mkdir -p $(TEST_BUILD_PATH)
 
 .PHONY: clean
 clean:
@@ -50,6 +59,7 @@ clean:
 	@echo "Deleting directories"
 	@$(RM) -r $(BUILD_PATH)
 	@$(RM) -r $(BIN_PATH)
+	@$(RM) -r $(TEST_BUILD_PATH)
 
 # checks the executable and symlinks to the output
 .PHONY: all
@@ -72,3 +82,17 @@ $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	@echo "Compiling: $< -> $@"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
+
+#Builds and runs tests
+.PHONY: test
+test: release
+test: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
+
+#Run tests
+$(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
+	@./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
+	
+#Compile tests
+$(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT)
+	@echo "Compiling: $< -> $@"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o$@ -lboost_unit_test_framework $< 

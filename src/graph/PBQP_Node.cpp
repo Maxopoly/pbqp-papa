@@ -17,7 +17,7 @@ PBQP_Node::PBQP_Node(int index, Vektor* matrix) {
 }
 
 PBQP_Node::~PBQP_Node() {
-	// TODO Auto-generated destructor stub
+	delete [] values;
 }
 
 void PBQP_Node::addEdge(PBQP_Edge* edge) {
@@ -25,14 +25,10 @@ void PBQP_Node::addEdge(PBQP_Edge* edge) {
 }
 
 void PBQP_Node::removeEdge(PBQP_Edge* edge) {
-	//Erase–remove idiom
+	//Eraseï¿½remove idiom
 	adjacentEdges.erase(
 			std::remove(adjacentEdges.begin(), adjacentEdges.end(), edge),
 			adjacentEdges.end());
-}
-
-Vektor* PBQP_Node::getValue() {
-	return values;
 }
 
 std::vector<PBQP_Edge*>* PBQP_Node::getAdjacentEdges(bool respectDirection) {
@@ -71,7 +67,7 @@ int PBQP_Node::getIndex() {
 	return index;
 }
 
-int PBQP_Node::getVectorDegree() {
+int PBQP_Node::getVektorDegree() {
 	return values->getRowCount();
 }
 

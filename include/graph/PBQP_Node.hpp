@@ -28,11 +28,10 @@ public:
 	void removeEdge(PBQP_Edge* edge);
 
 	//Can be used by anyone
-	Vektor* getValue();
 	std::vector<PBQP_Edge*>* getAdjacentEdges(bool respectDirection);
 	std::vector<PBQP_Node*>* getAdjacentNodes(bool respectDirection);
 	int getIndex();
-	int getVectorDegree();
+	int getVektorDegree();
 	int getDegree();
 	Vektor* getVektor();
 };

@@ -16,7 +16,7 @@ Matrix::Matrix(int columns, int rows, double* data) {
 }
 
 Matrix::~Matrix() {
-	// TODO Auto-generated destructor stub
+	delete [] content;
 }
 
 Matrix* Matrix::operator+=(const Matrix& other) {
