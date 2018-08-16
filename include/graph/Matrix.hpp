@@ -12,26 +12,27 @@
 
 class Vektor;
 
+template <class T>
 class Matrix {
 
 protected:
 	int rows;
 	int columns;
-	double* content;
+	T* content;
 	int contentLength;
 
 public:
-	Matrix(int, int, double*);
+	Matrix(int, int, T*);
 	virtual ~Matrix();
 
 	//modifiers
-	Matrix* operator+=(const Matrix&);
-	Matrix* operator-=(const Matrix&);
-	Matrix* operator*=(double);
-	Matrix* operator/=(double);
+	Matrix<T>* operator+=(const Matrix<T>&);
+	Matrix<T>* operator-=(const Matrix<T>&);
+	Matrix<T>* operator*=(T);
+	Matrix<T>* operator/=(T);
 
 	//calculations producing a new matrix
-	Matrix* transpose();
+	Matrix<T>* transpose();
 	//single vector containing the diagonal elements (0,0 ; 1,1 etc.)
 	Vektor* getDiagonal();
 

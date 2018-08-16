@@ -71,7 +71,7 @@ all: $(BIN_PATH)/$(BIN_NAME)
 # Creation of the executable
 $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
 	@echo "Linking: $@"
-	$(CXX) $(OBJECTS) -o $@
+	#$(CXX) $(OBJECTS) -o $@
 
 # Add dependency files, if they exist
 -include $(DEPS)
@@ -86,6 +86,7 @@ $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 #Builds and runs tests
 .PHONY: test
 test: release
+test: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
 test: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
 
 #Run tests
@@ -95,4 +96,9 @@ $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
 #Compile tests
 $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT)
 	@echo "Compiling: $< -> $@"
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o$@ -lboost_unit_test_framework $< 
+	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) -o$@ $^ -lboost_unit_test_framework
+
+#Compile source	
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
+	@echo "Compiling: $< -> $@"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@

@@ -22,11 +22,11 @@ MatrixDimensionCheck::~MatrixDimensionCheck() {
 bool MatrixDimensionCheck::check() {
 	for (PBQP_Edge* edge : *graph->getEdges()) {
 		//TODO Design proper exceptions that are thrown here?
-		if (edge->getSource()->getVectorDegree()
+		if (edge->getSource()->getVektorDegree()
 				!= edge->getMatrix()->getColumnCount()) {
 			return false;
 		}
-		if (edge->getTarget()->getVectorDegree()
+		if (edge->getTarget()->getVektorDegree()
 				!= edge->getMatrix()->getRowCount()) {
 			return false;
 		}

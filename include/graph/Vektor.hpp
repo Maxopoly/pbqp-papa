@@ -10,9 +10,10 @@
 
 #include "Matrix.hpp"
 
-class Vektor : public Matrix {
+template <class T>
+class Vektor : public Matrix <T> {
 public:
-	Vektor(int, double*);
+	Vektor<T>(int, T*);
 
 	int getIndexOfSmallestElement();
 };

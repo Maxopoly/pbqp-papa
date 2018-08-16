@@ -21,7 +21,7 @@ Dependent_Solution::Dependent_Solution(std::vector<PBQP_Node*>* dependencyNodes,
 	int degreeProduct = 1;
 	for (unsigned int i = 0; i < dependencyNodes->size(); i++) {
 		(*dependencyIndices)[i] = (*dependencyNodes)[i]->getIndex();
-		int degree = (*dependencyNodes)[i]->getVectorDegree();
+		int degree = (*dependencyNodes)[i]->getVektorDegree();
 		(*dependencyDegrees)[i] = degree;
 		degreeProduct *= degree;
 	}

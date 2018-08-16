@@ -13,27 +13,30 @@
 class PBQP_Edge;
 class Vektor;
 
+template <class T>
 class PBQP_Node {
 private:
 	//TODO make this generic
-	Vektor* values;
-	std::vector<PBQP_Edge*> adjacentEdges;
+	Vektor<T>* values;
+	std::vector<PBQP_Edge<T>*> adjacentEdges;
 	int index;
 
 public:
-	PBQP_Node(int index, Vektor* values);
+	PBQP_Node(int index, Vektor<T>* values);
 	~PBQP_Node();
 	//Should only be used by PBQP_Graph
-	void addEdge(PBQP_Edge* edge);
-	void removeEdge(PBQP_Edge* edge);
+	void addEdge(PBQP_Edge<T>* edge);
+	void removeEdge(PBQP_Edge*<T> edge);
 
 	//Can be used by anyone
-	std::vector<PBQP_Edge*>* getAdjacentEdges(bool respectDirection);
-	std::vector<PBQP_Node*>* getAdjacentNodes(bool respectDirection);
+	std::vector<PBQP_Edge<T>*>* getAdjacentEdges(bool respectDirection);
+	std::vector<PBQP_Node<T>*>* getAdjacentNodes(bool respectDirection);
 	int getIndex();
 	int getVektorDegree();
 	int getDegree();
-	Vektor* getVektor();
+	Vektor<T>* getVektor();
+	//needed so we can sort nodes into maps
+	bool operator< (const PBQP_Node<T>& e) const;
 };
 
 #endif /* PBQPNODE_H_ */

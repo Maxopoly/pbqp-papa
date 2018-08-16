@@ -19,7 +19,14 @@ PBQP_Graph::PBQP_Graph() {
 }
 
 PBQP_Graph::~PBQP_Graph() {
-	// TODO Auto-generated destructor stub
+	for (PBQP_Edge* edge : *edges) {
+		delete edge;
+	}
+	delete edges;
+	for (PBQP_Node* node : *nodes) {
+		delete node;
+	}
+	delete nodes;
 }
 
 PBQP_Node* PBQP_Graph::addNode(Vektor* matrix) {
@@ -28,28 +35,27 @@ PBQP_Node* PBQP_Graph::addNode(Vektor* matrix) {
 	return node;
 }
 
-void PBQP_Graph::addEdge(PBQP_Node* source, PBQP_Node* target, Matrix* matrix){
+PBQP_Edge* PBQP_Graph::addEdge(PBQP_Node* source, PBQP_Node* target,
+		Matrix* matrix) {
 	PBQP_Edge* edge = new PBQP_Edge(source, target, matrix);
 	edges->push_back(edge);
 	source->addEdge(edge);
-	target->addEdge(edge);
+	if (source != target) {
+		target->addEdge(edge);
+	}
+	return edge;
 }
 
 void PBQP_Graph::removeNode(PBQP_Node* node) {
-	for(PBQP_Edge* edge : *(node->getAdjacentEdges(false))) {
+	for (PBQP_Edge* edge : *(node->getAdjacentEdges(false))) {
 		internalEdgeCleanUp(edge);
 		edge->getOtherEnd(node)->removeEdge(edge);
 	}
-	nodes->erase(
-				std::remove(nodes->begin(), nodes->end(), node),
-				nodes->end());
+	nodes->erase(std::remove(nodes->begin(), nodes->end(), node), nodes->end());
 }
 
-
 void PBQP_Graph::internalEdgeCleanUp(PBQP_Edge* edge) {
-	edges->erase(
-				std::remove(edges->begin(), edges->end(), edge),
-				edges->end());
+	edges->erase(std::remove(edges->begin(), edges->end(), edge), edges->end());
 }
 
 void PBQP_Graph::removeEdge(PBQP_Edge* edge) {

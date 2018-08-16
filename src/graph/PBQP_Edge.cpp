@@ -14,9 +14,8 @@ PBQP_Edge::PBQP_Edge(PBQP_Node* source, PBQP_Node* target, Matrix* matrix) {
 }
 
 PBQP_Edge::~PBQP_Edge() {
-	// TODO Auto-generated destructor stub
+	delete matrix;
 }
-
 
 bool PBQP_Edge::isSource(PBQP_Node* node) {
 	return node == source;
@@ -29,13 +28,16 @@ PBQP_Node* PBQP_Edge::getOtherEnd(PBQP_Node* node) {
 	return source;
 }
 
+
 PBQP_Node* PBQP_Edge::getSource() {
 	return source;
 }
 
+
 PBQP_Node* PBQP_Edge::getTarget() {
 	return target;
 }
+
 
 Matrix* PBQP_Edge::getMatrix() {
 	return matrix;
