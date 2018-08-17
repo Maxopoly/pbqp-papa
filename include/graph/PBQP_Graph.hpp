@@ -1,92 +1,130 @@
-/*
- * PBQPGraph.h
- *
- *  Created on: 3 Aug 2018
- *      Author: Max
- */
-
 #ifndef PBQPGRAPH_H_
 #define PBQPGRAPH_H_
 
 #include <vector>
+#include <set>
 
+template<typename T>
 class PBQP_Edge;
+template<typename T>
 class PBQP_Node;
+template<typename T>
 class Matrix;
+template<typename T>
 class Vektor;
 
 /**
  * A graph representing a PBQP. The template represents the data type of the numbers in the cost vektors
- * and cost matrices. It must be consistent throughout the entire graph and is consistent throughout all
- * edges and nodes in the same graph
+ * and cost matrices. It is consistent throughout the entire graph; all edges and all nodes.
  */
-template <class T>
+template<typename T>
 class PBQP_Graph {
 private:
-	int nodeIndexCounter;
-	std::vector<PBQP_Node<T>*>* nodes;
-	std::vector<PBQP_Edge<T>*>* edges;
-	//TODO Both of these should be maps instead of lists
-	void internalEdgeCleanUp(PBQP_Edge<T>*);
+	unsigned int nodeIndexCounter;
+	std::set<PBQP_Node<T>*>* nodes;
+	std::set<PBQP_Edge<T>*>* edges;
 
 public:
 
 	/**
 	 * Create a new empty graph with no nodes
 	 */
-	PBQP_Graph();
+	PBQP_Graph() {
+		nodes = new std::set<PBQP_Node<T>*>();
+		edges = new std::set<PBQP_Edge<T>*>();
+		nodeIndexCounter = 0;
+	}
 
 	/**
 	 * Deletes all nodes and edges contained within the graph
 	 */
-	~PBQP_Graph();
+	~PBQP_Graph() {
+		for (PBQP_Edge<T>* edge : *edges) {
+			delete edge;
+		}
+		delete edges;
+		for (PBQP_Node<T>* node : *nodes) {
+			delete node;
+		}
+		delete nodes;
+	}
 
 	/**
 	 * Creates a new node with the given cost vektor and adds it to the graph.
 	 * The new node will not have any edges initially
 	 */
-	PBQP_Node* addNode(Vektor<T>*);
+	PBQP_Node<T>* addNode(Vektor<T>* vektor) {
+		PBQP_Node<T>* node = new PBQP_Node<T>(nodeIndexCounter++, vektor);
+		nodes->insert(node);
+		return node;
+	}
 
 	/**
 	 * Creates a new edge and inserts it into the graph. The first node given is the
 	 * edges source, the second one its target and the given matrix is the cost matrix that
 	 * will be associated with the created edge
 	 */
-	PBQP_Edge* addEdge(PBQP_Node<T>*, PBQP_Node<T>*, Matrix<T>*);
+	PBQP_Edge<T>* addEdge(PBQP_Node<T>* source, PBQP_Node<T>* target, Matrix<T>* matrix) {
+		PBQP_Edge<T>* edge = new PBQP_Edge<T>(source, target, matrix);
+		edges->insert(edge);
+		source->addEdge(edge);
+		if (source != target) {
+			target->addEdge(edge);
+		}
+		return edge;
+	}
 
 	/**
 	 * Removes the given node from the graph and deletes it.
 	 * All edges connecting to this node will also be removed and deleted
 	 */
-	void removeNode(PBQP_Node<T>*);
+	void removeNode(PBQP_Node<T>* node) {
+		for (PBQP_Edge<T>* edge : *(node->getAdjacentEdges(false))) {
+			edges->erase(edge);
+			edge->getOtherEnd(node)->removeEdge(edge);
+		}
+		nodes->erase(node);
+	}
 
 	/**
 	 * Removes the given edge from the graph and deletes it.
 	 * Does not influence any nodes adjacent to the edge.
 	 */
-	void removeEdge(PBQP_Edge<T>*);
+	void removeEdge(PBQP_Edge<T>* edge){
+		edges->erase(edge);
+		edge->getSource()->removeEdge(edge);
+		edge->getTarget()->removeEdge(edge);
+	}
 
 	/**
 	 * Gets all nodes currently part of the graph
 	 * Points to the actual internal representation, so DO NOT MODIFY DIRECTLY.
 	 */
-	std::vector<PBQP_Node<T>*>* getNodes();
+	std::set<PBQP_Node<T>*>* getNodes() {
+		return nodes;
+	}
 
 	/**
 	 * Gets all edges currently part of the graph
 	 * Points to the actual internal representation, so DO NOT MODIFY DIRECTLY.
 	 */
-	std::vector<PBQP_Edge<T>*>* getEdges();
+	std::set<PBQP_Edge<T>*>* getEdges() {
+		return edges;
+	}
 
 	/**
 	 * Gets the amount of nodes currently in the graph
 	 */
-	int getNodeCount();
+	unsigned int getNodeCount() {
+		return nodes->size();
+	}
 
 	/**
 	 * Gets the amount of edges currently in the graph
 	 */
-	int getEdgeCount();
+	unsigned int getEdgeCount() {
+		return edges->size();
+	}
 
 };
 

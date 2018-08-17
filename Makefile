@@ -48,7 +48,7 @@ release: dirs
 .PHONY: dirs
 dirs:
 	@echo "Creating directories"
-	@mkdir -p $(dir $(OBJECTS))
+	#@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
 	@mkdir -p $(TEST_BUILD_PATH)
 

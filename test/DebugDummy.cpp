@@ -7,15 +7,15 @@
 #include "graph/PBQP_Node.hpp"
 #include "graph/PBQP_Edge.hpp"
 
-PBQP_Graph* genGraph(int size) {
-	PBQP_Graph* graph = new PBQP_Graph();
+PBQP_Graph<double>* genGraph(int size) {
+	PBQP_Graph<double>* graph = new PBQP_Graph<double>();
 	for (int i = 1; i <= size; i++) {
-		Vektor* vektor = new Vektor(2, new double[2] { 3.0, 2.0 });
+		Vektor<double>* vektor = new Vektor<double>(2, new double[2] { 3.0, 2.0 });
 		graph->addNode(vektor);
 	}
-	for (PBQP_Node* node1 : *(graph->getNodes())) {
-		for (PBQP_Node* node2 : *(graph->getNodes())) {
-			Matrix* matrix = new Matrix(2, 2,
+	for (PBQP_Node<double>* node1 : *(graph->getNodes())) {
+		for (PBQP_Node<double>* node2 : *(graph->getNodes())) {
+			Matrix<double>* matrix = new Matrix<double>(2, 2,
 					new double[4] { 3.0, 2.0, 5.4, 8.6 });
 			graph->addEdge(node1, node2, matrix);
 		}
@@ -26,10 +26,10 @@ PBQP_Graph* genGraph(int size) {
 
 int main() {
 	int size = 20;
-	PBQP_Graph* graph = genGraph(size);
+	PBQP_Graph<double>* graph = genGraph(size);
 	(graph->getEdgeCount(), size * size);
 	(graph->getNodeCount(), size);
-	for(PBQP_Node* node : *(graph->getNodes())) {
+	for(PBQP_Node<double>* node : *(graph->getNodes())) {
 		(node->getDegree(), size * 2 - 1);
 		(node->getAdjacentNodes(true)->size(), size);
 		(node->getAdjacentNodes(false)->size(), size);
@@ -38,3 +38,46 @@ int main() {
 	}
 }
 
+void test1() {
+	PBQP_Graph<int>* graph = new PBQP_Graph<int>();
+
+	//generate a bunch of nodes
+	for (int i = 1; i <= 50; i++) {
+		Vektor<int>* vektor = new Vektor<int>(2, new int[2] { 3, 2 });
+		PBQP_Node<int>* node = graph->addNode(vektor);
+	}
+
+	//generate a bunch of edges
+	PBQP_Node<int>* node1 = *(graph->getNodes()->begin());
+	std::set<PBQP_Node<int>*>* nodes = graph->getNodes();
+	int counter = 0;
+	for (std::set<PBQP_Node<int>*>::iterator it = nodes->begin(); it != nodes->end(); it++) {
+		Matrix<int>* matrix = new Matrix<int>(2, 2, new int[4] { 3, 2, 5, 8 });
+		PBQP_Node<int>* node2 = *it;
+		std::vector<PBQP_Node<int>*>* adjaNodes = node1->getAdjacentNodes(true);
+				std::find(adjaNodes->begin(), adjaNodes->end(), node2)
+						== adjaNodes->end();
+		PBQP_Edge<int>* edge = graph->addEdge(node1, node2, matrix);
+		adjaNodes = node1->getAdjacentNodes(true);
+				std::find(adjaNodes->begin(), adjaNodes->end(), node2)
+						!= adjaNodes->end();
+		adjaNodes = node1->getAdjacentNodes(false);
+				std::find(adjaNodes->begin(), adjaNodes->end(), node2)
+						!= adjaNodes->end();
+		if (counter != 0) {
+			//exclude initial cycle
+			adjaNodes = node2->getAdjacentNodes(true);
+					std::find(adjaNodes->begin(), adjaNodes->end(), node1)
+							== adjaNodes->end();
+		}
+		adjaNodes = node2->getAdjacentNodes(false);
+
+				std::find(adjaNodes->begin(), adjaNodes->end(), node1)
+						!= adjaNodes->end();
+		std::vector<PBQP_Edge<int>*>* adjaEdge = node1->getAdjacentEdges(true);
+				std::find(adjaEdge->begin(), adjaEdge->end(), edge)
+						!= adjaEdge->end();
+		counter++;
+	}
+	delete graph;
+}
