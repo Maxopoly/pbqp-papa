@@ -21,8 +21,8 @@ template<typename T>
 class PBQP_Graph {
 private:
 	unsigned int nodeIndexCounter;
-	std::set<PBQP_Node<T>*>* nodes;
-	std::set<PBQP_Edge<T>*>* edges;
+	std::set<PBQP_Node<T>*>* const nodes = new std::set<PBQP_Node<T>*>();
+	std::set<PBQP_Edge<T>*>* const edges = new std::set<PBQP_Edge<T>*>();
 
 public:
 
@@ -30,8 +30,6 @@ public:
 	 * Create a new empty graph with no nodes
 	 */
 	PBQP_Graph() {
-		nodes = new std::set<PBQP_Node<T>*>();
-		edges = new std::set<PBQP_Edge<T>*>();
 		nodeIndexCounter = 0;
 	}
 
@@ -64,7 +62,8 @@ public:
 	 * edges source, the second one its target and the given matrix is the cost matrix that
 	 * will be associated with the created edge
 	 */
-	PBQP_Edge<T>* addEdge(PBQP_Node<T>* source, PBQP_Node<T>* target, Matrix<T>* matrix) {
+	PBQP_Edge<T>* addEdge(PBQP_Node<T>* source, PBQP_Node<T>* target,
+			Matrix<T>* matrix) {
 		PBQP_Edge<T>* edge = new PBQP_Edge<T>(source, target, matrix);
 		edges->insert(edge);
 		source->addEdge(edge);
@@ -90,7 +89,7 @@ public:
 	 * Removes the given edge from the graph and deletes it.
 	 * Does not influence any nodes adjacent to the edge.
 	 */
-	void removeEdge(PBQP_Edge<T>* edge){
+	void removeEdge(PBQP_Edge<T>* edge) {
 		edges->erase(edge);
 		edge->getSource()->removeEdge(edge);
 		edge->getTarget()->removeEdge(edge);
@@ -98,31 +97,29 @@ public:
 
 	/**
 	 * Gets all nodes currently part of the graph
-	 * Points to the actual internal representation, so DO NOT MODIFY DIRECTLY.
 	 */
-	std::set<PBQP_Node<T>*>* getNodes() {
+	const std::set<PBQP_Node<T>*>* getNodes() const {
 		return nodes;
 	}
 
 	/**
-	 * Gets all edges currently part of the graph
-	 * Points to the actual internal representation, so DO NOT MODIFY DIRECTLY.
+	 * Gets all edges currently part of the graph.
 	 */
-	std::set<PBQP_Edge<T>*>* getEdges() {
+	const std::set<PBQP_Edge<T>*>* getEdges() const {
 		return edges;
 	}
 
 	/**
 	 * Gets the amount of nodes currently in the graph
 	 */
-	unsigned int getNodeCount() {
+	unsigned int getNodeCount() const {
 		return nodes->size();
 	}
 
 	/**
 	 * Gets the amount of edges currently in the graph
 	 */
-	unsigned int getEdgeCount() {
+	unsigned int getEdgeCount() const {
 		return edges->size();
 	}
 

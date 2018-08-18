@@ -13,17 +13,15 @@ class Vektor;
 template<typename T>
 class PBQP_Node {
 private:
-	Vektor<T>* values;
-	std::vector<PBQP_Edge<T>*> incidentEdges;
-	unsigned int index;
+	Vektor<T>* const values;
+	std::vector<PBQP_Edge<T>*>* const incidentEdges = new std::vector<PBQP_Edge<T>*>();
+	unsigned const int index;
 
 public:
 	/**
 	 * Should only be used by PBQP_Graph internally. Index counter is held by PBQP_Graph instance
 	 */
-	PBQP_Node(unsigned int index, Vektor<T>* values) {
-		this->index = index;
-		this->values = values;
+	PBQP_Node(unsigned const int index, Vektor<T>* const values) : values(values), index(index) {
 	}
 
 	/**
@@ -31,18 +29,17 @@ public:
 	 */
 	~PBQP_Node() {
 		delete values;
-		//TODO evaluate whether we need to delete this
-		//delete incidentEdges;
+		delete incidentEdges;
 	}
 
 	//TODO make proper iterators here
-	std::vector<PBQP_Edge<T>*>* getAdjacentEdges(bool respectDirection) {
+	std::vector<PBQP_Edge<T>*>* getAdjacentEdges(const bool respectDirection) const {
 		if (!respectDirection) {
-			return &incidentEdges;
+			return incidentEdges;
 		}
 		std::vector<PBQP_Edge<T>*>* outgoingEdges = new std::vector<PBQP_Edge<T>*>();
 		//TODO Should we maybe just store this explicitly? Check back later how often we actually have to recompute this vector
-		for (PBQP_Edge<T>* edge : incidentEdges) {
+		for (PBQP_Edge<T>* edge : *incidentEdges) {
 			if (edge->isSource(this)) {
 				outgoingEdges->push_back(edge);
 			}
@@ -50,20 +47,20 @@ public:
 		return outgoingEdges;
 	}
 
-	std::vector<PBQP_Node<T>*>* getAdjacentNodes(bool respectDirection) {
+	std::vector<PBQP_Node<T>*>* getAdjacentNodes(const bool respectDirection) const {
 		//TODO Same as in the adjacent edge function, maybe we should just store all of this explictly to save computation time?
 		//separate loops so we only check respectDirection once, instead of during every loop iteration
 		std::set <PBQP_Node<T>*>* resultSet = new std::set <PBQP_Node<T>*>();
 		std::vector <PBQP_Node<T>*>* nodes = new std::vector <PBQP_Node<T>*>();
 		if (respectDirection) {
-			for (PBQP_Edge<T>* edge : incidentEdges) {
+			for (PBQP_Edge<T>* edge : *incidentEdges) {
 				PBQP_Node<T>* other = edge->getOtherEnd(this);
 				if (edge->isSource(this) && resultSet->insert(other).second) {
 					nodes->push_back(other);
 				}
 			}
 		} else {
-			for (PBQP_Edge<T>* edge : incidentEdges) {
+			for (PBQP_Edge<T>* edge : *incidentEdges) {
 				PBQP_Node<T>* other = edge->getOtherEnd(this);
 				if(resultSet->insert(other).second) {
 					nodes->push_back(other);
@@ -76,28 +73,28 @@ public:
 	/**
 	 * Index identifies this node uniquely in the graph it was created in, even after the node is deleted
 	 */
-	unsigned int getIndex() {
+	unsigned int getIndex() const {
 		return index;
 	}
 
 	/**
 	 * Gets the length (amount of rows) of the cost vektor
 	 */
-	unsigned short int getVektorDegree() {
+	unsigned short int getVektorDegree() const {
 		return values->getRowCount();
 	}
 
 	/**
 	 * Gets the amount of nodes adjacent to this one (ignoring edge direction)
 	 */
-	unsigned int getDegree() {
-		return incidentEdges.size();
+	unsigned int getDegree() const {
+		return incidentEdges->size();
 	}
 
 	/**
 	 * Gets the cost vektor associated with this node
 	 */
-	Vektor<T>* getVektor() {
+	Vektor<T>* getVektor() const {
 		return values;
 	}
 
@@ -119,7 +116,7 @@ public:
 	 * Should only be used by PBQP_Graph internally.
 	 */
 	void addEdge(PBQP_Edge<T>* edge) {
-		incidentEdges.push_back(edge);
+		incidentEdges->push_back(edge);
 	}
 
 	/**
@@ -127,9 +124,9 @@ public:
 	 */
 	void removeEdge(PBQP_Edge<T>* edge) {
 		//Erase�remove idiom
-		incidentEdges.erase(
-				std::remove(incidentEdges.begin(), incidentEdges.end(), edge),
-				incidentEdges.end());
+		incidentEdges->erase(
+				std::remove(incidentEdges->begin(), incidentEdges->end(), edge),
+				incidentEdges->end());
 	}
 };
 

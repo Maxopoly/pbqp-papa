@@ -2,14 +2,16 @@
 #define GRAPH_MATRIX_H_
 
 #include <vector>
+#include <algorithm>
+#include <iterator>
 
 template<typename T>
 class Matrix {
 
 protected:
-	unsigned short int rows;
-	unsigned short int columns;
-	T* content;
+	const unsigned short int rows;
+	const unsigned short int columns;
+	T* const content;
 
 public:
 	/**
@@ -21,14 +23,18 @@ public:
 	 *  2 3
 	 *
 	 */
-	Matrix(unsigned short int columns, unsigned short int rows, T* data) {
-		this->rows = rows;
-		this->columns = columns;
-		content = data;
+	Matrix(unsigned short int columns, unsigned short int rows, T* data) :
+			rows(rows), columns(columns), content(data) {
+	}
+
+	Matrix(const Matrix<T>& matrix) :
+			rows(matrix.rows), columns(matrix.columns), content(
+					new T[rows * columns]) {
+		memcpy(matrix.content, content, rows * columns * sizeof(T));
 	}
 
 	~Matrix() {
-		delete [] content;
+		delete[] content;
 	}
 
 	/**
@@ -49,8 +55,8 @@ public:
 	 */
 	Matrix<T>* operator-=(const Matrix<T>& other) {
 		int length = rows * columns;
-		for(int i = 0; i < length; i++) {
-			content[i] -= other.content [i];
+		for (int i = 0; i < length; i++) {
+			content[i] -= other.content[i];
 		}
 		return this;
 	}
@@ -60,7 +66,7 @@ public:
 	 */
 	Matrix<T>* operator*=(T factor) {
 		int length = rows * columns;
-		for(int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++) {
 			content[i] *= factor;
 		}
 		return this;
@@ -71,8 +77,8 @@ public:
 	 */
 	Matrix<T>* operator/=(T quotient) {
 		int length = rows * columns;
-		for(int i = 0; i < length; i++) {
-			content[i] *= quotient;
+		for (int i = 0; i < length; i++) {
+			content[i] /= quotient;
 		}
 		return this;
 	}
@@ -80,13 +86,13 @@ public:
 	/**
 	 *  Creates a transposed version of this matrix.
 	 */
-	Matrix<T>* transpose() {
-		T* resultData = new T [columns * rows];
+	Matrix<T>* transpose() const {
 		const int size = columns * rows;
-		for(int n = 0; n < size; n++) {
-			int i = n / columns;
-			int j = n % columns;
-			resultData [n] = content [rows * j + i];
+		T* resultData = new T[size];
+		for (int n = 0; n < size; n++) {
+			int i = n / rows;
+			int j = n % rows;
+			resultData[n] = content[columns * j + i];
 		}
 		return new Matrix<T>(rows, columns, resultData);
 	}
@@ -94,21 +100,21 @@ public:
 	/**
 	 * Retrieves a single element by position
 	 */
-	T get(int row, int column) {
-		return content [(row * columns) + column];
+	T& get(int row, int column) const {
+		return content[(row * columns) + column];
 	}
 
 	/**
 	 * Gets the amount of rows
 	 */
-	unsigned short int getRowCount() {
+	const unsigned short int& getRowCount() const {
 		return rows;
 	}
 
 	/**
 	 * Gets the amount of columns
 	 */
-	unsigned short int getColumnCount() {
+	const unsigned short int& getColumnCount() const {
 		return columns;
 	}
 

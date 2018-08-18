@@ -13,9 +13,9 @@ template<typename T>
 class PBQP_Edge {
 
 private:
-	PBQP_Node<T>* source;
-	PBQP_Node<T>* target;
-	Matrix<T>* matrix;
+	PBQP_Node<T>* const source;
+	PBQP_Node<T>* const target;
+	Matrix<T>* const matrix;
 
 public:
 
@@ -27,10 +27,7 @@ public:
 	 * of the vektor associated with the source node and the amount of columns
 	 * in the matrix must match the length of the vektor associated with the target node
 	 */
-	PBQP_Edge(PBQP_Node<T>*, PBQP_Node<T>*, Matrix<T>*) {
-		this->source = source;
-		this->target = target;
-		this->matrix = matrix;
+	PBQP_Edge(PBQP_Node<T>* source, PBQP_Node<T>* target, Matrix<T>* matrix) : source(source), target(target), matrix(matrix) {
 	}
 
 	/**
@@ -43,7 +40,7 @@ public:
 	/**
 	 * Checks whether the given node is the source of this edge and returns true in that case
 	 */
-	bool isSource(PBQP_Node<T>* node) {
+	bool isSource(const PBQP_Node<T>* node) const {
 		return node == source;
 	}
 
@@ -53,7 +50,7 @@ public:
 	 *
 	 * If the given node is not part of this edge, the edges source will be returned
 	 */
-	PBQP_Node<T>* getOtherEnd(PBQP_Node<T>* node) {
+	PBQP_Node<T>* getOtherEnd(const PBQP_Node<T>* node) const{
 		if (node == source) {
 			return target;
 		}
@@ -63,22 +60,29 @@ public:
 	/**
 	 * Gets the cost matrix associated with this edge
 	 */
-	Matrix<T>* getMatrix() {
+	Matrix<T>* getMatrix() const{
 		return matrix;
 	}
 
 	/**
 	 * Gets the source node of this edge. May be identical to the target in case of a cycle
 	 */
-	PBQP_Node<T>* getSource() {
+	PBQP_Node<T>* getSource() const{
 		return source;
 	}
 
 	/**
 	 * Gets the target node of this edge. May be identical to the source in case of a cycle
 	 */
-	PBQP_Node<T>* getTarget() {
+	PBQP_Node<T>* getTarget() const{
 		return target;
+	}
+
+	/**
+	 * Gets whether this edge is a cycle, meaning source and target are identical
+	 */
+	bool isCycle() const{
+		return source == target;
 	}
 
 	bool operator==(const PBQP_Node<T>& e) const {

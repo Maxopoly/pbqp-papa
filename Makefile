@@ -91,10 +91,10 @@ test: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
 
 #Run tests
 $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
-	@./$^ --output_format=XML --log_level=test_suite > $(^)-report.xml
+	@./$^ --output_format=XML --log_level=message > $(^)-report.xml
 	
 #Compile tests
-$(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT)
+$(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
 	@echo "Compiling: $< -> $@"
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) -o$@ $^ -lboost_unit_test_framework
 
