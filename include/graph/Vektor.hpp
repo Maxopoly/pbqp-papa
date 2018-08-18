@@ -44,6 +44,10 @@ public:
 		}
 		return minimumIndex;
 	}
+
+	T& get(unsigned short int index) const {
+		return content [index];
+	}
 };
 
 #endif /* INCLUDE_GRAPH_VEKTOR_HPP_ */

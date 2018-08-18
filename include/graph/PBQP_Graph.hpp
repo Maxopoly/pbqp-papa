@@ -123,6 +123,14 @@ public:
 		return edges->size();
 	}
 
+	/**
+	 * Gets the internal counter for node indices. All nodes that ever existed in the graph so far
+	 * will have an index smaller than this counter
+	 */
+	unsigned int getNodeIndexCounter() const {
+		return nodeIndexCounter;
+	}
+
 };
 
 #endif /* PBQPGRAPH_H_ */
