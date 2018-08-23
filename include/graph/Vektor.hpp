@@ -46,7 +46,7 @@ public:
 	}
 
 	T& get(unsigned short int index) const {
-		return content [index];
+		return this->content [index];
 	}
 };
 

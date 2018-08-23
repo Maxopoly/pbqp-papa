@@ -33,7 +33,7 @@ public:
 	}
 
 	//TODO make proper iterators here
-	std::vector<PBQP_Edge<T>*>* getAdjacentEdges(const bool respectDirection) const {
+	std::vector<PBQP_Edge<T>*>* getAdjacentEdges(const bool respectDirection = false) const {
 		if (!respectDirection) {
 			return incidentEdges;
 		}
@@ -47,7 +47,7 @@ public:
 		return outgoingEdges;
 	}
 
-	std::vector<PBQP_Node<T>*>* getAdjacentNodes(const bool respectDirection) const {
+	std::vector<PBQP_Node<T>*>* getAdjacentNodes(const bool respectDirection = false) const {
 		//TODO Same as in the adjacent edge function, maybe we should just store all of this explictly to save computation time?
 		//separate loops so we only check respectDirection once, instead of during every loop iteration
 		std::set <PBQP_Node<T>*>* resultSet = new std::set <PBQP_Node<T>*>();

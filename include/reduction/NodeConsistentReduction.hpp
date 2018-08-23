@@ -16,13 +16,17 @@ class PBQP_Graph;
 template<typename T>
 class NodeConsistentReduction: public PBQP_Reduction<T> {
 
+public:
+
 	NodeConsistentReduction(PBQP_Graph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 	}
 
-	std::vector<PBQP_Graph<T>*>* reduce() = 0;
+	virtual ~NodeConsistentReduction();
 
-	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) {
+	virtual std::vector<PBQP_Graph<T>*>* reduce() = 0;
+
+	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) override {
 		//don't need to do anything
 		return solution;
 	}

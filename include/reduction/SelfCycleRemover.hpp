@@ -1,10 +1,3 @@
-/*
- * SelfCycleRemover.h
- *
- *  Created on: 6 Aug 2018
- *      Author: Max
- */
-
 #ifndef REDUCTION_SELFCYCLEREMOVER_HPP_
 #define REDUCTION_SELFCYCLEREMOVER_HPP_
 

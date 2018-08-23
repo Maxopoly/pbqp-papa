@@ -1,10 +1,3 @@
-/*
- * DegreeZero.hpp
- *
- *  Created on: 6 Aug 2018
- *      Author: Max
- */
-
 #ifndef VALIDATION_DEGREEZEROREDUCTOR_HPP_
 #define VALIDATION_DEGREEZEROREDUCTOR_HPP_
 

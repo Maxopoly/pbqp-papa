@@ -25,7 +25,7 @@ template<typename T>
 class PBQP_Reduction {
 protected:
 	PBQP_Graph<T>* graph;
-	std::vector<PBQP_Graph*>* result;
+	std::vector<PBQP_Graph<T>*>* result;
 
 public:
 	/**
@@ -35,7 +35,7 @@ public:
 	 */
 	PBQP_Reduction(PBQP_Graph<T>* graph) {
 		this->graph = graph;
-		result = new std::vector<PBQP_Graph*>(1);
+		result = new std::vector<PBQP_Graph<T>*>(1);
 	}
 	virtual ~PBQP_Reduction();
 
@@ -44,6 +44,7 @@ public:
 	 * up the graph into multiple problems
 	 */
 	virtual std::vector<PBQP_Graph<T>*>* reduce() = 0;
+
 	/**
 	 * Backtracking step. The given solution contains a solution for all nodes contained in any of the graphs returned
 	 * by reduce() and this instance is expected to further complete the solution with anything that was reduced as part

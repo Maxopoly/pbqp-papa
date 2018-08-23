@@ -1,10 +1,3 @@
-/*
- * Dependent_Solution.h
- *
- *  Created on: 5 Aug 2018
- *      Author: Max
- */
-
 #ifndef REDUCTION_DEPENDENT_SOLUTION_HPP_
 #define REDUCTION_DEPENDENT_SOLUTION_HPP_
 
