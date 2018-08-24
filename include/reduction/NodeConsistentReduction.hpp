@@ -22,7 +22,9 @@ public:
 			PBQP_Reduction<T>(graph) {
 	}
 
-	virtual ~NodeConsistentReduction();
+	virtual ~NodeConsistentReduction() {
+
+	}
 
 	virtual std::vector<PBQP_Graph<T>*>* reduce() = 0;
 

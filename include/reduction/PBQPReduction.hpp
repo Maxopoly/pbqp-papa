@@ -35,9 +35,11 @@ public:
 	 */
 	PBQP_Reduction(PBQP_Graph<T>* graph) {
 		this->graph = graph;
-		result = new std::vector<PBQP_Graph<T>*>(1);
+		result = new std::vector<PBQP_Graph<T>*>();
 	}
-	virtual ~PBQP_Reduction();
+	virtual ~PBQP_Reduction()  {
+
+	}
 
 	/**
 	 * Applies whatever logic this instance implements to simplify the PBQP. Result is a vector to allow splitting
