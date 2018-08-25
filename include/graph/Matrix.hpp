@@ -27,6 +27,13 @@ public:
 			rows(rows), columns(columns), content(data) {
 	}
 
+	/**
+	 * Creates a new matrix with uninitialized content
+	 */
+	Matrix(unsigned short int columns, unsigned short int rows) :
+				rows(rows), columns(columns), content(new T [rows * columns]) {
+	}
+
 	Matrix(const Matrix<T>& matrix) :
 			rows(matrix.rows), columns(matrix.columns), content(
 					new T[rows * columns]) {
@@ -100,7 +107,7 @@ public:
 	/**
 	 * Retrieves a single element by position
 	 */
-	T& get(int row, int column) const {
+	T& get(unsigned short int row, unsigned short int column) const {
 		return content[(row * columns) + column];
 	}
 

@@ -14,42 +14,60 @@ template<typename T>
 class PBQP_Node;
 
 template<typename T>
-class DegreeZeroReductor : public PBQP_Reduction <T> {
+class DegreeZeroReductor: public PBQP_Reduction<T> {
 private:
-	Dependent_Solution<T>* solution;
+	Dependent_Solution<T> solution;
+	//we need this a lot, so keeping it around instead of recreating is good
+	static const std::vector<unsigned short int> emptyIntVector = *new std::vector<unsigned short int>(0);
 
 public:
-	DegreeZeroReductor(PBQP_Graph<T>*) : PBQP_Reduction<T>(graph) {
+	DegreeZeroReductor(PBQP_Graph<T>* graph) :
+			PBQP_Reduction<T>(graph) {
 		//solution is initialized by the reduction
 	}
 
 	~DegreeZeroReductor() {
-		delete solution;
 	}
 
 	std::vector<PBQP_Graph*>* reduce() {
-		std::vector<PBQP_Node<T>*>* nodes = graph->getNodes();
-		std::vector<PBQP_Node<T>*>* targetNodes = new std::vector<PBQP_Node<T>*>();
-		std::vector<int>* nodeSolution = new std::vector<int>();
-		for (int i = 0; i < graph->getNodeCount(); i++) {
-			if (((*nodes)[i])->getDegree() == 0) {
-				PBQP_Node<T>* node = ((*nodes)[i]);
-				nodeSolution->push_back(
+		std::vector<PBQP_Node<T>*> targetNodes =
+				*new std::vector<PBQP_Node<T>*>();
+		std::vector<int> nodeSolution = new std::vector<int>();
+		for (PBQP_Node<T>* node : *(graph->getNodes())) {
+			if (node->getDegree() == 0) {
+				nodeSolution.push_back(
 						node->getVektor()->getIndexOfSmallestElement());
-				targetNodes->push_back(node);
+				targetNodes.push_back(node);
 				graph->removeNode(node);
-				i--;
 			}
 		}
-		solution = new Dependent_Solution<T>(new std::vector<PBQP_Node*>(0),
-				targetNodes);
-		solution->setSolution(new std::vector<int>(0), nodeSolution);
+		solution = *new Dependent_Solution<T>(new std::vector<PBQP_Node*>(0),
+				&targetNodes);
+		solution.setSolution(&emptyIntVector, &nodeSolution);
 		result->push_back(graph);
 		return result;
 	}
 
 	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) {
 		this->solution->solve(solution);
+		return solution;
+	}
+
+	/**
+	 * Reduces a given node of degree 0. Useful when combining reductions working
+	 * on different degrees to save overhead of creating lots of reduction instances
+	 */
+	static Dependent_Solution<T>* reduceDegreeOne(PBQP_Node<T>* node,
+			PBQP_Graph<T>* graph) {
+		std::vector<PBQP_Node*> dependencyNodes =
+				*new std::vector<PBQP_Node*>();
+		std::vector<PBQP_Node*> solutionNodes = *new std::vector<PBQP_Node*>();
+		solutionNodes.push_back(node);
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+				dependencyNodes, solutionNodes);
+		std::vector<int> nodeSolution = new std::vector<int>();
+		nodeSolution.push_back(node->getVektor()->getIndexOfSmallestElement());
+		solution->setSolution(&emptyIntVector, &nodeSolution);
 		return solution;
 	}
 };

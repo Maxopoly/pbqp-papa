@@ -35,29 +35,21 @@ public:
 	}
 
 	std::vector<PBQP_Graph*>* reduce() {
-		std::vector<PBQP_Node<T>*>* nodes = graph->getNodes();
-		std::vector<PBQP_Node<T>*>* targetNodes =
-				new std::vector<PBQP_Node<T>*>();
-		std::vector<int>* nodeSolution = new std::vector<int>();
-		for (int i = 0; i < graph->getNodeCount(); i++) {
-			if (((*nodes)[i])->getDegree() == 1) {
-				PBQP_Node<T>* node = ((*nodes)[i]);
-				reduceDegreeOne(node);
-				nodeSolution->push_back(
-						node->getVektor()->getIndexOfSmallestElement());
-				targetNodes->push_back(node);
-				graph->removeNode(node);
-				i--;
+		for (PBQP_Node<T>* node : *(graph->getNodes())) {
+			if (node->getDegree() == 1) {
+				Dependent_Solution<T>* sol = reduceDegreeOne(node);
+				solutions->push_back(sol);
 			}
 		}
-		solution = new Dependent_Solution<T>(new std::vector<PBQP_Node*>(0),
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQP_Node*>(0),
 				targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
 		return result;
 	}
 
-	Dependent_Solution<T>* reduceDegreeOne(PBQP_Node<T>* node) {
+	static Dependent_Solution<T>* reduceDegreeOne(PBQP_Node<T>* node,
+			PBQP_Graph<T>* graph) {
 		//will explode if node doesnt have an edge
 		PBQP_Edge<T>* edge = (*node->getAdjacentEdges())[0];
 		PBQP_Node<T>* otherEnd = edge->getOtherEnd(node);
@@ -97,7 +89,10 @@ public:
 			dependencySelections.push_back(i);
 			solutionSelections.push_back(maxSelection);
 			solution->setSolution(dependencySelections, solutionSelections);
+			otherEnd->getVektor()->get(i) = maximum;
 		}
+		graph->removeNode(node);
+		//TODO chain effect?
 		return solution;
 	}
 
@@ -107,7 +102,7 @@ public:
 	}
 
 private:
-	inline T calcSum(unsigned short int sourceSelection,
+	static inline T calcSum(unsigned short int sourceSelection,
 			unsigned short int targetSelection, PBQP_Edge<T>* edge) {
 		T sum = new T();
 		sum += edge->getSource()->getVektor()->get(sourceSelection);
