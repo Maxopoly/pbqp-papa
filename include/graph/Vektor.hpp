@@ -1,10 +1,3 @@
-/*
- * Vektor.hpp
- *
- *  Created on: Aug 17, 2018
- *      Author: max
- */
-
 #ifndef INCLUDE_GRAPH_VEKTOR_HPP_
 #define INCLUDE_GRAPH_VEKTOR_HPP_
 
@@ -25,7 +18,7 @@ public:
 	 * must be an array with matching length
 	 */
 	Vektor<T>(unsigned short int length, T* data) :
-			Matrix<T>(1, length, data) {
+			Matrix<T>(length, 1, data) {
 		//super constructor does everything for us
 	}
 

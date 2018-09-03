@@ -94,6 +94,7 @@ public:
 		}
 		totalSolutionsToCheck =
 				(new SolutionAmountChecker<T>(graph))->getSolutionAmount();
+		nodeLastUpdated = 0;
 	}
 
 	~BruteForceSolver() {
@@ -123,25 +124,43 @@ public:
 private:
 
 	T calculateDiffSolution() {
-		T sum = new T();
-		for (PBQP_Edge<T>* edge : graph->getEdges()) {
-			sum += edge->getMatrix()->get(
-					edge->getTarget()->getVektor()->get(
-							currentSelection[edge->getTarget()->getIndex()]),
-					edge->getSource()->getVektor()->get(
-							currentSelection[edge->getSource()->getIndex()]));
+		T sum = *new T();
+		PBQP_Node<T>* nodeChanged = nodes [nodeLastUpdated];
+		unsigned short int currentNodeSelection = currentSelection [nodeChanged->getIndex()];
+		unsigned short int previousNodeSelection = currentNodeSelection - 1;
+		if (previousNodeSelection < 0) {
+			previousNodeSelection = nodeChanged->getVektorDegree() - 1;
 		}
-		sum +=
+		for (PBQP_Edge<T>* edge : nodeChanged->getAdjacentEdges(false)) {
+			sum += edge->getMatrix()->get(
+							currentSelection[edge->getSource()->getIndex()],
+							currentSelection[edge->getTarget()->getIndex()]);
+			if (edge->getSource() == nodeChanged) {
+				sum += edge->getMatrix()->get(
+								currentNodeSelection,
+								currentSelection[edge->getTarget()->getIndex()]);
+				sum -= edge->getMatrix()->get(
+											previous[edge->getSource()->getIndex()],
+											currentSelection[edge->getTarget()->getIndex()]);
+			}
+			else {
+				sum += edge->getMatrix()->get(
+								currentSelection[edge->getSource()->getIndex()], currentNodeSelection);
+				sum -= edge->getMatrix()->get(
+								currentSelection[edge->getSource()->getIndex()], previousNodeSelection);
+			}
+		}
+		sum += nodeChanged->getVektor()->get(currentNodeSelection);
+		sum -= nodeChanged->getVektor()->get(previousNodeSelection);
+		return previousCost + sum;
 	}
 
 	T calculateNewSolution() {
 		T sum = new T();
 		for (PBQP_Edge<T>* edge : graph->getEdges()) {
 			sum += edge->getMatrix()->get(
-					edge->getTarget()->getVektor()->get(
-							currentSelection[edge->getTarget()->getIndex()]),
-					edge->getSource()->getVektor()->get(
-							currentSelection[edge->getSource()->getIndex()]));
+					currentSelection[edge->getSource()->getIndex()],
+							currentSelection[edge->getTarget()->getIndex()]);
 		}
 		for (PBQP_Node<T>* node : graph->getNodes()) {
 			sum += node->getVektor()->get(currentSelection[node->getIndex()]);

@@ -57,7 +57,7 @@ public:
 	 * Reduces a given node of degree 0. Useful when combining reductions working
 	 * on different degrees to save overhead of creating lots of reduction instances
 	 */
-	static Dependent_Solution<T>* reduceDegreeOne(PBQP_Node<T>* node,
+	static Dependent_Solution<T>* reduceDegreeZero(PBQP_Node<T>* node,
 			PBQP_Graph<T>* graph) {
 		std::vector<PBQP_Node*> dependencyNodes =
 				*new std::vector<PBQP_Node*>();

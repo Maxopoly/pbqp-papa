@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <set>
+#include <iterator>
 
 template<typename T>
 class PBQP_Edge;
@@ -117,7 +118,7 @@ public:
 
 	/**
 	 * Removes the given edge from the graph and deletes it.
-	 * Does not influence any nodes adjacent to the edge.
+	 * The edge is deleted from adjacent nodes as well, but the adjacent nodes stay in the graph
 	 */
 	void removeEdge(PBQP_Edge<T>* edge) {
 		edges->erase(edge);
@@ -127,17 +128,39 @@ public:
 	}
 
 	/**
-	 * Gets all nodes currently part of the graph
+	 * Gets an iterator to the begin of the nodes in this graph. Consistent with the behavior of std::set,
+	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
+	 * to is removed
 	 */
-	const std::set<PBQP_Node<T>*>* getNodes() const {
-		return nodes;
+	typename std::set<PBQP_Node<T>*>::iterator getNodeBegin() const {
+		return nodes->begin();
 	}
 
 	/**
-	 * Gets all edges currently part of the graph.
+	 * Gets an iterator to the end of the nodes in this graph. Consistent with the behavior of std::set,
+	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
+	 * to is removed
 	 */
-	const std::set<PBQP_Edge<T>*>* getEdges() const {
-		return edges;
+	typename std::set<PBQP_Node<T>*>::iterator getNodeEnd() const {
+		return nodes->end();
+	}
+
+	/**
+	 * Gets an iterator to the begin of the nodes in this graph. Consistent with the behavior of std::set,
+	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
+	 * to is removed
+	 */
+	typename std::set<PBQP_Edge<T>*>::iterator getEdgeBegin() const {
+		return edges->begin();
+	}
+
+	/**
+	 * Gets an iterator to the begin of the nodes in this graph. Consistent with the behavior of std::set,
+	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
+	 * to is removed
+	 */
+	typename std::set<PBQP_Edge<T>*>::iterator getEdgeEnd() const {
+		return edges->end();
 	}
 
 	/**

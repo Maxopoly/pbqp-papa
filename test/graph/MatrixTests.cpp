@@ -38,7 +38,7 @@ Matrix<int>* genMatrixRandom(int maxLength) {
 	int rows = rand() % maxLength + 1;
 	int columns = rand() % maxLength + 1;
 	int* data = new int[rows * columns];
-	Matrix<int>* matrix = new Matrix<int>(columns, rows, data);
+	Matrix<int>* matrix = new Matrix<int>(rows, columns, data);
 	for (int row = 0; row < rows; row++) {
 		for (int column = 0; column < columns; column++) {
 			matrix->get(row, column) = rand();

@@ -34,7 +34,7 @@ public:
 			std::vector<PBQP_Node<T>*> todoStack =
 					*new std::vector<PBQP_Node<T>*>();
 			if(this->graph->getNodeCount() > 0) {
-				auto iter = this->graph->getNodes()->begin();
+				auto iter = this->graph->getNodeBegin();
 				todoStack.push_back(*iter);
 			}
 			while (!todoStack.empty()) {

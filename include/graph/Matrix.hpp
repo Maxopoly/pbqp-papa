@@ -15,7 +15,7 @@ protected:
 
 public:
 	/**
-	 * Creates a new n x m matrix with n columns and m rows.
+	 * Creates a new n x m matrix with n rows and m columns.
 	 * The given data is expected to be an array of length n * m,
 	 * row by row, for example:
 	 *
@@ -23,14 +23,14 @@ public:
 	 *  2 3
 	 *
 	 */
-	Matrix(unsigned short int columns, unsigned short int rows, T* data) :
+	Matrix(unsigned short int rows, unsigned short int columns, T* data) :
 			rows(rows), columns(columns), content(data) {
 	}
 
 	/**
 	 * Creates a new matrix with uninitialized content
 	 */
-	Matrix(unsigned short int columns, unsigned short int rows) :
+	Matrix(unsigned short int rows, unsigned short int columns) :
 				rows(rows), columns(columns), content(new T [rows * columns]) {
 	}
 

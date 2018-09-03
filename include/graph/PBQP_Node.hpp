@@ -85,7 +85,7 @@ public:
 	}
 
 	/**
-	 * Gets the amount of nodes adjacent to this one (ignoring edge direction)
+	 * Gets the amount of edges connected to this node
 	 */
 	unsigned int getDegree() const {
 		return incidentEdges->size();

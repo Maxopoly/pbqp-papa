@@ -55,6 +55,7 @@ clean:
 
 #Builds and runs tests
 .PHONY: test
+test: dirs
 test: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
 test: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
 
@@ -68,13 +69,12 @@ $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
 	@echo "Compiling: $< -> $@"
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework
 	
-# Add dependency files, if they exist
--include $(DEPS)
-
-
 # Source file rules
 # After the first compilation they will be joined with the rules from the
 # dependency files to provide header dependencies
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	@echo "Compiling: $< -> $@"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
+	
+# Add dependency files, if they exist
+-include $(DEPS)
