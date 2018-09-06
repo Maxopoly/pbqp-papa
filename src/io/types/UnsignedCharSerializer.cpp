@@ -1,3 +1,4 @@
+
 #include <string>
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
@@ -14,7 +15,7 @@ class UnsignedCharSerializer : TypeSerializer<unsigned char> {
 	}
 
 
-	unsigned char deserialize(char* serialized) override {
+	unsigned char deserialize(char const* serialized) override {
 		return (unsigned char) std::strtoul(serialized, NULL, 0);
 	}
 

@@ -29,7 +29,7 @@ DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g
-INCLUDES = -I include/ -I submodules/json/single_include/nlohmann/json.hpp
+INCLUDES = -I include/ -I submodules/json/single_include/
 # Space-separated pkg-config libraries used by this project
 LIBS =
 
@@ -46,6 +46,7 @@ dirs:
 	@echo "Creating directories"
 	@mkdir -p $(dir $(TEST_OBJECTS))
 	@mkdir -p $(TEST_BUILD_PATH)
+	@mkdir -p $(dir $(OBJECTS))
 
 .PHONY: clean
 clean:

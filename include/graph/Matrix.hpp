@@ -101,7 +101,7 @@ public:
 			int j = n % rows;
 			resultData[n] = content[columns * j + i];
 		}
-		return new Matrix<T>(rows, columns, resultData);
+		return new Matrix<T>(columns, rows, resultData);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public:
 	/**
 	 * Gets the amount of elements
 	 */
-	const unsigned int getElementCount() const {
+	unsigned int getElementCount() const {
 		return columns * rows;
 	}
 

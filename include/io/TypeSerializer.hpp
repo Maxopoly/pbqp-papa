@@ -6,7 +6,7 @@ class TypeSerializer {
 
 public:
 	TypeSerializer() {};
-	virtual ~TypeSerializer();
+	virtual ~TypeSerializer(){};
 	virtual char const* serialize(T t) = 0;
 	virtual T deserialize(char const*) = 0;
 };

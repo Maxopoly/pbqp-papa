@@ -1,3 +1,4 @@
+
 #include <string>
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
@@ -14,11 +15,12 @@ class UnsignedShortIntSerializer : TypeSerializer<unsigned short int> {
 	}
 
 
-	unsigned short int deserialize(char* serialized) override {
+	unsigned short int deserialize(char const* serialized) override {
 		return (unsigned short int) std::strtoul(serialized, NULL, 0);
 	}
 
 };
+
 
 
 

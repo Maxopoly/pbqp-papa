@@ -65,9 +65,12 @@ BOOST_AUTO_TEST_CASE(basicMatrixGeneration) {
 		Matrix<int>* matrix = genMatrix<int>(i, i);
 		BOOST_CHECK_EQUAL(matrix->getColumnCount(), i);
 		BOOST_CHECK_EQUAL(matrix->getRowCount(), i);
+		BOOST_CHECK_EQUAL(matrix->getElementCount(), i * i);
+		int count = 0;
 		for (int row = 0; row < i; row++) {
 			for (int column = 0; column < i; column++) {
 				BOOST_CHECK_EQUAL(matrix->get(row, column), i);
+				BOOST_CHECK_EQUAL(matrix->getRaw(count++), i);
 			}
 		}
 		delete matrix;
@@ -155,9 +158,10 @@ void checkMatrixTranspose(Matrix<T>& m1, Matrix<T>& m2) {
 BOOST_AUTO_TEST_CASE(matrixTranspose) {
 	for(int i = 0; i < 20; i++) {
 		Matrix<int>* matrix = genMatrixRandom(20);
-		//also tests the copy constructor
-		Matrix<int>* transposed = (new Matrix<int>(*matrix))->transpose();
+		Matrix<int>* transposed = matrix->transpose();
 		checkMatrixTranspose<int>(*matrix, *transposed);
+		delete matrix;
+		delete transposed;
 	}
 }
 
