@@ -112,6 +112,13 @@ public:
 	}
 
 	/**
+	 * Retrieves an element by its raw index in the content array
+	 */
+	T& getRaw(unsigned int index) const {
+		return content[index];
+	}
+
+	/**
 	 * Gets the amount of rows
 	 */
 	const unsigned short int& getRowCount() const {
@@ -123,6 +130,13 @@ public:
 	 */
 	const unsigned short int& getColumnCount() const {
 		return columns;
+	}
+
+	/**
+	 * Gets the amount of elements
+	 */
+	const unsigned int getElementCount() const {
+		return columns * rows;
 	}
 
 };

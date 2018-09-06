@@ -29,7 +29,7 @@ DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g
-INCLUDES = -I include/
+INCLUDES = -I include/ -I submodules/json/single_include/nlohmann/json.hpp
 # Space-separated pkg-config libraries used by this project
 LIBS =
 
