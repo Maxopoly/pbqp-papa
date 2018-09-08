@@ -26,7 +26,7 @@ public:
 	 * Creates a new vektor with uninitialized content
 	 */
 	Vektor<T>(unsigned short int length) :
-				Matrix<T>(length, 1) {
+			Matrix<T>(length, 1) {
 	}
 
 	/**
@@ -46,7 +46,7 @@ public:
 	}
 
 	T& get(unsigned short int index) const {
-		return this->content [index];
+		return this->content[index];
 	}
 };
 

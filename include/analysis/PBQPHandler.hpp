@@ -14,12 +14,11 @@ protected:
 	PBQPGraph<T>* const graph;
 
 public:
-	PBQPHandler(PBQPGraph<T>* graph) : graph(graph) {
+	PBQPHandler(PBQPGraph<T>* graph) :
+			graph(graph) {
 	}
 
 	virtual ~PBQPHandler();
 };
-
-
 
 #endif /* ANALYSIS_GRAPHHANDLER_CPP_ */

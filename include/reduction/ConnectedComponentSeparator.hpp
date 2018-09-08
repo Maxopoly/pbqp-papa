@@ -22,7 +22,7 @@ class ConnectedComponentSeparator: public PBQP_Reduction<T> {
 
 public:
 	ConnectedComponentSeparator(PBQPGraph<T>* graph) :
-		PBQP_Reduction<T>(graph) {
+			PBQP_Reduction<T>(graph) {
 	}
 
 	~ConnectedComponentSeparator() {
@@ -33,7 +33,7 @@ public:
 			std::set<PBQPNode<T>*> foundNodes = *new std::set<PBQPNode<T>*>();
 			std::vector<PBQPNode<T>*> todoStack =
 					*new std::vector<PBQPNode<T>*>();
-			if(this->graph->getNodeCount() > 0) {
+			if (this->graph->getNodeCount() > 0) {
 				auto iter = this->graph->getNodeBegin();
 				todoStack.push_back(*iter);
 			}

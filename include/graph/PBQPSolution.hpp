@@ -27,10 +27,10 @@ public:
 
 	}
 	void setSolution(int nodeIndex, int solution) {
-		(*selection) [nodeIndex] = solution;
+		(*selection)[nodeIndex] = solution;
 	}
 	int getSolution(int nodeIndex) {
-		return (*selection) [nodeIndex];
+		return (*selection)[nodeIndex];
 	}
 };
 

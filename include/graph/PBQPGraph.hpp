@@ -54,7 +54,8 @@ public:
 	 * The new node will not have any edges initially
 	 */
 	PBQPNode<T>* addNode(Vektor<T>* vektor) {
-		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++, vektor);
+		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++,
+				vektor);
 		nodes->insert(node);
 		return node;
 	}
@@ -111,7 +112,7 @@ public:
 			}
 		}
 		nodes->erase(node);
-		if(cleanUp) {
+		if (cleanUp) {
 			delete node;
 		}
 	}

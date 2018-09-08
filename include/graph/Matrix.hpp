@@ -31,7 +31,7 @@ public:
 	 * Creates a new matrix with uninitialized content
 	 */
 	Matrix(unsigned short int rows, unsigned short int columns) :
-				rows(rows), columns(columns), content(new T [rows * columns]) {
+			rows(rows), columns(columns), content(new T[rows * columns]) {
 	}
 
 	Matrix(const Matrix<T>& matrix) :

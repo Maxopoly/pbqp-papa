@@ -42,8 +42,8 @@ public:
 				solutions->push_back(sol);
 			}
 		}
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQPNode*>(0),
-				targetNodes);
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+				new std::vector<PBQPNode*>(0), targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
 		return result;
@@ -61,8 +61,7 @@ public:
 	 */
 	static Dependent_Solution<T>* reduceDegreeTwo(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
-		std::vector<PBQPNode*> dependencyNodes =
-				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::set<PBQPEdge*>::iterator it = graph->getEdges()->begin();
 		PBQPEdge<T>* firstEdge = *it;
 		PBQPNode<T>* firstNode = firstEdge->getOtherEnd(node);

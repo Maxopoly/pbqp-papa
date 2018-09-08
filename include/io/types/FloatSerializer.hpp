@@ -5,23 +5,21 @@
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
 
-class FloatSerializer : public TypeSerializer<float> {
+class FloatSerializer: public TypeSerializer<float> {
 
 public:
-	FloatSerializer() : TypeSerializer("float") {
+	FloatSerializer() :
+			TypeSerializer("float") {
 	}
 
 	std::string serialize(float number) override {
 		return std::to_string(number);
 	}
 
-
 	float deserialize(std::string serialized) override {
 		return std::stof(serialized);
 	}
 
 };
-
-
 
 #endif /* IO_TYPES_FLOATSERIALIZER_HPP_ */

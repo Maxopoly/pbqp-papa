@@ -5,16 +5,16 @@
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
 
-class DoubleSerializer : public TypeSerializer<double> {
+class DoubleSerializer: public TypeSerializer<double> {
 
 public:
-	DoubleSerializer() : TypeSerializer("double") {
+	DoubleSerializer() :
+			TypeSerializer("double") {
 	}
 
 	std::string serialize(double number) override {
 		return std::to_string(number);
 	}
-
 
 	double deserialize(std::string serialized) override {
 		return std::stod(serialized);

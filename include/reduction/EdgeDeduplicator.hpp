@@ -33,8 +33,7 @@ public:
 				auto search = adjacencyMap->find(otherEnd);
 				if (search != adjacencyMap->end()) {
 					//entry for this node already exists, meaning we already found an edge connecting to it before
-					PBQPEdge<T>* existingEdge =
-							(PBQPEdge<T>*) (search->second);
+					PBQPEdge<T>* existingEdge = (PBQPEdge<T>*) (search->second);
 					//check direction to determine addition method
 					if (existingEdge->getSource() == edge->getSource()) {
 						//facing same direction

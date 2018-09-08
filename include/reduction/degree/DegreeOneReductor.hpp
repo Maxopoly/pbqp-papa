@@ -41,8 +41,8 @@ public:
 				solutions->push_back(sol);
 			}
 		}
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQPNode*>(0),
-				targetNodes);
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+				new std::vector<PBQPNode*>(0), targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
 		return result;
@@ -53,8 +53,7 @@ public:
 		//will explode if node doesnt have an edge
 		PBQPEdge<T>* edge = (*node->getAdjacentEdges())[0];
 		PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
-		std::vector<PBQPNode*> dependencyNodes =
-				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		dependencyNodes.push_back(otherEnd);
 		solutionNodes.push_back(node);

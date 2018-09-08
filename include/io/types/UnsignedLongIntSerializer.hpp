@@ -5,10 +5,11 @@
 #include <string>
 #include <cstdlib>
 
-class UnsignedLongIntSerializer : public TypeSerializer<unsigned long int> {
+class UnsignedLongIntSerializer: public TypeSerializer<unsigned long int> {
 
 public:
-	UnsignedLongIntSerializer() : TypeSerializer("unsigned long int") {
+	UnsignedLongIntSerializer() :
+			TypeSerializer("unsigned long int") {
 
 	}
 
@@ -21,7 +22,5 @@ public:
 		return (unsigned long int) std::strtoul(serialized.c_str(), NULL, 0);
 	}
 };
-
-
 
 #endif /* IO_TYPES_UNSIGNEDLONGINTSERIALIZER_HPP_ */

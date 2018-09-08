@@ -45,13 +45,10 @@ public:
 	/**
 	 * Deletes the node as there is nothing to solve
 	 */
-	static void reduceVektorDegreeZero(PBQPNode<T>* node,
-			PBQPGraph<T>* graph) {
+	static void reduceVektorDegreeZero(PBQPNode<T>* node, PBQPGraph<T>* graph) {
 		//TODO: This leaves uninitialized values in the solution. How do we want to deal with unsolvable nodes in general?
 		graph->removeNode(node);
 	}
 };
-
-
 
 #endif /* REDUCTION_VEKTORDEGREEZEROREDUCTOR_HPP_ */

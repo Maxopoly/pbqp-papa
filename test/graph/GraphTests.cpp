@@ -1,4 +1,3 @@
-
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE GraphTests
 #include <boost/test/unit_test.hpp>
@@ -86,7 +85,7 @@ BOOST_AUTO_TEST_CASE(advancedEdgeGeneration) {
 	BOOST_CHECK_EQUAL(graph->getEdgeCount(), size * size);
 	BOOST_CHECK_EQUAL(graph->getNodeCount(), size);
 	for (std::set<PBQPNode<int>*>::iterator it = graph->getNodeBegin();
-					it != graph->getNodeEnd(); it++) {
+			it != graph->getNodeEnd(); it++) {
 		PBQPNode<int>* node = *it;
 		BOOST_CHECK_EQUAL(node->getDegree(), size * 2 - 1);
 		BOOST_CHECK_EQUAL(node->getAdjacentNodes(true)->size(), size);

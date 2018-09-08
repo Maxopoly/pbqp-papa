@@ -31,8 +31,7 @@ public:
 	}
 
 	std::vector<PBQPGraph*>* reduce() {
-		std::vector<PBQPNode*> dependencyNodes =
-				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		for (PBQPNode<T>* node : *(graph->getNodes())) {
 			if (node->getVektorDegree() == 1) {
@@ -49,19 +48,17 @@ public:
 
 	static DependentSolution reduceVektorDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
-		std::vector<PBQPNode*> dependencyNodes =
-				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		solutionNodes.push_back(node);
 		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
 				dependencyNodes, solutionNodes);
-		std::vector<unsigned short int> nodeSolution = new std::vector<unsigned short int>();
+		std::vector<unsigned short int> nodeSolution = new std::vector<
+				unsigned short int>();
 		nodeSolution.push_back(0);
 		solution->setSolution(&emptyIntVector, &nodeSolution);
 		return solution;
 	}
 };
-
-
 
 #endif /* REDUCTION_VEKTORDEGREE_VEKTORDEGREEONEREDUCTOR_HPP_ */

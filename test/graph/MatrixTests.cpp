@@ -18,7 +18,7 @@ template<typename T>
 Matrix<T>* genMatrix(int n, int value) {
 	T* data = new T[n * n];
 	for (int i = 0; i < n * n; i++) {
-		data [i] = value;
+		data[i] = value;
 	}
 	return new Matrix<T>(n, n, data);
 }
@@ -28,13 +28,13 @@ Matrix<T>* genMatrixAscending(int n, int value) {
 	T* data = new T[n * n];
 	Matrix<T>* matrix = new Matrix<T>(n, n, data);
 	for (int i = 0; i < n * n; i++) {
-		data [i] = value++;
+		data[i] = value++;
 	}
 	return matrix;
 }
 
 Matrix<int>* genMatrixRandom(int maxLength) {
-	srand (time(NULL));
+	srand(time(NULL));
 	int rows = rand() % maxLength + 1;
 	int columns = rand() % maxLength + 1;
 	int* data = new int[rows * columns];
@@ -54,7 +54,8 @@ void printMatrix(Matrix<int>& matrix) {
 	BOOST_TEST_MESSAGE("Columns" << matrix.getColumnCount());
 	for (int row = 0; row < matrix.getRowCount(); row++) {
 		for (int column = 0; column < matrix.getColumnCount(); column++) {
-			BOOST_TEST_MESSAGE("Column: " << column << " ; " << "Row: " << row << "  " << matrix.get(row, column));
+			BOOST_TEST_MESSAGE(
+					"Column: " << column << " ; " << "Row: " << row << "  " << matrix.get(row, column));
 		}
 		BOOST_TEST_MESSAGE("---");
 	}
@@ -156,7 +157,7 @@ void checkMatrixTranspose(Matrix<T>& m1, Matrix<T>& m2) {
 }
 
 BOOST_AUTO_TEST_CASE(matrixTranspose) {
-	for(int i = 0; i < 20; i++) {
+	for (int i = 0; i < 20; i++) {
 		Matrix<int>* matrix = genMatrixRandom(20);
 		Matrix<int>* transposed = matrix->transpose();
 		checkMatrixTranspose<int>(*matrix, *transposed);

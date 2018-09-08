@@ -27,7 +27,8 @@ public:
 	 * of the vektor associated with the source node and the amount of columns
 	 * in the matrix must match the length of the vektor associated with the target node
 	 */
-	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, Matrix<T>* matrix) : source(source), target(target), matrix(matrix) {
+	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, Matrix<T>* matrix) :
+			source(source), target(target), matrix(matrix) {
 	}
 
 	/**
@@ -50,7 +51,7 @@ public:
 	 *
 	 * If the given node is not part of this edge, the edges source will be returned
 	 */
-	PBQPNode<T>* getOtherEnd(const PBQPNode<T>* node) const{
+	PBQPNode<T>* getOtherEnd(const PBQPNode<T>* node) const {
 		if (node == source) {
 			return target;
 		}
@@ -60,28 +61,28 @@ public:
 	/**
 	 * Gets the cost matrix associated with this edge
 	 */
-	Matrix<T>* getMatrix() const{
+	Matrix<T>* getMatrix() const {
 		return matrix;
 	}
 
 	/**
 	 * Gets the source node of this edge. May be identical to the target in case of a cycle
 	 */
-	PBQPNode<T>* getSource() const{
+	PBQPNode<T>* getSource() const {
 		return source;
 	}
 
 	/**
 	 * Gets the target node of this edge. May be identical to the source in case of a cycle
 	 */
-	PBQPNode<T>* getTarget() const{
+	PBQPNode<T>* getTarget() const {
 		return target;
 	}
 
 	/**
 	 * Gets whether this edge is a cycle, meaning source and target are identical
 	 */
-	bool isCycle() const{
+	bool isCycle() const {
 		return source == target;
 	}
 

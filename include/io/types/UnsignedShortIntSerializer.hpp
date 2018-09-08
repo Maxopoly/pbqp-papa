@@ -5,10 +5,11 @@
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
 
-class UnsignedShortIntSerializer : public TypeSerializer<unsigned short int> {
+class UnsignedShortIntSerializer: public TypeSerializer<unsigned short int> {
 
 public:
-	UnsignedShortIntSerializer() : TypeSerializer("unsigned short int") {
+	UnsignedShortIntSerializer() :
+			TypeSerializer("unsigned short int") {
 
 	}
 
@@ -16,13 +17,10 @@ public:
 		return std::to_string(number);
 	}
 
-
 	unsigned short int deserialize(std::string serialized) override {
 		return (unsigned short int) std::strtoul(serialized.c_str(), NULL, 0);
 	}
 
 };
-
-
 
 #endif /* IO_TYPES_UNSIGNEDSHORTINTSERIALIZER_HPP_ */

@@ -79,10 +79,11 @@ BOOST_AUTO_TEST_CASE(advancedNodeTest) {
 	int edgeCount = 0;
 	for (int i = 0; i < subgraphs; i++) {
 		edgeCount = 0;
-		std::vector<PBQPNode<int>*> otherNodes = *new std::vector<PBQPNode<int>*>();
+		std::vector<PBQPNode<int>*> otherNodes =
+				*new std::vector<PBQPNode<int>*>();
 		for (int k = 0; k < localSize; k++) {
-			PBQPNode<int>* node = graph->addNode(
-					new Vektor<int>(2, new int[2] { 2, 2 }));
+			PBQPNode<int>* node = graph->addNode(new Vektor<int>(2, new int[2] {
+					2, 2 }));
 			otherNodes.push_back(node);
 			for (PBQPNode<int>* otherNode : otherNodes) {
 				graph->addEdge(node, otherNode,
@@ -103,7 +104,8 @@ BOOST_AUTO_TEST_CASE(advancedNodeTest) {
 		BOOST_CHECK_EQUAL(edgeCount, retrievedGraph->getEdgeCount());
 		BOOST_CHECK_EQUAL(localSize, retrievedGraph->getNodeCount());
 		//ensure each node is only in one subgraph
-		for(auto iter = retrievedGraph->getNodeBegin(); iter != retrievedGraph->getNodeEnd(); ++iter) {
+		for (auto iter = retrievedGraph->getNodeBegin();
+				iter != retrievedGraph->getNodeEnd(); ++iter) {
 			unsigned int index = (*iter)->getIndex();
 			BOOST_CHECK_EQUAL(0, nodeIndices.count(index));
 			nodeIndices.insert(index);

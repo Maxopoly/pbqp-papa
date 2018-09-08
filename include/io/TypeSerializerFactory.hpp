@@ -13,12 +13,14 @@
 class TypeSerializerFactory {
 
 private:
-	UnsignedLongIntSerializer* unsignedLongIntSerializer = new UnsignedLongIntSerializer();
-	UnsignedShortIntSerializer* unsignedShortIntSerializer = new UnsignedShortIntSerializer();
-	UnsignedCharSerializer* unsignedCharSerializer = new UnsignedCharSerializer();
+	UnsignedLongIntSerializer* unsignedLongIntSerializer =
+			new UnsignedLongIntSerializer();
+	UnsignedShortIntSerializer* unsignedShortIntSerializer =
+			new UnsignedShortIntSerializer();
+	UnsignedCharSerializer* unsignedCharSerializer =
+			new UnsignedCharSerializer();
 	FloatSerializer* floatSerializer = new FloatSerializer();
 	DoubleSerializer* doubleSerializer = new DoubleSerializer();
-
 
 public:
 	UnsignedLongIntSerializer* get(unsigned long int);

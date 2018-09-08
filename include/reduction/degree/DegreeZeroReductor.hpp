@@ -18,7 +18,8 @@ class DegreeZeroReductor: public PBQP_Reduction<T> {
 private:
 	Dependent_Solution<T> solution;
 	//we need this a lot, so keeping it around instead of recreating is good
-	static const std::vector<unsigned short int> emptyIntVector = *new std::vector<unsigned short int>(0);
+	static const std::vector<unsigned short int> emptyIntVector =
+			*new std::vector<unsigned short int>(0);
 
 public:
 	DegreeZeroReductor(PBQPGraph<T>* graph) :
@@ -59,8 +60,7 @@ public:
 	 */
 	static Dependent_Solution<T>* reduceDegreeZero(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
-		std::vector<PBQPNode*> dependencyNodes =
-				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		solutionNodes.push_back(node);
 		Dependent_Solution<T>* solution = new Dependent_Solution<T>(

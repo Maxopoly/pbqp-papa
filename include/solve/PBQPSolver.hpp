@@ -19,14 +19,15 @@ class PBQPHandler;
  * How exactly this solution is determined and how good it is, is completely up to the implementation
  */
 template<typename T>
-class PBQPSolver : PBQPHandler<T>{
+class PBQPSolver: PBQPHandler<T> {
 
 protected:
 	PBQPSolution<T>* const solution;
 	virtual PBQPSolution<T> solve() = 0;
 
 public:
-	PBQPSolver(PBQPGraph<T>* graph, PBQPSolution<T>* solution) : PBQPHandler<T>(graph), solution(solution) {
+	PBQPSolver(PBQPGraph<T>* graph, PBQPSolution<T>* solution) :
+			PBQPHandler<T>(graph), solution(solution) {
 	}
 
 	virtual ~PBQPSolver();
@@ -39,6 +40,5 @@ public:
 	}
 
 };
-
 
 #endif /* SOLVE_PBQPSOLVER_HPP_ */

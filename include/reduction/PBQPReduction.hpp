@@ -37,7 +37,7 @@ public:
 		this->graph = graph;
 		result = new std::vector<PBQPGraph<T>*>();
 	}
-	virtual ~PBQP_Reduction()  {
+	virtual ~PBQP_Reduction() {
 
 	}
 

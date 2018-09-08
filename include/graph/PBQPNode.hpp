@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <algorithm>
-//#include "graph/Matrix.hpp"
 
 template<typename T>
 class PBQPEdge;
@@ -14,14 +13,16 @@ template<typename T>
 class PBQPNode {
 private:
 	Vektor<T>* const values;
-	std::vector<PBQPEdge<T>*>* const incidentEdges = new std::vector<PBQPEdge<T>*>();
+	std::vector<PBQPEdge<T>*>* const incidentEdges = new std::vector<
+			PBQPEdge<T>*>();
 	unsigned const int index;
 
 public:
 	/**
 	 * Should only be used by PBQPGraph internally. Index counter is held by PBQPGraph instance
 	 */
-	PBQPNode(unsigned const int index, Vektor<T>* const values) : values(values), index(index) {
+	PBQPNode(unsigned const int index, Vektor<T>* const values) :
+			values(values), index(index) {
 	}
 
 	/**
@@ -33,11 +34,13 @@ public:
 	}
 
 	//TODO make proper iterators here
-	std::vector<PBQPEdge<T>*>* getAdjacentEdges(const bool respectDirection = false) const {
+	std::vector<PBQPEdge<T>*>* getAdjacentEdges(const bool respectDirection =
+			false) const {
 		if (!respectDirection) {
 			return incidentEdges;
 		}
-		std::vector<PBQPEdge<T>*>* outgoingEdges = new std::vector<PBQPEdge<T>*>();
+		std::vector<PBQPEdge<T>*>* outgoingEdges =
+				new std::vector<PBQPEdge<T>*>();
 		//TODO Should we maybe just store this explicitly? Check back later how often we actually have to recompute this vector
 		for (PBQPEdge<T>* edge : *incidentEdges) {
 			if (edge->isSource(this)) {
@@ -47,11 +50,12 @@ public:
 		return outgoingEdges;
 	}
 
-	std::vector<PBQPNode<T>*>* getAdjacentNodes(const bool respectDirection = false) const {
+	std::vector<PBQPNode<T>*>* getAdjacentNodes(const bool respectDirection =
+			false) const {
 		//TODO Same as in the adjacent edge function, maybe we should just store all of this explictly to save computation time?
 		//separate loops so we only check respectDirection once, instead of during every loop iteration
-		std::set <PBQPNode<T>*>* resultSet = new std::set <PBQPNode<T>*>();
-		std::vector <PBQPNode<T>*>* nodes = new std::vector <PBQPNode<T>*>();
+		std::set<PBQPNode<T>*>* resultSet = new std::set<PBQPNode<T>*>();
+		std::vector<PBQPNode<T>*>* nodes = new std::vector<PBQPNode<T>*>();
 		if (respectDirection) {
 			for (PBQPEdge<T>* edge : *incidentEdges) {
 				PBQPNode<T>* other = edge->getOtherEnd(this);
@@ -62,7 +66,7 @@ public:
 		} else {
 			for (PBQPEdge<T>* edge : *incidentEdges) {
 				PBQPNode<T>* other = edge->getOtherEnd(this);
-				if(resultSet->insert(other).second) {
+				if (resultSet->insert(other).second) {
 					nodes->push_back(other);
 				}
 			}
@@ -101,7 +105,7 @@ public:
 	/**
 	 * Compares based on index, needed so we can sort nodes into maps
 	 */
-	bool operator< (const PBQPNode<T>& e) const {
+	bool operator<(const PBQPNode<T>& e) const {
 		return this->index < e.index;
 	}
 

@@ -26,7 +26,8 @@ private:
 	unsigned short int* solutions;
 
 public:
-	Dependent_Solution(std::vector<PBQPNode<T>*>* dependencyNodes, std::vector<PBQPNode<T>*>* solutionNodes) {
+	Dependent_Solution(std::vector<PBQPNode<T>*>* dependencyNodes,
+			std::vector<PBQPNode<T>*>* solutionNodes) {
 		dependencyIndices = new std::vector<int>(dependencyNodes->size());
 		dependencyDegrees = new std::vector<int>(dependencyNodes->size());
 		int degreeProduct = 1;
@@ -40,8 +41,8 @@ public:
 		for (unsigned int i = 0; i < solutionNodes->size(); i++) {
 			(*solutionIndices)[i] = (*solutionNodes)[i]->getIndex();
 		}
-		solutions = new unsigned short int[dependencyIndices->size() * solutionIndices->size()
-				* degreeProduct];
+		solutions = new unsigned short int[dependencyIndices->size()
+				* solutionIndices->size() * degreeProduct];
 	}
 
 	virtual ~Dependent_Solution() {
@@ -51,14 +52,16 @@ public:
 		delete[] solutions;
 	}
 
-	void setSolution(std::vector<unsigned short int>* dependencySelections, std::vector<unsigned short int>* solutionSelection) {
+	void setSolution(std::vector<unsigned short int>* dependencySelections,
+			std::vector<unsigned short int>* solutionSelection) {
 		int index = resolveIndex(dependencySelections);
-		std::copy(solutionSelection->begin(), solutionSelection->end(), solutions + index);
+		std::copy(solutionSelection->begin(), solutionSelection->end(),
+				solutions + index);
 	}
 
 	void solve(PBQPSolution<T>* solution) {
-		std::vector<unsigned short int>* dependencySolution = new std::vector<unsigned short int>(
-				dependencyIndices->size());
+		std::vector<unsigned short int>* dependencySolution = new std::vector<
+				unsigned short int>(dependencyIndices->size());
 		for (unsigned int dependencyId : *dependencyIndices) {
 			dependencySolution->push_back(solution->getSolution(dependencyId));
 		}
@@ -74,7 +77,8 @@ private:
 		int index = 0;
 		int offset = 1;
 		for (unsigned int i = 0; i < dependencyDegrees->size(); i++) {
-			index += (*dependencyDegrees)[i] * offset * ((*dependencySelections)[i]);
+			index += (*dependencyDegrees)[i] * offset
+					* ((*dependencySelections)[i]);
 			offset *= (*dependencyDegrees)[i];
 		}
 		return index;

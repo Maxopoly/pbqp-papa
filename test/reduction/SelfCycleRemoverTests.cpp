@@ -60,13 +60,14 @@ BOOST_AUTO_TEST_CASE(simpleNumberTest) {
 	graph->addEdge(node3, node1, new Matrix<int>(3, 3, new int[9] { 5, 5, 5, 5,
 			5, 5, 5, 5, 5 }));
 	//cycles
-	graph->addEdge(node1, node1, new Matrix<int>(3, 3, new int[9] { 9, 10, 11, 12,
-			13, 14, 15, 16, 17 }));
-	graph->addEdge(node1, node1, new Matrix<int>(3, 3, new int[9] { 9, 10, 11, 12,
-			13, 14, 15, 16, 17 }));
-	graph->addEdge(node1, node1, new Matrix<int>(3, 3, new int[9] { 9, 10, 11, 12,
-			13, 14, 15, 16, 17 }));
-	graph->addEdge(node2, node2, new Matrix<int>(2, 2, new int[4] { 20, 21, 22, 23}));
+	graph->addEdge(node1, node1, new Matrix<int>(3, 3, new int[9] { 9, 10, 11,
+			12, 13, 14, 15, 16, 17 }));
+	graph->addEdge(node1, node1, new Matrix<int>(3, 3, new int[9] { 9, 10, 11,
+			12, 13, 14, 15, 16, 17 }));
+	graph->addEdge(node1, node1, new Matrix<int>(3, 3, new int[9] { 9, 10, 11,
+			12, 13, 14, 15, 16, 17 }));
+	graph->addEdge(node2, node2, new Matrix<int>(2, 2, new int[4] { 20, 21, 22,
+			23 }));
 	SelfCycleRemover<int> cycleRemover = *new SelfCycleRemover<int>(graph);
 	std::vector<PBQPGraph<int>*> result = *(cycleRemover.reduce());
 	BOOST_CHECK_EQUAL(result.size(), 1);
