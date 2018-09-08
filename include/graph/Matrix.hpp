@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <iterator>
 
+namespace pbqppapa {
+
 template<typename T>
 class Matrix {
 
@@ -140,5 +142,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* GRAPH_MATRIX_H_ */

@@ -5,6 +5,8 @@
 #include <set>
 #include <iterator>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPEdge;
 template<typename T>
@@ -200,5 +202,7 @@ public:
 //dark magic to initialize static members of a template
 template<typename T>
 unsigned int PBQPGraph<T>::nodeIndexCounter = 0;
+
+}
 
 #endif /* PBQPGRAPH_H_ */

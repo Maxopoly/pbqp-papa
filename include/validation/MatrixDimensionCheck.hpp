@@ -1,12 +1,7 @@
-/*
- * MatrixDimensionCheck.h
- *
- *  Created on: 6 Aug 2018
- *      Author: Max
- */
-
 #ifndef VALIDATION_MATRIXDIMENSIONCHECK_HPP_
 #define VALIDATION_MATRIXDIMENSIONCHECK_HPP_
+
+namespace pbqppapa {
 
 template<typename T>
 class PBQPValidator;
@@ -42,5 +37,7 @@ public:
 		return true;
 	}
 };
+
+}
 
 #endif /* VALIDATION_MATRIXDIMENSIONCHECK_HPP_ */

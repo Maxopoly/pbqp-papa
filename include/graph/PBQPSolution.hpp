@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 
@@ -33,5 +35,7 @@ public:
 		return (*selection)[nodeIndex];
 	}
 };
+
+}
 
 #endif /* GRAPH_PBQPSolution_HPP_ */

@@ -1,6 +1,8 @@
 #ifndef ANALYSIS_GRAPHHANDLER_CPP_
 #define ANALYSIS_GRAPHHANDLER_CPP_
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 
@@ -20,5 +22,7 @@ public:
 
 	virtual ~PBQPHandler();
 };
+
+}
 
 #endif /* ANALYSIS_GRAPHHANDLER_CPP_ */

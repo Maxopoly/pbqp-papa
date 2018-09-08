@@ -1,12 +1,7 @@
-/*
- * PBQPValidator.h
- *
- *  Created on: 6 Aug 2018
- *      Author: Max
- */
-
 #ifndef VALIDATION_PBQPVALIDATOR_HPP_
 #define VALIDATION_PBQPVALIDATOR_HPP_
+
+namespace pbqppapa {
 
 template<typename T>
 class PBQPGraph;
@@ -37,5 +32,7 @@ public:
 	 */
 	virtual bool check() = 0;
 };
+
+}
 
 #endif /* VALIDATION_PBQPVALIDATOR_HPP_ */

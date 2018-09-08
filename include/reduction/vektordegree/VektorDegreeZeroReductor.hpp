@@ -4,6 +4,8 @@
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -50,5 +52,7 @@ public:
 		graph->removeNode(node);
 	}
 };
+
+}
 
 #endif /* REDUCTION_VEKTORDEGREEZEROREDUCTOR_HPP_ */

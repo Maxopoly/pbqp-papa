@@ -3,6 +3,8 @@
 
 #include "graph/Matrix.hpp"
 
+namespace pbqppapa {
+
 template<class T>
 class Matrix;
 
@@ -49,5 +51,7 @@ public:
 		return this->content[index];
 	}
 };
+
+}
 
 #endif /* INCLUDE_GRAPH_VEKTOR_HPP_ */

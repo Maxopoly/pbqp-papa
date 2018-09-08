@@ -6,6 +6,8 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 
+namespace pbqppapa {
+
 //Generates a Kn (n nodes, each connected with each other and themselves)
 PBQPGraph<int>* genGraph(int size) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
@@ -27,3 +29,4 @@ PBQPGraph<int>* genGraph(int size) {
 	return graph;
 }
 
+}

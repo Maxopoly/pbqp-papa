@@ -11,6 +11,8 @@
 
 #include "util/TestUtils.hpp"
 
+namespace pbqppapa {
+
 BOOST_AUTO_TEST_CASE(basicEdgeGeneration) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
 	BOOST_CHECK_EQUAL(graph->getEdgeCount(), 0);
@@ -121,4 +123,6 @@ BOOST_AUTO_TEST_CASE(advancedEdgeRemoval) {
 						!= adjaNodes->end());
 	}
 	delete graph;
+}
+
 }

@@ -1,6 +1,8 @@
 #ifndef ANALYSIS_MINIMALSOLUTIONCHECKER_HPP_
 #define ANALYSIS_MINIMALSOLUTIONCHECKER_HPP_
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -27,5 +29,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* ANALYSIS_MINIMALSOLUTIONCHECKER_HPP_ */

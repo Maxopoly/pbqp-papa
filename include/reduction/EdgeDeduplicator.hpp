@@ -3,6 +3,8 @@
 
 #include "reduction/PBQPReduction.hpp"
 
+namespace pbqppapa {
+
 template<typename T>
 class NodeConsistentReduction;
 template<typename T>
@@ -59,5 +61,7 @@ public:
 		return result;
 	}
 };
+
+}
 
 #endif /* REDUCTION_EDGEDEDUPLICATOR_HPP_ */

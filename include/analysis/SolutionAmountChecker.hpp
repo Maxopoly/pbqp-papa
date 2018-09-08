@@ -1,6 +1,8 @@
 #ifndef ANALYSIS_SOLUTIONAMOUNTCHECKER_HPP_
 #define ANALYSIS_SOLUTIONAMOUNTCHECKER_HPP_
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -31,5 +33,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* ANALYSIS_SOLUTIONAMOUNTCHECKER_HPP_ */

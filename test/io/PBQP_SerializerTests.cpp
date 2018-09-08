@@ -13,6 +13,8 @@
 
 #include "util/TestUtils.hpp"
 
+namespace pbqppapa {
+
 BOOST_AUTO_TEST_CASE(dummyTest) {
 	PBQPGraph<unsigned long int>* graph = new PBQPGraph<unsigned long int>();
 	Vektor<unsigned long int>* vek1 = new Vektor<unsigned long int>(3,
@@ -204,4 +206,6 @@ BOOST_AUTO_TEST_CASE(dummyTest5) {
 
 	PBQPGraph<double>* secondGraph = serial.loadFromFile("testgraph5.json");
 	BOOST_TEST_MESSAGE(secondGraph->getEdgeCount());
+}
+
 }

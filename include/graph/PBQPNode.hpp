@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPEdge;
 template<typename T>
@@ -133,5 +135,7 @@ public:
 				incidentEdges->end());
 	}
 };
+
+}
 
 #endif /* PBQPNODE_H_ */

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace pbqppapa {
+
 template<typename T>
 class NodeConsistentReduction;
 template<typename T>
@@ -43,5 +45,7 @@ public:
 		return solution;
 	}
 };
+
+}
 
 #endif /* REDUCTION_SELFCYCLEREMOVER_HPP_ */

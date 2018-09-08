@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
 
+namespace pbqppapa {
+
 class UnsignedShortIntSerializer: public TypeSerializer<unsigned short int> {
 
 public:
@@ -22,5 +24,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* IO_TYPES_UNSIGNEDSHORTINTSERIALIZER_HPP_ */

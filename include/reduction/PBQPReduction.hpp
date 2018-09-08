@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -54,5 +56,7 @@ public:
 	 */
 	virtual PBQPSolution<T>* solve(PBQPSolution<T>* solution) = 0;
 };
+
+}
 
 #endif /* REDUCTION_PBQPREDUCTION_HPP_ */

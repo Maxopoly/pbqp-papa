@@ -10,6 +10,8 @@
 #include <io/TypeSerializer.hpp>
 #include <io/TypeSerializerFactory.hpp>
 
+namespace pbqppapa {
+
 template<typename T>
 class TypeSerializer;
 template<typename T>
@@ -143,5 +145,7 @@ private:
 	}
 
 };
+
+}
 
 #endif /* IO_PBQP_SERIALIZER_HPP_ */

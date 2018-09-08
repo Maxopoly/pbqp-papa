@@ -1,6 +1,8 @@
 #ifndef IO_TYPESERIALIZER_HPP_
 #define IO_TYPESERIALIZER_HPP_
 
+namespace pbqppapa {
+
 template<typename T>
 class TypeSerializer {
 
@@ -22,5 +24,7 @@ public:
 		return identifier;
 	}
 };
+
+}
 
 #endif /* IO_TYPESERIALIZER_HPP_ */

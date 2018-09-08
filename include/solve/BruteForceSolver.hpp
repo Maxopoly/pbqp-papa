@@ -1,6 +1,8 @@
 #ifndef SOLVE_BRUTEFORCESOLVER_HPP_
 #define SOLVE_BRUTEFORCESOLVER_HPP_
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -208,5 +210,7 @@ private:
 		return -1;
 	}
 };
+
+}
 
 #endif /* SOLVE_BRUTEFORCESOLVER_HPP_ */

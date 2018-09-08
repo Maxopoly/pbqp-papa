@@ -10,6 +10,8 @@
 #include "io/types/FloatSerializer.hpp"
 #include "io/types/DoubleSerializer.hpp"
 
+namespace pbqppapa {
+
 class TypeSerializerFactory {
 
 private:
@@ -30,5 +32,7 @@ public:
 	DoubleSerializer* get(double);
 
 };
+
+}
 
 #endif /* IO_TYPESERIALIZERFACTORY_HPP_ */

@@ -4,6 +4,8 @@
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -110,5 +112,7 @@ private:
 		return sum;
 	}
 };
+
+}
 
 #endif /* REDUCTION_DEGREEONEREDUCTOR_HPP_ */

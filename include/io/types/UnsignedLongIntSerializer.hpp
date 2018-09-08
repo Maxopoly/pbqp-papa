@@ -5,6 +5,8 @@
 #include <string>
 #include <cstdlib>
 
+namespace pbqppapa {
+
 class UnsignedLongIntSerializer: public TypeSerializer<unsigned long int> {
 
 public:
@@ -22,5 +24,7 @@ public:
 		return (unsigned long int) std::strtoul(serialized.c_str(), NULL, 0);
 	}
 };
+
+}
 
 #endif /* IO_TYPES_UNSIGNEDLONGINTSERIALIZER_HPP_ */

@@ -11,6 +11,8 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 
+namespace pbqppapa {
+
 /**
  * Generates a n x n matrix filled with only 1
  */
@@ -164,5 +166,7 @@ BOOST_AUTO_TEST_CASE(matrixTranspose) {
 		delete matrix;
 		delete transposed;
 	}
+}
+
 }
 

@@ -1,6 +1,8 @@
 #ifndef PBQPEdge_H_
 #define PBQPEdge_H_
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPNode;
 template<typename T>
@@ -90,5 +92,7 @@ public:
 		return this == &e;
 	}
 };
+
+}
 
 #endif /* PBQPEdge_H_ */

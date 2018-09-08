@@ -15,6 +15,8 @@
 
 #include "util/TestUtils.hpp"
 
+namespace pbqppapa {
+
 BOOST_AUTO_TEST_CASE(emptyGraphTest) {
 	//make sure this doesnt explode
 	PBQPGraph<int> graph = *new PBQPGraph<int>();
@@ -87,5 +89,7 @@ BOOST_AUTO_TEST_CASE(simpleNumberTest) {
 	BOOST_CHECK_EQUAL(node3->getVektor()->get(1), 7);
 	BOOST_CHECK_EQUAL(node3->getVektor()->get(2), 8);
 	delete graph;
+}
+
 }
 

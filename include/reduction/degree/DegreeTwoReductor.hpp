@@ -5,6 +5,8 @@
 #include <set>
 #include <iterator>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -134,5 +136,7 @@ public:
 		return solution;
 	}
 };
+
+}
 
 #endif /* REDUCTION_DEGREETWOREDUCTOR_HPP_ */

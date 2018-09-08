@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -84,5 +86,7 @@ private:
 		return index;
 	}
 };
+
+}
 
 #endif /* REDUCTION_DEPENDENT_SOLUTION_HPP_ */

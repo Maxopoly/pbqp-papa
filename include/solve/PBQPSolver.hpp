@@ -1,6 +1,8 @@
 #ifndef SOLVE_PBQPSOLVER_HPP_
 #define SOLVE_PBQPSOLVER_HPP_
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 
@@ -40,5 +42,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* SOLVE_PBQPSOLVER_HPP_ */

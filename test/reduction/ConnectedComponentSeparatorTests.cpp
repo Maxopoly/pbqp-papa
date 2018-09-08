@@ -13,6 +13,8 @@
 #include "reduction/ConnectedComponentSeparator.hpp"
 #include "graph/PBQPSolution.hpp"
 
+namespace pbqppapa {
+
 BOOST_AUTO_TEST_CASE(singleNodeTest) {
 	PBQPGraph<int> graph = *(new PBQPGraph<int>());
 	graph.addNode(new Vektor<int>(2, new int[2] { 2, 2 }));
@@ -114,5 +116,7 @@ BOOST_AUTO_TEST_CASE(advancedNodeTest) {
 	for (PBQPGraph<int>* subGraph : components) {
 		delete subGraph;
 	}
+}
+
 }
 

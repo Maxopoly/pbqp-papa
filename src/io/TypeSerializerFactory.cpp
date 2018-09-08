@@ -1,5 +1,7 @@
 #include "io/TypeSerializerFactory.hpp"
 
+namespace pbqppapa {
+
 UnsignedLongIntSerializer* TypeSerializerFactory::get(unsigned long int) {
 	return unsignedLongIntSerializer;
 }
@@ -18,4 +20,6 @@ FloatSerializer* TypeSerializerFactory::get(float) {
 
 DoubleSerializer* TypeSerializerFactory::get(double) {
 	return doubleSerializer;
+}
+
 }

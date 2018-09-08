@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
 
+namespace pbqppapa {
+
 class UnsignedCharSerializer: public TypeSerializer<unsigned char> {
 
 public:
@@ -22,5 +24,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* IO_TYPES_UNSIGNEDCHARSERIALIZER_HPP_ */

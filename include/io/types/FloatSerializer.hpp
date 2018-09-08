@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include "io/TypeSerializer.hpp"
 
+namespace pbqppapa {
+
 class FloatSerializer: public TypeSerializer<float> {
 
 public:
@@ -21,5 +23,7 @@ public:
 	}
 
 };
+
+}
 
 #endif /* IO_TYPES_FLOATSERIALIZER_HPP_ */

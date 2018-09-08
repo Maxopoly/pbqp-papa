@@ -4,6 +4,8 @@
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
 
+namespace pbqppapa {
+
 template<typename T>
 class PBQPGraph;
 template<typename T>
@@ -60,5 +62,7 @@ public:
 		return solution;
 	}
 };
+
+}
 
 #endif /* REDUCTION_VEKTORDEGREE_VEKTORDEGREEONEREDUCTOR_HPP_ */
