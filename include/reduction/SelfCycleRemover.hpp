@@ -6,20 +6,20 @@
 template<typename T>
 class NodeConsistentReduction;
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 
 template<typename T>
 class SelfCycleRemover : public PBQP_Reduction <T>{
 public:
-	SelfCycleRemover(PBQP_Graph<T>* graph) : PBQP_Reduction<T>(graph) {
+	SelfCycleRemover(PBQPGraph<T>* graph) : PBQP_Reduction<T>(graph) {
 	}
 
-	std::vector<PBQP_Graph<T>*>* reduce() override {
+	std::vector<PBQPGraph<T>*>* reduce() override {
 		auto iter = this->graph->getEdgeBegin();
 		while(iter != this->graph->getEdgeEnd()) {
-			PBQP_Edge<T>* edge = *iter;
+			PBQPEdge<T>* edge = *iter;
 			if(edge->getSource() == edge->getTarget()) {
 				//add diagonal of edge matrix to cost vektor and then delete edge
 				for(unsigned short int i = 0; i < edge->getSource()->getVektorDegree(); i++) {
@@ -36,7 +36,7 @@ public:
 		return this->result;
 	}
 
-	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) override {
+	PBQPSolution<T>* solve(PBQPSolution<T>* solution) override {
 		//don't need to do anything
 		return solution;
 	}

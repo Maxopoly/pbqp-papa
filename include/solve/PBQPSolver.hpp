@@ -2,10 +2,10 @@
 #define SOLVE_PBQPSOLVER_HPP_
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 
 template<typename T>
 class PBQPHandler;
@@ -22,16 +22,16 @@ template<typename T>
 class PBQPSolver : PBQPHandler<T>{
 
 protected:
-	PBQP_Solution<T>* const solution;
-	virtual PBQP_Solution<T> solve() = 0;
+	PBQPSolution<T>* const solution;
+	virtual PBQPSolution<T> solve() = 0;
 
 public:
-	PBQPSolver(PBQP_Graph<T>* graph, PBQP_Solution<T>* solution) : PBQPHandler<T>(graph), solution(solution) {
+	PBQPSolver(PBQPGraph<T>* graph, PBQPSolution<T>* solution) : PBQPHandler<T>(graph), solution(solution) {
 	}
 
 	virtual ~PBQPSolver();
 
-	PBQP_Solution<T> getSolution() {
+	PBQPSolution<T> getSolution() {
 		if (graph->getNodeCount() == 0) {
 			return solution;
 		}

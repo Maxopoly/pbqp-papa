@@ -6,10 +6,10 @@
 #include <array>
 #include <stdlib.h>
 
-#include "graph/PBQP_Graph.hpp"
+#include "graph/PBQPGraph.hpp"
 #include "graph/Matrix.hpp"
-#include "graph/PBQP_Node.hpp"
-#include "graph/PBQP_Edge.hpp"
+#include "graph/PBQPNode.hpp"
+#include "graph/PBQPEdge.hpp"
 
 /**
  * Generates a n x n matrix filled with only 1

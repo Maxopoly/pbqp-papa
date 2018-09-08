@@ -1,8 +1,8 @@
-#ifndef PBQP_EDGE_H_
-#define PBQP_EDGE_H_
+#ifndef PBQPEdge_H_
+#define PBQPEdge_H_
 
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 template<typename T>
 class Matrix;
 
@@ -10,11 +10,11 @@ class Matrix;
  * Represents a directed edge in a PBQP, leading from one node to another with an associated cost matrix.
  * The template corresponds to the data type used in the cost matrix */
 template<typename T>
-class PBQP_Edge {
+class PBQPEdge {
 
 private:
-	PBQP_Node<T>* const source;
-	PBQP_Node<T>* const target;
+	PBQPNode<T>* const source;
+	PBQPNode<T>* const target;
 	Matrix<T>* const matrix;
 
 public:
@@ -27,20 +27,20 @@ public:
 	 * of the vektor associated with the source node and the amount of columns
 	 * in the matrix must match the length of the vektor associated with the target node
 	 */
-	PBQP_Edge(PBQP_Node<T>* source, PBQP_Node<T>* target, Matrix<T>* matrix) : source(source), target(target), matrix(matrix) {
+	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, Matrix<T>* matrix) : source(source), target(target), matrix(matrix) {
 	}
 
 	/**
 	 * Deletes only the content matrix, but not any related nodes
 	 */
-	~PBQP_Edge() {
+	~PBQPEdge() {
 		delete matrix;
 	}
 
 	/**
 	 * Checks whether the given node is the source of this edge and returns true in that case
 	 */
-	bool isSource(const PBQP_Node<T>* node) const {
+	bool isSource(const PBQPNode<T>* node) const {
 		return node == source;
 	}
 
@@ -50,7 +50,7 @@ public:
 	 *
 	 * If the given node is not part of this edge, the edges source will be returned
 	 */
-	PBQP_Node<T>* getOtherEnd(const PBQP_Node<T>* node) const{
+	PBQPNode<T>* getOtherEnd(const PBQPNode<T>* node) const{
 		if (node == source) {
 			return target;
 		}
@@ -67,14 +67,14 @@ public:
 	/**
 	 * Gets the source node of this edge. May be identical to the target in case of a cycle
 	 */
-	PBQP_Node<T>* getSource() const{
+	PBQPNode<T>* getSource() const{
 		return source;
 	}
 
 	/**
 	 * Gets the target node of this edge. May be identical to the source in case of a cycle
 	 */
-	PBQP_Node<T>* getTarget() const{
+	PBQPNode<T>* getTarget() const{
 		return target;
 	}
 
@@ -85,9 +85,9 @@ public:
 		return source == target;
 	}
 
-	bool operator==(const PBQP_Node<T>& e) const {
+	bool operator==(const PBQPNode<T>& e) const {
 		return this == &e;
 	}
 };
 
-#endif /* PBQP_EDGE_H_ */
+#endif /* PBQPEdge_H_ */

@@ -5,28 +5,28 @@
 #include <vector>
 #include <set>
 
-#include "graph/PBQP_Graph.hpp"
+#include "graph/PBQPGraph.hpp"
 #include "graph/Vektor.hpp"
-#include "graph/PBQP_Node.hpp"
-#include "graph/PBQP_Edge.hpp"
+#include "graph/PBQPNode.hpp"
+#include "graph/PBQPEdge.hpp"
 #include "reduction/PBQPReduction.hpp"
 #include "reduction/SelfCycleRemover.hpp"
-#include "graph/PBQP_Solution.hpp"
+#include "graph/PBQPSolution.hpp"
 
 #include "util/TestUtils.hpp"
 
 BOOST_AUTO_TEST_CASE(emptyGraphTest) {
 	//make sure this doesnt explode
-	PBQP_Graph<int> graph = *new PBQP_Graph<int>();
+	PBQPGraph<int> graph = *new PBQPGraph<int>();
 	SelfCycleRemover<int> cycleRemover = *new SelfCycleRemover<int>(&graph);
-	std::vector<PBQP_Graph<int>*> result = *(cycleRemover.reduce());
+	std::vector<PBQPGraph<int>*> result = *(cycleRemover.reduce());
 }
 
 BOOST_AUTO_TEST_CASE(simpleKnTest) {
 	int size = 30;
-	PBQP_Graph<int>* graph = genGraph(size);
+	PBQPGraph<int>* graph = genGraph(size);
 	SelfCycleRemover<int> cycleRemover = *new SelfCycleRemover<int>(graph);
-	std::vector<PBQP_Graph<int>*> result = *(cycleRemover.reduce());
+	std::vector<PBQPGraph<int>*> result = *(cycleRemover.reduce());
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	if (graph != result[0]) {
 		delete graph;
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(simpleKnTest) {
 	BOOST_CHECK_EQUAL(graph->getNodeCount(), size);
 	for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 			++iter) {
-		PBQP_Node<int>* node = *iter;
+		PBQPNode<int>* node = *iter;
 		BOOST_CHECK_EQUAL((size - 1) * 2, node->getDegree());
 		BOOST_CHECK_EQUAL(node->getVektor()->get(0), 6);
 		BOOST_CHECK_EQUAL(node->getVektor()->get(1), 10);
@@ -45,13 +45,13 @@ BOOST_AUTO_TEST_CASE(simpleKnTest) {
 }
 
 BOOST_AUTO_TEST_CASE(simpleNumberTest) {
-	PBQP_Graph<int>* graph = new PBQP_Graph<int>();
+	PBQPGraph<int>* graph = new PBQPGraph<int>();
 	Vektor<int>* vek1 = new Vektor<int>(3, new int[3] { 1, 2, 3 });
-	PBQP_Node<int>* node1 = graph->addNode(vek1);
+	PBQPNode<int>* node1 = graph->addNode(vek1);
 	Vektor<int>* vek2 = new Vektor<int>(2, new int[2] { 4, 5 });
-	PBQP_Node<int>* node2 = graph->addNode(vek2);
+	PBQPNode<int>* node2 = graph->addNode(vek2);
 	Vektor<int>* vek3 = new Vektor<int>(3, new int[3] { 6, 7, 8 });
-	PBQP_Node<int>* node3 = graph->addNode(vek3);
+	PBQPNode<int>* node3 = graph->addNode(vek3);
 	//normal edges
 	graph->addEdge(node1, node2, new Matrix<int>(3, 2, new int[6] { 5, 5, 5, 5,
 			5, 5 }));
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(simpleNumberTest) {
 			13, 14, 15, 16, 17 }));
 	graph->addEdge(node2, node2, new Matrix<int>(2, 2, new int[4] { 20, 21, 22, 23}));
 	SelfCycleRemover<int> cycleRemover = *new SelfCycleRemover<int>(graph);
-	std::vector<PBQP_Graph<int>*> result = *(cycleRemover.reduce());
+	std::vector<PBQPGraph<int>*> result = *(cycleRemover.reduce());
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	if (graph != result[0]) {
 		delete graph;

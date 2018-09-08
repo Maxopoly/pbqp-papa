@@ -9,7 +9,7 @@
 #define VALIDATION_PBQPVALIDATOR_HPP_
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 
 /**
  * Checks a certain property of a PBQP to ensure that the PBQP is valid. Being valid doesn't indicate anything about
@@ -23,10 +23,10 @@ class PBQP_Graph;
 template<typename T>
 class PBQPValidator {
 protected:
-	const PBQP_Graph<T>* graph;
+	const PBQPGraph<T>* graph;
 
 public:
-	PBQPValidator(PBQP_Graph<T>*) {
+	PBQPValidator(PBQPGraph<T>*) {
 		this->graph = graph;
 	}
 	virtual ~PBQPValidator();

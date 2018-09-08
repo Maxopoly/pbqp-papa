@@ -11,16 +11,16 @@
 template<typename T>
 class PBQPValidator;
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
-class PBQP_Edge;
+class PBQPEdge;
 
-#include "graph/PBQP_Edge.hpp"
+#include "graph/PBQPEdge.hpp"
 
 template<typename T>
 class MatrixDimensionCheck: public PBQPValidator<T> {
 public:
-	MatrixDimensionCheck(PBQP_Graph<T>* graph) :
+	MatrixDimensionCheck(PBQPGraph<T>* graph) :
 			PBQPValidator<T>(graph) {
 
 	}
@@ -28,7 +28,7 @@ public:
 	~MatrixDimensionCheck();
 
 	bool check() {
-		for (PBQP_Edge<T>* edge : *(graph->getEdges())) {
+		for (PBQPEdge<T>* edge : *(graph->getEdges())) {
 			//TODO Design proper exceptions that are thrown here?
 			if (edge->getSource()->getVektorDegree()
 					!= edge->getMatrix()->getColumnCount()) {

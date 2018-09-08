@@ -2,7 +2,7 @@
 #define ANALYSIS_GRAPHHANDLER_CPP_
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 
 /**
  * Simple parent class for any class operating on a PBQPGraph (of which we have tons)
@@ -11,10 +11,10 @@ template<typename T>
 class PBQPHandler {
 
 protected:
-	PBQP_Graph<T>* const graph;
+	PBQPGraph<T>* const graph;
 
 public:
-	PBQPHandler(PBQP_Graph<T>* graph) : graph(graph) {
+	PBQPHandler(PBQPGraph<T>* graph) : graph(graph) {
 	}
 
 	virtual ~PBQPHandler();

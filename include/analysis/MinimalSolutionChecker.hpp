@@ -2,7 +2,7 @@
 #define ANALYSIS_MINIMALSOLUTIONCHECKER_HPP_
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
 class PBQPHandler;
 
@@ -13,7 +13,7 @@ template<typename T>
 class MinimalSolutionChecker : PBQPHandler<T>{
 
 public:
-	MinimalSolutionChecker(PBQP_Graph<T>* graph) : PBQPHandler<T>(graph) {
+	MinimalSolutionChecker(PBQPGraph<T>* graph) : PBQPHandler<T>(graph) {
 	}
 
 	 ~MinimalSolutionChecker() {

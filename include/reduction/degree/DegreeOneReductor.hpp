@@ -5,13 +5,13 @@
 #include <reduction/PBQPReduction.hpp>
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
 class Dependent_Solution;
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 
 /**
  * Removes nodes of degree one by locally optimizing them and adding their cost to the one other
@@ -23,7 +23,7 @@ private:
 	std::vector<Dependent_Solution<T>*> solutions;
 
 public:
-	DegreeOneReductor(PBQP_Graph<T>*) :
+	DegreeOneReductor(PBQPGraph<T>*) :
 			PBQP_Reduction<T>(graph) {
 		solutions = *new std::vector<Dependent_Solution<T>*>();
 	}
@@ -34,28 +34,28 @@ public:
 		}
 	}
 
-	std::vector<PBQP_Graph*>* reduce() {
-		for (PBQP_Node<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph*>* reduce() {
+		for (PBQPNode<T>* node : *(graph->getNodes())) {
 			if (node->getDegree() == 1) {
 				Dependent_Solution<T>* sol = reduceDegreeOne(node);
 				solutions->push_back(sol);
 			}
 		}
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQP_Node*>(0),
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQPNode*>(0),
 				targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
 		return result;
 	}
 
-	static Dependent_Solution<T>* reduceDegreeOne(PBQP_Node<T>* node,
-			PBQP_Graph<T>* graph) {
+	static Dependent_Solution<T>* reduceDegreeOne(PBQPNode<T>* node,
+			PBQPGraph<T>* graph) {
 		//will explode if node doesnt have an edge
-		PBQP_Edge<T>* edge = (*node->getAdjacentEdges())[0];
-		PBQP_Node<T>* otherEnd = edge->getOtherEnd(node);
-		std::vector<PBQP_Node*> dependencyNodes =
-				*new std::vector<PBQP_Node*>();
-		std::vector<PBQP_Node*> solutionNodes = *new std::vector<PBQP_Node*>();
+		PBQPEdge<T>* edge = (*node->getAdjacentEdges())[0];
+		PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
+		std::vector<PBQPNode*> dependencyNodes =
+				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		dependencyNodes.push_back(otherEnd);
 		solutionNodes.push_back(node);
 		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
@@ -96,14 +96,14 @@ public:
 		return solution;
 	}
 
-	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) {
+	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
 		this->solution->solve(solution);
 		return solution;
 	}
 
 private:
 	static inline T calcSum(unsigned short int sourceSelection,
-			unsigned short int targetSelection, PBQP_Edge<T>* edge) {
+			unsigned short int targetSelection, PBQPEdge<T>* edge) {
 		T sum = new T();
 		sum += edge->getSource()->getVektor()->get(sourceSelection);
 		sum += edge->getTarget()->getVektor()->get(targetSelection);

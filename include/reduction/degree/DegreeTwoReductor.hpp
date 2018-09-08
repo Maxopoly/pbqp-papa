@@ -6,15 +6,15 @@
 #include <iterator>
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
-class PBQP_Edge;
+class PBQPEdge;
 template<typename T>
 class Dependent_Solution;
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 template<typename T>
 class PBQP_Reduction;
 
@@ -24,7 +24,7 @@ private:
 	std::vector<Dependent_Solution<T>*> solutions;
 
 public:
-	DegreeTwoReductor(PBQP_Graph<T>* graph) :
+	DegreeTwoReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 		solutions = *new std::vector<Dependent_Solution<T>*>();
 	}
@@ -35,21 +35,21 @@ public:
 		}
 	}
 
-	std::vector<PBQP_Graph*>* reduce() {
-		for (PBQP_Node<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph*>* reduce() {
+		for (PBQPNode<T>* node : *(graph->getNodes())) {
 			if (node->getDegree() == 2) {
 				Dependent_Solution<T>* sol = reduceDegreeTwo(node);
 				solutions->push_back(sol);
 			}
 		}
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQP_Node*>(0),
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(new std::vector<PBQPNode*>(0),
 				targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
 		return result;
 	}
 
-	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) {
+	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
 		this->solution->solve(solution);
 		return solution;
 	}
@@ -59,20 +59,20 @@ public:
 	 * an ideal selection in the given node is calculated, which is then transformed into
 	 * a single edge connecting the nodes adjacent to the given node
 	 */
-	static Dependent_Solution<T>* reduceDegreeTwo(PBQP_Node<T>* node,
-			PBQP_Graph<T>* graph) {
-		std::vector<PBQP_Node*> dependencyNodes =
-				*new std::vector<PBQP_Node*>();
-		std::set<PBQP_Edge*>::iterator it = graph->getEdges()->begin();
-		PBQP_Edge<T>* firstEdge = *it;
-		PBQP_Node<T>* firstNode = firstEdge->getOtherEnd(node);
-		PBQP_Edge<T>* secondEdge = *it;
-		PBQP_Node<T>* secondNode = firstEdge->getOtherEnd(node);
+	static Dependent_Solution<T>* reduceDegreeTwo(PBQPNode<T>* node,
+			PBQPGraph<T>* graph) {
+		std::vector<PBQPNode*> dependencyNodes =
+				*new std::vector<PBQPNode*>();
+		std::set<PBQPEdge*>::iterator it = graph->getEdges()->begin();
+		PBQPEdge<T>* firstEdge = *it;
+		PBQPNode<T>* firstNode = firstEdge->getOtherEnd(node);
+		PBQPEdge<T>* secondEdge = *it;
+		PBQPNode<T>* secondNode = firstEdge->getOtherEnd(node);
 		dependencyNodes.push_back(firstNode);
 		dependencyNodes.push_back(secondNode);
 		bool isFirstSource = firstEdge->isSource(firstNode);
 		bool isSecondSource = secondEdge->isSource(secondNode);
-		std::vector<PBQP_Node*> solutionNodes = *new std::vector<PBQP_Node*>();
+		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		solutionNodes.push_back(node);
 		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
 				dependencyNodes, solutionNodes);

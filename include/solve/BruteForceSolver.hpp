@@ -2,13 +2,13 @@
 #define SOLVE_BRUTEFORCESOLVER_HPP_
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 template<typename T>
 class PBQPSolver;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 
 /**
  * Tries every possible combination to calculate a perfect solution
@@ -58,7 +58,7 @@ private:
 	 * This array contains all nodes in the graph and the position within this array
 	 * implicitly gives the node associated with it a number in [0, sizeofGraph)
 	 */
-	PBQP_Node<T>* nodes[];
+	PBQPNode<T>* nodes[];
 	/**
 	 * The vektor degree of each node, subtracted by 1. Indexing is the same as in the nodes array
 	 */
@@ -80,12 +80,12 @@ private:
 	unsigned int nodeLastUpdated;
 
 public:
-	BruteForceSolver(PBQP_Graph<T>* graph, PBQP_Solution<T>* solution) :
+	BruteForceSolver(PBQPGraph<T>* graph, PBQPSolution<T>* solution) :
 			PBQPSolver<T>(graph, solution), currentSelection(
 					new unsigned short int[graph->getNodeIndexCounter()]), minimalSelection(
 					new unsigned short int[graph->getNodeIndexCounter()]), size(
 					graph->getNodeIndexCounter()), nodes(
-					new PBQP_Node<T>*[graph->getNodeCount()]), limits(
+					new PBQPNode<T>*[graph->getNodeCount()]), limits(
 					new unsigned int[graph->getNodeCount()]), trend(
 					new bool[graph->getNodeCount()]) {
 		//init both solution and starting point to all 0
@@ -95,7 +95,7 @@ public:
 		//TODO Speed this up by completly copying the nodes to reduce the amount of reference lookup neccessary later on?
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
-			PBQP_Node<T>* node = *iter;
+			PBQPNode<T>* node = *iter;
 			nodes[index] = node;
 			limits[index++] = node->getVektorDegree() - 1;
 		}
@@ -105,7 +105,7 @@ public:
 	~BruteForceSolver() {
 	}
 
-	PBQP_Solution<T> solve() {
+	PBQPSolution<T> solve() {
 		unsigned long long int solutionsCheckedSoFar = 0;
 		minimalCost = calculateNewSolution();
 		previous = minimalCost;
@@ -129,14 +129,14 @@ private:
 	 */
 	T calculateDiffSolution() {
 		T sum = *new T();
-		PBQP_Node<T>* nodeChanged = nodes[nodeLastUpdated];
+		PBQPNode<T>* nodeChanged = nodes[nodeLastUpdated];
 		unsigned short int currentNodeSelection =
 				currentSelection[nodeChanged->getIndex()];
 		unsigned short int previousNodeSelection = currentNodeSelection - 1;
 		if (previousNodeSelection < 0) {
 			previousNodeSelection = nodeChanged->getVektorDegree() - 1;
 		}
-		for (PBQP_Edge<T>* edge : nodeChanged->getAdjacentEdges(false)) {
+		for (PBQPEdge<T>* edge : nodeChanged->getAdjacentEdges(false)) {
 			sum += edge->getMatrix()->get(
 					currentSelection[edge->getSource()->getIndex()],
 					currentSelection[edge->getTarget()->getIndex()]);
@@ -165,12 +165,12 @@ private:
 	 */
 	T calculateNewSolution() {
 		T sum = new T();
-		for (PBQP_Edge<T>* edge : graph->getEdges()) {
+		for (PBQPEdge<T>* edge : graph->getEdges()) {
 			sum += edge->getMatrix()->get(
 					currentSelection[edge->getSource()->getIndex()],
 					currentSelection[edge->getTarget()->getIndex()]);
 		}
-		for (PBQP_Node<T>* node : graph->getNodes()) {
+		for (PBQPNode<T>* node : graph->getNodes()) {
 			sum += node->getVektor()->get(currentSelection[node->getIndex()]);
 		}
 		return sum;

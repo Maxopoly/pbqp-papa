@@ -6,35 +6,35 @@
 template<typename T>
 class NodeConsistentReduction;
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 
 template<typename T>
 class EdgeDeduplicator: public NodeConsistentReduction<T> {
 public:
 
-	EdgeDeduplicator(PBQP_Graph<T>* graph) :
+	EdgeDeduplicator(PBQPGraph<T>* graph) :
 			NodeConsistentReduction<T>(graph) {
 	}
 
 	~EdgeDeduplicator() {
 	}
 
-	std::vector<PBQP_Graph<T>*>* reduce() {
-		for (PBQP_Node<T>* node : *graph->getNodes()) {
+	std::vector<PBQPGraph<T>*>* reduce() {
+		for (PBQPNode<T>* node : *graph->getNodes()) {
 			//sort edges into a map where the adjacent node is the key. If we find an edge which already has entry for its node, we found a duplicate
-			std::map<PBQP_Node<T>*, PBQP_Edge<T>*>* adjacencyMap = new std::map<
-					PBQP_Node<T>*, PBQP_Edge<T>*>();
-			std::vector<PBQP_Edge<T>*>* edges = node->getAdjacentEdges(false);
+			std::map<PBQPNode<T>*, PBQPEdge<T>*>* adjacencyMap = new std::map<
+					PBQPNode<T>*, PBQPEdge<T>*>();
+			std::vector<PBQPEdge<T>*>* edges = node->getAdjacentEdges(false);
 			for (int i = 0; i < node->getDegree(); i++) {
-				PBQP_Edge<T>* edge = (*edges)[i];
-				PBQP_Node<T>* otherEnd = edge->getOtherEnd(node);
+				PBQPEdge<T>* edge = (*edges)[i];
+				PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
 				auto search = adjacencyMap->find(otherEnd);
 				if (search != adjacencyMap->end()) {
 					//entry for this node already exists, meaning we already found an edge connecting to it before
-					PBQP_Edge<T>* existingEdge =
-							(PBQP_Edge<T>*) (search->second);
+					PBQPEdge<T>* existingEdge =
+							(PBQPEdge<T>*) (search->second);
 					//check direction to determine addition method
 					if (existingEdge->getSource() == edge->getSource()) {
 						//facing same direction
@@ -50,7 +50,7 @@ public:
 				} else {
 					//node not previously known, so insert it
 					adjacencyMap->insert(
-							std::pair<PBQP_Node<T>*, PBQP_Edge<T>*>(otherEnd,
+							std::pair<PBQPNode<T>*, PBQPEdge<T>*>(otherEnd,
 									edge));
 				}
 			}

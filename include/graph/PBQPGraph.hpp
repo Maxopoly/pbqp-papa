@@ -6,9 +6,9 @@
 #include <iterator>
 
 template<typename T>
-class PBQP_Edge;
+class PBQPEdge;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 template<typename T>
 class Matrix;
 template<typename T>
@@ -19,31 +19,31 @@ class Vektor;
  * and cost matrices. It is consistent throughout the entire graph; all edges and all nodes.
  */
 template<typename T>
-class PBQP_Graph {
+class PBQPGraph {
 private:
 	static unsigned int nodeIndexCounter;
 	unsigned int localIndexStart;
-	std::set<PBQP_Node<T>*>* const nodes = new std::set<PBQP_Node<T>*>();
-	std::set<PBQP_Edge<T>*>* const edges = new std::set<PBQP_Edge<T>*>();
+	std::set<PBQPNode<T>*>* const nodes = new std::set<PBQPNode<T>*>();
+	std::set<PBQPEdge<T>*>* const edges = new std::set<PBQPEdge<T>*>();
 
 public:
 
 	/**
 	 * Create a new empty graph with no nodes
 	 */
-	PBQP_Graph() {
-		localIndexStart = PBQP_Graph::nodeIndexCounter;
+	PBQPGraph() {
+		localIndexStart = PBQPGraph::nodeIndexCounter;
 	}
 
 	/**
 	 * Deletes all nodes and edges contained within the graph
 	 */
-	~PBQP_Graph() {
-		for (PBQP_Edge<T>* edge : *edges) {
+	~PBQPGraph() {
+		for (PBQPEdge<T>* edge : *edges) {
 			delete edge;
 		}
 		delete edges;
-		for (PBQP_Node<T>* node : *nodes) {
+		for (PBQPNode<T>* node : *nodes) {
 			delete node;
 		}
 		delete nodes;
@@ -53,8 +53,8 @@ public:
 	 * Creates a new node with the given cost vektor and adds it to the graph.
 	 * The new node will not have any edges initially
 	 */
-	PBQP_Node<T>* addNode(Vektor<T>* vektor) {
-		PBQP_Node<T>* node = new PBQP_Node<T>(PBQP_Graph::nodeIndexCounter++, vektor);
+	PBQPNode<T>* addNode(Vektor<T>* vektor) {
+		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++, vektor);
 		nodes->insert(node);
 		return node;
 	}
@@ -63,7 +63,7 @@ public:
 	 * Directly inserts a preexisting node. No checks are done on the internal state of the node or
 	 * its possibly referenced edges. The user must ensure that this is handled properly
 	 */
-	void addNode(PBQP_Node<T>* node) {
+	void addNode(PBQPNode<T>* node) {
 		nodes->insert(node);
 	}
 
@@ -71,7 +71,7 @@ public:
 	 * Directly inserts a preexisting edge. No checks are done on the internal state of the edge or
 	 * whether the nodes incident to it are even in the graph. The user must ensure that this is handled properly
 	 */
-	void addEdge(PBQP_Edge<T>* edge) {
+	void addEdge(PBQPEdge<T>* edge) {
 		edges->insert(edge);
 	}
 
@@ -80,9 +80,9 @@ public:
 	 * edges source, the second one its target and the given matrix is the cost matrix that
 	 * will be associated with the created edge
 	 */
-	PBQP_Edge<T>* addEdge(PBQP_Node<T>* source, PBQP_Node<T>* target,
+	PBQPEdge<T>* addEdge(PBQPNode<T>* source, PBQPNode<T>* target,
 			Matrix<T>* matrix) {
-		PBQP_Edge<T>* edge = new PBQP_Edge<T>(source, target, matrix);
+		PBQPEdge<T>* edge = new PBQPEdge<T>(source, target, matrix);
 		edges->insert(edge);
 		source->addEdge(edge);
 		if (source != target) {
@@ -102,8 +102,8 @@ public:
 	 * the edge references of the nodes. Ensuring consistency and something that makes sense
 	 * is up to the user when setting cleanUp to false
 	 */
-	void removeNode(PBQP_Node<T>* node, bool cleanUp = true) {
-		for (PBQP_Edge<T>* edge : *(node->getAdjacentEdges(false))) {
+	void removeNode(PBQPNode<T>* node, bool cleanUp = true) {
+		for (PBQPEdge<T>* edge : *(node->getAdjacentEdges(false))) {
 			edges->erase(edge);
 			if (cleanUp) {
 				edge->getOtherEnd(node)->removeEdge(edge);
@@ -120,7 +120,7 @@ public:
 	 * Removes the given edge from the graph and deletes it.
 	 * The edge is deleted from adjacent nodes as well, but the adjacent nodes stay in the graph
 	 */
-	void removeEdge(PBQP_Edge<T>* edge) {
+	void removeEdge(PBQPEdge<T>* edge) {
 		edges->erase(edge);
 		edge->getSource()->removeEdge(edge);
 		edge->getTarget()->removeEdge(edge);
@@ -132,7 +132,7 @@ public:
 	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
 	 * to is removed
 	 */
-	typename std::set<PBQP_Node<T>*>::iterator getNodeBegin() const {
+	typename std::set<PBQPNode<T>*>::iterator getNodeBegin() const {
 		return nodes->begin();
 	}
 
@@ -141,7 +141,7 @@ public:
 	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
 	 * to is removed
 	 */
-	typename std::set<PBQP_Node<T>*>::iterator getNodeEnd() const {
+	typename std::set<PBQPNode<T>*>::iterator getNodeEnd() const {
 		return nodes->end();
 	}
 
@@ -150,7 +150,7 @@ public:
 	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
 	 * to is removed
 	 */
-	typename std::set<PBQP_Edge<T>*>::iterator getEdgeBegin() const {
+	typename std::set<PBQPEdge<T>*>::iterator getEdgeBegin() const {
 		return edges->begin();
 	}
 
@@ -159,7 +159,7 @@ public:
 	 * this iterator stays valid throughout insert() and only gets invalidated if the element its pointing
 	 * to is removed
 	 */
-	typename std::set<PBQP_Edge<T>*>::iterator getEdgeEnd() const {
+	typename std::set<PBQPEdge<T>*>::iterator getEdgeEnd() const {
 		return edges->end();
 	}
 
@@ -198,6 +198,6 @@ public:
 
 //dark magic to initialize static members of a template
 template<typename T>
-unsigned int PBQP_Graph<T>::nodeIndexCounter = 0;
+unsigned int PBQPGraph<T>::nodeIndexCounter = 0;
 
 #endif /* PBQPGRAPH_H_ */

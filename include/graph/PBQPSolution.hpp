@@ -1,23 +1,23 @@
-#ifndef GRAPH_PBQP_SOLUTION_HPP_
-#define GRAPH_PBQP_SOLUTION_HPP_
+#ifndef GRAPH_PBQPSolution_HPP_
+#define GRAPH_PBQPSolution_HPP_
 
 #include <vector>
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 
 template<typename T>
-class PBQP_Solution {
+class PBQPSolution {
 private:
 	//TODO How do we represent positions that are not decided yet?
 	std::vector<unsigned short int>* selection;
 
 public:
-	PBQP_Solution(int length) {
+	PBQPSolution(int length) {
 		selection = new std::vector<unsigned short int>(length);
 	}
 
-	~PBQP_Solution() {
+	~PBQPSolution() {
 
 	}
 	double calculateKnownCost() {
@@ -34,4 +34,4 @@ public:
 	}
 };
 
-#endif /* GRAPH_PBQP_SOLUTION_HPP_ */
+#endif /* GRAPH_PBQPSolution_HPP_ */

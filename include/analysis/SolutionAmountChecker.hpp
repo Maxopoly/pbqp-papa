@@ -2,11 +2,11 @@
 #define ANALYSIS_SOLUTIONAMOUNTCHECKER_HPP_
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
 class PBQPHandler;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 
 /**
  * Calculates how many different solution selection are theoretically possible
@@ -15,7 +15,7 @@ template<typename T>
 class SolutionAmountChecker: PBQPHandler<T> {
 
 public:
-	SolutionAmountChecker(PBQP_Graph<T>* graph) :
+	SolutionAmountChecker(PBQPGraph<T>* graph) :
 			PBQPHandler<T>(graph) {
 	}
 
@@ -24,7 +24,7 @@ public:
 
 	unsigned long long int getSolutionAmount() {
 		unsigned long long int amount = 1;
-		for (PBQP_Node<T>* node : graph->getNodes()) {
+		for (PBQPNode<T>* node : graph->getNodes()) {
 			amount *= node->getVektorDegree();
 		}
 		return amount;

@@ -13,7 +13,7 @@
 template<typename T>
 class TypeSerializer;
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 
 template<typename T>
 class PBQP_Serializer {
@@ -23,14 +23,14 @@ private:
 
 public:
 
-	void saveToFile(std::string path, PBQP_Graph<T>* graph) {
+	void saveToFile(std::string path, PBQPGraph<T>* graph) {
 		std::ofstream out(path);
 		TypeSerializer<T>* serializer = serializerFactory.get(T());
 		nlohmann::json json = graphToJson(graph, serializer);
 		out << json << std::endl;
 	}
 
-	PBQP_Graph<T>* loadFromFile(std::string path) {
+	PBQPGraph<T>* loadFromFile(std::string path) {
 		std::ifstream in(path);
 		TypeSerializer<T>* serializer = serializerFactory.get(T());
 		nlohmann::json json;
@@ -40,7 +40,7 @@ public:
 
 private:
 
-	PBQP_Graph<T>* jsonToGraph(nlohmann::json json, TypeSerializer<T>* serializer) {
+	PBQPGraph<T>* jsonToGraph(nlohmann::json json, TypeSerializer<T>* serializer) {
 		nlohmann::json metaJson = json ["meta"];
 		std::string parsedType = metaJson["type"];
 		if (parsedType.compare(std::string(serializer->getIdentifier())) != 0) {
@@ -48,21 +48,21 @@ private:
 			std::cout << "Invalid type loading";
 			return NULL;
 		}
-		PBQP_Graph<T>* graph = new PBQP_Graph<T>();
-		std::map<unsigned int, PBQP_Node<T>*> nodeByIndex = std::map<unsigned int, PBQP_Node<T>*>();
+		PBQPGraph<T>* graph = new PBQPGraph<T>();
+		std::map<unsigned int, PBQPNode<T>*> nodeByIndex = std::map<unsigned int, PBQPNode<T>*>();
 		nlohmann::json nodeJson = json ["nodes"];
 		for(nlohmann::json singleNodeJson : nodeJson) {
 			unsigned int index = singleNodeJson ["index"];
 			Vektor<T>* vek = parseVektor(singleNodeJson ["cost"], serializer);
-			PBQP_Node<T>* node = new PBQP_Node<T>(index, vek);
+			PBQPNode<T>* node = new PBQPNode<T>(index, vek);
 			graph->addNode(node);
 			nodeByIndex.insert(std::make_pair(index, node));
 		}
 		nlohmann::json edgeJson = json ["edges"];
 		for(nlohmann::json singleEdgeJson : edgeJson) {
 			Matrix<T>* mat = parseMatrix(singleEdgeJson, serializer);
-			PBQP_Node<T>* source = nodeByIndex.find(singleEdgeJson ["source"])->second ;
-			PBQP_Node<T>* target = nodeByIndex.find(singleEdgeJson ["target"])->second ;
+			PBQPNode<T>* source = nodeByIndex.find(singleEdgeJson ["source"])->second ;
+			PBQPNode<T>* target = nodeByIndex.find(singleEdgeJson ["target"])->second ;
 			graph->addEdge(source, target, mat);
 		}
 		return graph;
@@ -87,7 +87,7 @@ private:
 		return mat;
 	}
 
-	nlohmann::json graphToJson(PBQP_Graph<T>* graph,
+	nlohmann::json graphToJson(PBQPGraph<T>* graph,
 			TypeSerializer<T>* serializer) {
 		nlohmann::json json;
 		json["meta"] = serializeMeta(graph, serializer);
@@ -95,7 +95,7 @@ private:
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
 			nlohmann::json nodeJson;
-			PBQP_Node<T>* node = *iter;
+			PBQPNode<T>* node = *iter;
 			nodeJson ["index"] = node->getIndex();
 			nlohmann::json costVector = nlohmann::json::array();
 			for (unsigned short int i = 0; i < node->getVektorDegree(); i++) {
@@ -109,7 +109,7 @@ private:
 		nlohmann::json edgeJsons = nlohmann::json::array();
 		for (auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd();
 				iter++) {
-			PBQP_Edge<T>* edge = *iter;
+			PBQPEdge<T>* edge = *iter;
 			nlohmann::json edgeJson;
 			edgeJson["source"] = edge->getSource()->getIndex();
 			edgeJson["target"] = edge->getTarget()->getIndex();
@@ -128,7 +128,7 @@ private:
 		return json;
 	}
 
-	nlohmann::json serializeMeta(PBQP_Graph<T>* graph, TypeSerializer<T>* serializer) {
+	nlohmann::json serializeMeta(PBQPGraph<T>* graph, TypeSerializer<T>* serializer) {
 		nlohmann::json json;
 		json["version"] = 1;
 		json["nodeCount"] = graph->getNodeCount();

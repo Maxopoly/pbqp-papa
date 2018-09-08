@@ -4,9 +4,9 @@
 #include <vector>
 
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 
 /**
  * Stores the solution of a set of nodes A dependent on the solution of another set of nodes B
@@ -26,7 +26,7 @@ private:
 	unsigned short int* solutions;
 
 public:
-	Dependent_Solution(std::vector<PBQP_Node<T>*>* dependencyNodes, std::vector<PBQP_Node<T>*>* solutionNodes) {
+	Dependent_Solution(std::vector<PBQPNode<T>*>* dependencyNodes, std::vector<PBQPNode<T>*>* solutionNodes) {
 		dependencyIndices = new std::vector<int>(dependencyNodes->size());
 		dependencyDegrees = new std::vector<int>(dependencyNodes->size());
 		int degreeProduct = 1;
@@ -56,7 +56,7 @@ public:
 		std::copy(solutionSelection->begin(), solutionSelection->end(), solutions + index);
 	}
 
-	void solve(PBQP_Solution<T>* solution) {
+	void solve(PBQPSolution<T>* solution) {
 		std::vector<unsigned short int>* dependencySolution = new std::vector<unsigned short int>(
 				dependencyIndices->size());
 		for (unsigned int dependencyId : *dependencyIndices) {

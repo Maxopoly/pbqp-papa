@@ -6,40 +6,40 @@
 //#include "graph/Matrix.hpp"
 
 template<typename T>
-class PBQP_Edge;
+class PBQPEdge;
 template<typename T>
 class Vektor;
 
 template<typename T>
-class PBQP_Node {
+class PBQPNode {
 private:
 	Vektor<T>* const values;
-	std::vector<PBQP_Edge<T>*>* const incidentEdges = new std::vector<PBQP_Edge<T>*>();
+	std::vector<PBQPEdge<T>*>* const incidentEdges = new std::vector<PBQPEdge<T>*>();
 	unsigned const int index;
 
 public:
 	/**
-	 * Should only be used by PBQP_Graph internally. Index counter is held by PBQP_Graph instance
+	 * Should only be used by PBQPGraph internally. Index counter is held by PBQPGraph instance
 	 */
-	PBQP_Node(unsigned const int index, Vektor<T>* const values) : values(values), index(index) {
+	PBQPNode(unsigned const int index, Vektor<T>* const values) : values(values), index(index) {
 	}
 
 	/**
-	 * Deletes only this node and its cost vektor. Cleanup of edges must be done by a higher level (usually PBQP_Graph)
+	 * Deletes only this node and its cost vektor. Cleanup of edges must be done by a higher level (usually PBQPGraph)
 	 */
-	~PBQP_Node() {
+	~PBQPNode() {
 		delete values;
 		delete incidentEdges;
 	}
 
 	//TODO make proper iterators here
-	std::vector<PBQP_Edge<T>*>* getAdjacentEdges(const bool respectDirection = false) const {
+	std::vector<PBQPEdge<T>*>* getAdjacentEdges(const bool respectDirection = false) const {
 		if (!respectDirection) {
 			return incidentEdges;
 		}
-		std::vector<PBQP_Edge<T>*>* outgoingEdges = new std::vector<PBQP_Edge<T>*>();
+		std::vector<PBQPEdge<T>*>* outgoingEdges = new std::vector<PBQPEdge<T>*>();
 		//TODO Should we maybe just store this explicitly? Check back later how often we actually have to recompute this vector
-		for (PBQP_Edge<T>* edge : *incidentEdges) {
+		for (PBQPEdge<T>* edge : *incidentEdges) {
 			if (edge->isSource(this)) {
 				outgoingEdges->push_back(edge);
 			}
@@ -47,21 +47,21 @@ public:
 		return outgoingEdges;
 	}
 
-	std::vector<PBQP_Node<T>*>* getAdjacentNodes(const bool respectDirection = false) const {
+	std::vector<PBQPNode<T>*>* getAdjacentNodes(const bool respectDirection = false) const {
 		//TODO Same as in the adjacent edge function, maybe we should just store all of this explictly to save computation time?
 		//separate loops so we only check respectDirection once, instead of during every loop iteration
-		std::set <PBQP_Node<T>*>* resultSet = new std::set <PBQP_Node<T>*>();
-		std::vector <PBQP_Node<T>*>* nodes = new std::vector <PBQP_Node<T>*>();
+		std::set <PBQPNode<T>*>* resultSet = new std::set <PBQPNode<T>*>();
+		std::vector <PBQPNode<T>*>* nodes = new std::vector <PBQPNode<T>*>();
 		if (respectDirection) {
-			for (PBQP_Edge<T>* edge : *incidentEdges) {
-				PBQP_Node<T>* other = edge->getOtherEnd(this);
+			for (PBQPEdge<T>* edge : *incidentEdges) {
+				PBQPNode<T>* other = edge->getOtherEnd(this);
 				if (edge->isSource(this) && resultSet->insert(other).second) {
 					nodes->push_back(other);
 				}
 			}
 		} else {
-			for (PBQP_Edge<T>* edge : *incidentEdges) {
-				PBQP_Node<T>* other = edge->getOtherEnd(this);
+			for (PBQPEdge<T>* edge : *incidentEdges) {
+				PBQPNode<T>* other = edge->getOtherEnd(this);
 				if(resultSet->insert(other).second) {
 					nodes->push_back(other);
 				}
@@ -101,28 +101,28 @@ public:
 	/**
 	 * Compares based on index, needed so we can sort nodes into maps
 	 */
-	bool operator< (const PBQP_Node<T>& e) const {
+	bool operator< (const PBQPNode<T>& e) const {
 		return this->index < e.index;
 	}
 
 	/**
 	 * Compares based on index,
 	 */
-	bool operator==(const PBQP_Node<T>& e) const {
+	bool operator==(const PBQPNode<T>& e) const {
 		return this->index == e.index;
 	}
 
 	/**
-	 * Should only be used by PBQP_Graph internally.
+	 * Should only be used by PBQPGraph internally.
 	 */
-	void addEdge(PBQP_Edge<T>* edge) {
+	void addEdge(PBQPEdge<T>* edge) {
 		incidentEdges->push_back(edge);
 	}
 
 	/**
-	 * Should only be used by PBQP_Graph internally.
+	 * Should only be used by PBQPGraph internally.
 	 */
-	void removeEdge(PBQP_Edge<T>* edge) {
+	void removeEdge(PBQPEdge<T>* edge) {
 		//Erase�remove idiom
 		incidentEdges->erase(
 				std::remove(incidentEdges->begin(), incidentEdges->end(), edge),

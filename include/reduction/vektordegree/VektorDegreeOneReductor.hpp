@@ -5,13 +5,13 @@
 #include <reduction/PBQPReduction.hpp>
 
 template<typename T>
-class PBQP_Graph;
+class PBQPGraph;
 template<typename T>
 class Dependent_Solution;
 template<typename T>
-class PBQP_Solution;
+class PBQPSolution;
 template<typename T>
-class PBQP_Node;
+class PBQPNode;
 
 /**
  * Any nodes with a vektor degree of 0 can be deleted from the graph. No selection needs to be made for them
@@ -22,7 +22,7 @@ private:
 	std::vector<unsigned int> nodes;
 
 public:
-	VektorDegreeOneReductor(PBQP_Graph<T>* graph) :
+	VektorDegreeOneReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 		nodes = *new std::vector<int>();
 	}
@@ -30,11 +30,11 @@ public:
 	~VektorDegreeOneReductor() {
 	}
 
-	std::vector<PBQP_Graph*>* reduce() {
-		std::vector<PBQP_Node*> dependencyNodes =
-				*new std::vector<PBQP_Node*>();
-		std::vector<PBQP_Node*> solutionNodes = *new std::vector<PBQP_Node*>();
-		for (PBQP_Node<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph*>* reduce() {
+		std::vector<PBQPNode*> dependencyNodes =
+				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
+		for (PBQPNode<T>* node : *(graph->getNodes())) {
 			if (node->getVektorDegree() == 1) {
 				solutionNodes.push_back(node);
 			}
@@ -43,15 +43,15 @@ public:
 		return result;
 	}
 
-	PBQP_Solution<T>* solve(PBQP_Solution<T>* solution) {
+	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
 		return solution;
 	}
 
-	static DependentSolution reduceVektorDegreeOne(PBQP_Node<T>* node,
-			PBQP_Graph<T>* graph) {
-		std::vector<PBQP_Node*> dependencyNodes =
-				*new std::vector<PBQP_Node*>();
-		std::vector<PBQP_Node*> solutionNodes = *new std::vector<PBQP_Node*>();
+	static DependentSolution reduceVektorDegreeOne(PBQPNode<T>* node,
+			PBQPGraph<T>* graph) {
+		std::vector<PBQPNode*> dependencyNodes =
+				*new std::vector<PBQPNode*>();
+		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		solutionNodes.push_back(node);
 		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
 				dependencyNodes, solutionNodes);
