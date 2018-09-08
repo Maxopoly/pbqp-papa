@@ -68,7 +68,7 @@ $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
 #Compile tests
 $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
 	@echo "Compiling: $< -> $@"
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework
 	
 # Source file rules
 # After the first compilation they will be joined with the rules from the

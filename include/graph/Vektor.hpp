@@ -23,6 +23,13 @@ public:
 	}
 
 	/**
+	 * Creates a new vektor with uninitialized content
+	 */
+	Vektor<T>(unsigned short int length) :
+				Matrix<T>(length, 1) {
+	}
+
+	/**
 	 * Gets the index (row number) of the smallest element within the vektor.
 	 * Will encounter undefined behavior if the vektor is of length 0.
 	 */
