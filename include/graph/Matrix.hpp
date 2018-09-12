@@ -13,7 +13,7 @@ class Matrix {
 protected:
 	const unsigned short int rows;
 	const unsigned short int columns;
-	T* const content;
+	T* content;
 
 public:
 	/**
@@ -26,7 +26,8 @@ public:
 	 *
 	 */
 	Matrix(unsigned short int rows, unsigned short int columns, T* data) :
-			rows(rows), columns(columns), content(data) {
+			rows(rows), columns(columns), content(new T[rows * columns]) {
+		memcpy(data, content, rows * columns * sizeof(T));
 	}
 
 	/**
@@ -38,12 +39,12 @@ public:
 
 	Matrix(const Matrix<T>& matrix) :
 			rows(matrix.rows), columns(matrix.columns), content(
-					new T[rows * columns]) {
+					new T [rows * columns]) {
 		memcpy(matrix.content, content, rows * columns * sizeof(T));
 	}
 
 	~Matrix() {
-		delete[] content;
+		delete content;
 	}
 
 	/**

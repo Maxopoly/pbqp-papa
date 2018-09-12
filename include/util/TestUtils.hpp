@@ -12,7 +12,8 @@ namespace pbqppapa {
 PBQPGraph<int>* genGraph(int size) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
 	for (int i = 1; i <= size; i++) {
-		Vektor<int>* vektor = new Vektor<int>(2, new int[2] { 3, 2 });
+		int vektorCost [] = { 3, 2 };
+		Vektor<int> vektor = Vektor<int>(2, vektorCost);
 		graph->addNode(vektor);
 	}
 	for (std::set<PBQPNode<int>*>::iterator it = graph->getNodeBegin();
@@ -21,8 +22,9 @@ PBQPGraph<int>* genGraph(int size) {
 		for (std::set<PBQPNode<int>*>::iterator it2 = graph->getNodeBegin();
 				it2 != graph->getNodeEnd(); it2++) {
 			PBQPNode<int>* node2 = *it2;
-			Matrix<int>* matrix = new Matrix<int>(2, 2,
-					new int[4] { 3, 2, 5, 8 });
+			int matrixCost [] = { 3, 2, 5, 8 };
+			Matrix<int> matrix = Matrix<int>(2, 2,
+					matrixCost);
 			graph->addEdge(node1, node2, matrix);
 		}
 	}
