@@ -1,5 +1,5 @@
-#ifndef REDUCTION_DEPENDENT_SOLUTION_HPP_
-#define REDUCTION_DEPENDENT_SOLUTION_HPP_
+#ifndef REDUCTION_DependentSolution_HPP_
+#define REDUCTION_DependentSolution_HPP_
 
 #include <vector>
 
@@ -20,7 +20,7 @@ class PBQPNode;
  * a solution for B once A (which is part of the remaining graph) is solved
  */
 template<typename T>
-class Dependent_Solution {
+class DependentSolution {
 private:
 	std::vector<unsigned long int> dependencyIndices;
 	std::vector<unsigned long int> solutionIndices;
@@ -28,7 +28,7 @@ private:
 	unsigned short int* solutions;
 
 public:
-	Dependent_Solution(const std::vector<PBQPNode<T>*>& dependencyNodes,
+	DependentSolution(const std::vector<PBQPNode<T>*>& dependencyNodes,
 			const std::vector<PBQPNode<T>*>& solutionNodes) :
 			dependencyIndices(std::vector<unsigned long int>(dependencyNodes.size())), solutionIndices(
 					std::vector<unsigned long int>(solutionNodes.size())), dependencyDegrees(
@@ -48,7 +48,7 @@ public:
 				* solutionIndices.size() * degreeProduct];
 	}
 
-	~Dependent_Solution() {
+	~DependentSolution() {
 		delete[] solutions;
 	}
 
@@ -88,4 +88,4 @@ private:
 
 }
 
-#endif /* REDUCTION_DEPENDENT_SOLUTION_HPP_ */
+#endif /* REDUCTION_DependentSolution_HPP_ */

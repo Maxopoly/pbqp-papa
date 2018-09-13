@@ -8,7 +8,7 @@ namespace pbqppapa {
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class Dependent_Solution;
+class DependentSolution;
 template<typename T>
 class NodeConsistentReduction;
 template<typename T>

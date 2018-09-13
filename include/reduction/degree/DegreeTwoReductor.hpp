@@ -12,7 +12,7 @@ class PBQPGraph;
 template<typename T>
 class PBQPEdge;
 template<typename T>
-class Dependent_Solution;
+class DependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -23,16 +23,16 @@ class PBQP_Reduction;
 template<typename T>
 class DegreeTwoReductor: public PBQP_Reduction<T> {
 private:
-	std::vector<Dependent_Solution<T>*> solutions;
+	std::vector<DependentSolution<T>*> solutions;
 
 public:
 	DegreeTwoReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
-		solutions = *new std::vector<Dependent_Solution<T>*>();
+		solutions = *new std::vector<DependentSolution<T>*>();
 	}
 
 	~DegreeTwoReductor() {
-		for (Dependent_Solution<T>* sol : solutions) {
+		for (DependentSolution<T>* sol : solutions) {
 			delete sol;
 		}
 	}
@@ -40,11 +40,11 @@ public:
 	std::vector<PBQPGraph*>* reduce() {
 		for (PBQPNode<T>* node : *(graph->getNodes())) {
 			if (node->getDegree() == 2) {
-				Dependent_Solution<T>* sol = reduceDegreeTwo(node);
+				DependentSolution<T>* sol = reduceDegreeTwo(node);
 				solutions->push_back(sol);
 			}
 		}
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+		DependentSolution<T>* solution = new DependentSolution<T>(
 				new std::vector<PBQPNode*>(0), targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
@@ -61,7 +61,7 @@ public:
 	 * an ideal selection in the given node is calculated, which is then transformed into
 	 * a single edge connecting the nodes adjacent to the given node
 	 */
-	static Dependent_Solution<T>* reduceDegreeTwo(PBQPNode<T>* node,
+	static DependentSolution<T>* reduceDegreeTwo(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::set<PBQPEdge*>::iterator it = graph->getEdges()->begin();
@@ -75,7 +75,7 @@ public:
 		bool isSecondSource = secondEdge->isSource(secondNode);
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		solutionNodes.push_back(node);
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
 		Matrix<T>* resultMatrix = new Matrix<T>(secondNode->getVektorDegree(),
 				firstNode->getVektorDegree());

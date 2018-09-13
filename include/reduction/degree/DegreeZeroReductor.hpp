@@ -3,14 +3,14 @@
 
 #include <vector>
 #include "reduction/PBQPReduction.hpp"
-#include "reduction/Dependent_Solution.hpp"
+#include "reduction/DependentSolution.hpp"
 
 namespace pbqppapa {
 
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class Dependent_Solution;
+class DependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -19,7 +19,7 @@ class PBQPNode;
 template<typename T>
 class DegreeZeroReductor: public PBQP_Reduction<T> {
 private:
-	Dependent_Solution<T>* solution;
+	DependentSolution<T>* solution;
 	//we need this a lot, so keeping it around instead of recreating is good
 	static const std::vector<unsigned short int> emptyIntVector;
 
@@ -45,7 +45,7 @@ public:
 				this->graph->removeNode(node);
 			}
 		}
-		solution = new Dependent_Solution<T>(std::vector<PBQPNode<T>*>(0), targetNodes);
+		solution = new DependentSolution<T>(std::vector<PBQPNode<T>*>(0), targetNodes);
 		solution->setSolution(emptyIntVector, nodeSolution);
 		this->result.push_back(this->graph);
 		return this->result;
@@ -59,12 +59,12 @@ public:
 	 * Reduces a given node of degree 0. Useful when combining reductions working
 	 * on different degrees to save overhead of creating lots of reduction instances
 	 */
-	static Dependent_Solution<T>* reduceDegreeZero(PBQPNode<T>* node,
+	static DependentSolution<T>* reduceDegreeZero(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		std::vector<PBQPNode<T>*> dependencyNodes = std::vector<PBQPNode<T>*>();
 		std::vector<PBQPNode<T>*> solutionNodes = std::vector<PBQPNode<T>*>();
 		solutionNodes.push_back(node);
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(dependencyNodes, solutionNodes);
+		DependentSolution<T>* solution = new DependentSolution<T>(dependencyNodes, solutionNodes);
 		std::vector<unsigned short int> nodeSolution = std::vector<unsigned short int>();
 		nodeSolution.push_back(node->getVektor().getIndexOfSmallestElement());
 		solution->setSolution(emptyIntVector, nodeSolution);

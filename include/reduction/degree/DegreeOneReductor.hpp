@@ -9,7 +9,7 @@ namespace pbqppapa {
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class Dependent_Solution;
+class DependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -22,16 +22,16 @@ class PBQPNode;
 template<typename T>
 class DegreeOneReductor: public PBQP_Reduction<T> {
 private:
-	std::vector<Dependent_Solution<T>*> solutions;
+	std::vector<DependentSolution<T>*> solutions;
 
 public:
 	DegreeOneReductor(PBQPGraph<T>*) :
 			PBQP_Reduction<T>(graph) {
-		solutions = *new std::vector<Dependent_Solution<T>*>();
+		solutions = *new std::vector<DependentSolution<T>*>();
 	}
 
 	~DegreeOneReductor() {
-		for (Dependent_Solution<T>* sol : solutions) {
+		for (DependentSolution<T>* sol : solutions) {
 			delete sol;
 		}
 	}
@@ -39,18 +39,18 @@ public:
 	std::vector<PBQPGraph*>* reduce() {
 		for (PBQPNode<T>* node : *(graph->getNodes())) {
 			if (node->getDegree() == 1) {
-				Dependent_Solution<T>* sol = reduceDegreeOne(node);
+				DependentSolution<T>* sol = reduceDegreeOne(node);
 				solutions->push_back(sol);
 			}
 		}
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+		DependentSolution<T>* solution = new DependentSolution<T>(
 				new std::vector<PBQPNode*>(0), targetNodes);
 		solution->setSolution(new std::vector<int>(0), nodeSolution);
 		result->push_back(graph);
 		return result;
 	}
 
-	static Dependent_Solution<T>* reduceDegreeOne(PBQPNode<T>* node,
+	static DependentSolution<T>* reduceDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		//will explode if node doesnt have an edge
 		PBQPEdge<T>* edge = (*node->getAdjacentEdges())[0];
@@ -59,7 +59,7 @@ public:
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		dependencyNodes.push_back(otherEnd);
 		solutionNodes.push_back(node);
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
 		//TODO proof against vektor of length 0
 		for (unsigned short int i = 0; i < otherEnd->getVektorDegree(); i++) {

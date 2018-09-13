@@ -9,7 +9,7 @@ namespace pbqppapa {
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class Dependent_Solution;
+class DependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -53,7 +53,7 @@ public:
 		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		solutionNodes.push_back(node);
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
+		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
 		std::vector<unsigned short int> nodeSolution = new std::vector<
 				unsigned short int>();
