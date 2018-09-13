@@ -34,6 +34,11 @@ public:
 			Matrix<T>(vek) {
 	}
 
+	Vector<T>* operator=(const Vector<T>& vek) {
+		Matrix<T>::operator=(vek);
+		return this;
+	}
+
 	/**
 	 * Gets the index (row number) of the smallest element within the Vector.
 	 * Will encounter undefined behavior if the Vector is of length 0.

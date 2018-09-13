@@ -47,6 +47,14 @@ public:
 		//delete[] content;
 	}
 
+	Matrix<T>* operator=(const Matrix<T>& other) {
+		rows = other.rows;
+		columns = other.columns;
+		content = new T [rows*columns];
+		memcpy(content, other.content, rows * columns * sizeof(T));
+		return this;
+	}
+
 	/**
 	 * Adds the given matrix to this one. Dimensions aren't explicitly checked and expected to be identical.
 	 * If they're not, you're at fault
@@ -72,7 +80,8 @@ public:
 	}
 
 	bool operator==(const Matrix<T>& other) const {
-		if (other.getRowCount() != this->getRowCount() || other.getColumnCount() != this->getColumnCount()) {
+		if (other.getRowCount() != this->getRowCount()
+				|| other.getColumnCount() != this->getColumnCount()) {
 			return false;
 		}
 		const unsigned long int length = rows * columns;

@@ -26,30 +26,40 @@ private:
 	std::vector<unsigned long int> solutionIndices;
 	std::vector<unsigned short int> dependencyDegrees;
 	unsigned short int* solutions;
+	unsigned long int solutionAmount = 1;
 
 public:
 	DependentSolution(const std::vector<PBQPNode<T>*>& dependencyNodes,
 			const std::vector<PBQPNode<T>*>& solutionNodes) :
-			dependencyIndices(std::vector<unsigned long int>(dependencyNodes.size())), solutionIndices(
+			dependencyIndices(
+					std::vector<unsigned long int>(dependencyNodes.size())), solutionIndices(
 					std::vector<unsigned long int>(solutionNodes.size())), dependencyDegrees(
 					std::vector<unsigned short int>(dependencyNodes.size())) {
-		unsigned long int degreeProduct = 1;
 		const unsigned long int length = dependencyNodes.size();
 		for (unsigned long int i = 0; i < length; i++) {
 			dependencyIndices[i] = (dependencyNodes[i])->getIndex();
 			unsigned short int degree = (dependencyNodes[i])->getVectorDegree();
 			dependencyDegrees[i] = degree;
-			degreeProduct *= degree;
+			solutionAmount *= degree;
 		}
 		for (unsigned int i = 0; i < solutionNodes.size(); i++) {
 			solutionIndices[i] = (solutionNodes[i])->getIndex();
 		}
 		solutions = new unsigned short int[dependencyIndices.size()
-				* solutionIndices.size() * degreeProduct];
+				* solutionIndices.size() * solutionAmount];
 	}
 
 	~DependentSolution() {
 		delete[] solutions;
+	}
+
+	DependentSolution(const DependentSolution<T>& other) :
+			dependencyIndices(other.dependencyIndices), solutionIndices(
+					other.solutionIndices), dependencyDegrees(
+					other.dependencyDegrees), solutions(
+					new unsigned short int[solutionAmount]), solutionAmount(
+					solutionAmount) {
+		memcpy(solutions, other.solutions, solutionAmount * sizeof(T));
 	}
 
 	void setSolution(
