@@ -25,8 +25,8 @@ class PBQPGraph {
 private:
 	static unsigned int nodeIndexCounter;
 	unsigned int localIndexStart;
-	std::set<PBQPNode<T>*>* const nodes = new std::set<PBQPNode<T>*>();
-	std::set<PBQPEdge<T>*>* const edges = new std::set<PBQPEdge<T>*>();
+	std::set<PBQPNode<T>*> nodes = std::set<PBQPNode<T>*>();
+	std::set<PBQPEdge<T>*> edges = std::set<PBQPEdge<T>*>();
 
 public:
 
@@ -41,24 +41,22 @@ public:
 	 * Deletes all nodes and edges contained within the graph
 	 */
 	~PBQPGraph() {
-		for (PBQPEdge<T>* edge : *edges) {
+		for (PBQPEdge<T>* edge : edges) {
 			delete edge;
 		}
-		delete edges;
-		for (PBQPNode<T>* node : *nodes) {
+		for (PBQPNode<T>* node : nodes) {
 			delete node;
 		}
-		delete nodes;
 	}
 
 	/**
 	 * Creates a new node with the given cost vektor and adds it to the graph.
 	 * The new node will not have any edges initially
 	 */
-	PBQPNode<T>* addNode(Vektor<T>* vektor) {
+	PBQPNode<T>* addNode(Vektor<T>& vektor) {
 		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++,
 				vektor);
-		nodes->insert(node);
+		nodes.insert(node);
 		return node;
 	}
 
@@ -67,7 +65,7 @@ public:
 	 * its possibly referenced edges. The user must ensure that this is handled properly
 	 */
 	void addNode(PBQPNode<T>* node) {
-		nodes->insert(node);
+		nodes.insert(node);
 	}
 
 	/**
@@ -75,7 +73,7 @@ public:
 	 * whether the nodes incident to it are even in the graph. The user must ensure that this is handled properly
 	 */
 	void addEdge(PBQPEdge<T>* edge) {
-		edges->insert(edge);
+		edges.insert(edge);
 	}
 
 	/**
@@ -84,9 +82,9 @@ public:
 	 * will be associated with the created edge
 	 */
 	PBQPEdge<T>* addEdge(PBQPNode<T>* source, PBQPNode<T>* target,
-			Matrix<T>* matrix) {
+			Matrix<T>& matrix) {
 		PBQPEdge<T>* edge = new PBQPEdge<T>(source, target, matrix);
-		edges->insert(edge);
+		edges.insert(edge);
 		source->addEdge(edge);
 		if (source != target) {
 			target->addEdge(edge);
@@ -106,14 +104,14 @@ public:
 	 * is up to the user when setting cleanUp to false
 	 */
 	void removeNode(PBQPNode<T>* node, bool cleanUp = true) {
-		for (PBQPEdge<T>* edge : *(node->getAdjacentEdges(false))) {
-			edges->erase(edge);
+		for (PBQPEdge<T>* edge : node->getAdjacentEdges(false)) {
+			edges.erase(edge);
 			if (cleanUp) {
 				edge->getOtherEnd(node)->removeEdge(edge);
 				delete edge;
 			}
 		}
-		nodes->erase(node);
+		nodes.erase(node);
 		if (cleanUp) {
 			delete node;
 		}
@@ -124,7 +122,7 @@ public:
 	 * The edge is deleted from adjacent nodes as well, but the adjacent nodes stay in the graph
 	 */
 	void removeEdge(PBQPEdge<T>* edge) {
-		edges->erase(edge);
+		edges.erase(edge);
 		edge->getSource()->removeEdge(edge);
 		edge->getTarget()->removeEdge(edge);
 		delete edge;
@@ -136,7 +134,7 @@ public:
 	 * to is removed
 	 */
 	typename std::set<PBQPNode<T>*>::iterator getNodeBegin() const {
-		return nodes->begin();
+		return nodes.begin();
 	}
 
 	/**
@@ -145,7 +143,7 @@ public:
 	 * to is removed
 	 */
 	typename std::set<PBQPNode<T>*>::iterator getNodeEnd() const {
-		return nodes->end();
+		return nodes.end();
 	}
 
 	/**
@@ -154,7 +152,7 @@ public:
 	 * to is removed
 	 */
 	typename std::set<PBQPEdge<T>*>::iterator getEdgeBegin() const {
-		return edges->begin();
+		return edges.begin();
 	}
 
 	/**
@@ -163,21 +161,21 @@ public:
 	 * to is removed
 	 */
 	typename std::set<PBQPEdge<T>*>::iterator getEdgeEnd() const {
-		return edges->end();
+		return edges.end();
 	}
 
 	/**
 	 * Gets the amount of nodes currently in the graph
 	 */
 	unsigned int getNodeCount() const {
-		return nodes->size();
+		return nodes.size();
 	}
 
 	/**
 	 * Gets the amount of edges currently in the graph
 	 */
 	unsigned int getEdgeCount() const {
-		return edges->size();
+		return edges.size();
 	}
 
 	/**

@@ -27,7 +27,7 @@ template<typename T>
 class PBQP_Reduction {
 protected:
 	PBQPGraph<T>* graph;
-	std::vector<PBQPGraph<T>*>* result;
+	std::vector<PBQPGraph<T>*> result;
 
 public:
 	/**
@@ -37,7 +37,7 @@ public:
 	 */
 	PBQP_Reduction(PBQPGraph<T>* graph) {
 		this->graph = graph;
-		result = new std::vector<PBQPGraph<T>*>();
+		result = std::vector<PBQPGraph<T>*>();
 	}
 	virtual ~PBQP_Reduction() {
 
@@ -47,14 +47,14 @@ public:
 	 * Applies whatever logic this instance implements to simplify the PBQP. Result is a vector to allow splitting
 	 * up the graph into multiple problems
 	 */
-	virtual std::vector<PBQPGraph<T>*>* reduce() = 0;
+	virtual std::vector<PBQPGraph<T>*>& reduce() = 0;
 
 	/**
 	 * Backtracking step. The given solution contains a solution for all nodes contained in any of the graphs returned
 	 * by reduce() and this instance is expected to further complete the solution with anything that was reduced as part
 	 * of this step
 	 */
-	virtual PBQPSolution<T>* solve(PBQPSolution<T>* solution) = 0;
+	virtual void solve(PBQPSolution<T>& solution) = 0;
 };
 
 }

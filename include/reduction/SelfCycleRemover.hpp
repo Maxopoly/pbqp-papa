@@ -19,7 +19,7 @@ public:
 			PBQP_Reduction<T>(graph) {
 	}
 
-	std::vector<PBQPGraph<T>*>* reduce() override {
+	std::vector<PBQPGraph<T>*>& reduce() override {
 		auto iter = this->graph->getEdgeBegin();
 		while (iter != this->graph->getEdgeEnd()) {
 			PBQPEdge<T>* edge = *iter;
@@ -27,8 +27,8 @@ public:
 				//add diagonal of edge matrix to cost vektor and then delete edge
 				for (unsigned short int i = 0;
 						i < edge->getSource()->getVektorDegree(); i++) {
-					edge->getSource()->getVektor()->get(i) +=
-							edge->getMatrix()->get(i, i);
+					edge->getSource()->getVektor().get(i) +=
+							edge->getMatrix().get(i, i);
 				}
 				++iter;
 				this->graph->removeEdge(edge);
@@ -36,13 +36,12 @@ public:
 				++iter;
 			}
 		}
-		this->result->push_back(this->graph);
+		this->result.push_back(this->graph);
 		return this->result;
 	}
 
-	PBQPSolution<T>* solve(PBQPSolution<T>* solution) override {
+	void solve(PBQPSolution<T>& solution) override {
 		//don't need to do anything
-		return solution;
 	}
 };
 

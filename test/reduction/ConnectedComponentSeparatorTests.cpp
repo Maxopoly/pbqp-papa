@@ -16,13 +16,14 @@
 namespace pbqppapa {
 
 BOOST_AUTO_TEST_CASE(singleNodeTest) {
-	PBQPGraph<int> graph = *(new PBQPGraph<int>());
-	graph.addNode(new Vektor<int>(2, new int[2] { 2, 2 }));
-	ConnectedComponentSeparator<int> sep =
-			*(new ConnectedComponentSeparator<int>(&graph));
-	std::vector<PBQPGraph<int>*> components = *(sep.reduce());
-	PBQPSolution<int> sol = *(new PBQPSolution<int>(0));
-	sep.solve(&sol);
+	PBQPGraph<int> graph = PBQPGraph<int>();
+	int vekData [] = {2 ,2};
+	Vektor<int> vek = Vektor<int>(2, vekData);
+	graph.addNode(vek);
+	ConnectedComponentSeparator<int> sep = ConnectedComponentSeparator<int>(&graph);
+	std::vector<PBQPGraph<int>*> components = sep.reduce();
+	PBQPSolution<int> sol = PBQPSolution<int>(0);
+	sep.solve(sol);
 	BOOST_CHECK_EQUAL(components.size(), 1);
 	PBQPGraph<int>* retrievedGraph = components[0];
 	BOOST_CHECK_EQUAL(0, retrievedGraph->getEdgeCount());
@@ -36,12 +37,11 @@ BOOST_AUTO_TEST_CASE(singleNodeTest) {
 }
 
 BOOST_AUTO_TEST_CASE(emptyGraphTest) {
-	PBQPGraph<int> graph = *(new PBQPGraph<int>());
-	ConnectedComponentSeparator<int> sep =
-			*new ConnectedComponentSeparator<int>(&graph);
-	std::vector<PBQPGraph<int>*> components = *(sep.reduce());
-	PBQPSolution<int> sol = *(new PBQPSolution<int>(0));
-	sep.solve(&sol);
+	PBQPGraph<int> graph = PBQPGraph<int>();
+	ConnectedComponentSeparator<int> sep = ConnectedComponentSeparator<int>(&graph);
+	std::vector<PBQPGraph<int>*> components = sep.reduce();
+	PBQPSolution<int> sol = PBQPSolution<int>(0);
+	sep.solve(sol);
 	BOOST_CHECK_EQUAL(components.size(), 1);
 	PBQPGraph<int>* retrievedGraph = components[0];
 	BOOST_CHECK_EQUAL(0, retrievedGraph->getEdgeCount());
@@ -49,18 +49,19 @@ BOOST_AUTO_TEST_CASE(emptyGraphTest) {
 }
 
 BOOST_AUTO_TEST_CASE(basicNodeTest) {
-	PBQPGraph<int> graph = *(new PBQPGraph<int>());
+	PBQPGraph<int> graph = PBQPGraph<int>();
 	int size = 50;
 	for (int i = 0; i < size; i++) {
-		graph.addNode(new Vektor<int>(2, new int[2] { 2, 2 }));
+		int arr [] = {2, 2};
+		Vektor<int> vek = Vektor<int>(2, arr);
+		graph.addNode(vek);
 	}
-	ConnectedComponentSeparator<int> sep =
-			*(new ConnectedComponentSeparator<int>(&graph));
-	std::vector<PBQPGraph<int>*> components = *(sep.reduce());
-	PBQPSolution<int> sol = *(new PBQPSolution<int>(0));
-	sep.solve(&sol);
+	ConnectedComponentSeparator<int> sep = ConnectedComponentSeparator<int>(&graph);
+	std::vector<PBQPGraph<int>*> components = sep.reduce();
+	PBQPSolution<int> sol = PBQPSolution<int>(0);
+	sep.solve(sol);
 	BOOST_CHECK_EQUAL(components.size(), size);
-	std::set<int> nodeIndices = *new std::set<int>();
+	std::set<int> nodeIndices = std::set<int>();
 	for (int i = 0; i < size; i++) {
 		PBQPGraph<int>* retrievedGraph = components[i];
 		BOOST_CHECK_EQUAL(0, retrievedGraph->getEdgeCount());
@@ -81,26 +82,26 @@ BOOST_AUTO_TEST_CASE(advancedNodeTest) {
 	int edgeCount = 0;
 	for (int i = 0; i < subgraphs; i++) {
 		edgeCount = 0;
-		std::vector<PBQPNode<int>*> otherNodes =
-				*new std::vector<PBQPNode<int>*>();
+		std::vector<PBQPNode<int>*> otherNodes = std::vector<PBQPNode<int>*>();
 		for (int k = 0; k < localSize; k++) {
-			PBQPNode<int>* node = graph->addNode(new Vektor<int>(2, new int[2] {
-					2, 2 }));
+			int arr [] = {2, 2};
+			Vektor<int> vek = Vektor<int>(2, arr);
+			PBQPNode<int>* node = graph->addNode(vek);
 			otherNodes.push_back(node);
 			for (PBQPNode<int>* otherNode : otherNodes) {
-				graph->addEdge(node, otherNode,
-						new Matrix<int>(2, 2, new int[4] { 3, 2, 5, 8 }));
+				int arr2 [] = {3, 2, 5, 8};
+				Matrix<int> mat = Matrix<int>(2, 2, arr2);
+				graph->addEdge(node, otherNode, mat);
 				edgeCount++;
 			}
 		}
 	}
-	ConnectedComponentSeparator<int> sep =
-			*new ConnectedComponentSeparator<int>(graph);
-	std::vector<PBQPGraph<int>*> components = *(sep.reduce());
-	PBQPSolution<int> sol = *(new PBQPSolution<int>(0));
-	sep.solve(&sol);
+	ConnectedComponentSeparator<int> sep = ConnectedComponentSeparator<int>(graph);
+	std::vector<PBQPGraph<int>*> components = sep.reduce();
+	PBQPSolution<int> sol = PBQPSolution<int>(0);
+	sep.solve(sol);
 	BOOST_CHECK_EQUAL(components.size(), subgraphs);
-	std::set<int> nodeIndices = *new std::set<int>();
+	std::set<int> nodeIndices = std::set<int>();
 	for (int i = 0; i < subgraphs; i++) {
 		PBQPGraph<int>* retrievedGraph = components[i];
 		BOOST_CHECK_EQUAL(edgeCount, retrievedGraph->getEdgeCount());

@@ -23,7 +23,7 @@ public:
 	~EdgeDeduplicator() {
 	}
 
-	std::vector<PBQPGraph<T>*>* reduce() {
+	std::vector<PBQPGraph<T>*>& reduce() {
 		for (PBQPNode<T>* node : *graph->getNodes()) {
 			//sort edges into a map where the adjacent node is the key. If we find an edge which already has entry for its node, we found a duplicate
 			std::map<PBQPNode<T>*, PBQPEdge<T>*>* adjacencyMap = new std::map<

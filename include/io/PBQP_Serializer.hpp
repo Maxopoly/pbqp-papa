@@ -57,14 +57,14 @@ private:
 		nlohmann::json nodeJson = json["nodes"];
 		for (nlohmann::json singleNodeJson : nodeJson) {
 			unsigned int index = singleNodeJson["index"];
-			Vektor<T>* vek = parseVektor(singleNodeJson["cost"], serializer);
+			Vektor<T> vek = parseVektor(singleNodeJson["cost"], serializer);
 			PBQPNode<T>* node = new PBQPNode<T>(index, vek);
 			graph->addNode(node);
 			nodeByIndex.insert(std::make_pair(index, node));
 		}
 		nlohmann::json edgeJson = json["edges"];
 		for (nlohmann::json singleEdgeJson : edgeJson) {
-			Matrix<T>* mat = parseMatrix(singleEdgeJson, serializer);
+			Matrix<T> mat = parseMatrix(singleEdgeJson, serializer);
 			PBQPNode<T>* source =
 					nodeByIndex.find(singleEdgeJson["source"])->second;
 			PBQPNode<T>* target =
@@ -74,21 +74,21 @@ private:
 		return graph;
 	}
 
-	Vektor<T>* parseVektor(nlohmann::json json, TypeSerializer<T>* serializer) {
-		Vektor<T>* vek = new Vektor<T>((unsigned short int) json.size());
+	Vektor<T> parseVektor(nlohmann::json json, TypeSerializer<T>* serializer) {
+		Vektor<T> vek = Vektor<T>((unsigned short int) json.size());
 		for (unsigned short int i = 0; i < json.size(); i++) {
-			vek->get(i) = serializer->deserialize(json[i]);
+			vek.get(i) = serializer->deserialize(json[i]);
 		}
 		return vek;
 	}
 
-	Matrix<T>* parseMatrix(nlohmann::json json, TypeSerializer<T>* serializer) {
+	Matrix<T> parseMatrix(nlohmann::json json, TypeSerializer<T>* serializer) {
 		unsigned short int rows = json["rows"];
 		unsigned short int columns = json["columns"];
 		nlohmann::json valueJson = json["cost"];
-		Matrix<T>* mat = new Matrix<T>(rows, columns);
+		Matrix<T> mat = Matrix<T>(rows, columns);
 		for (unsigned int i = 0; i < valueJson.size(); i++) {
-			mat->getRaw(i) = serializer->deserialize(valueJson[i]);
+			mat.getRaw(i) = serializer->deserialize(valueJson[i]);
 		}
 		return mat;
 	}
@@ -106,7 +106,7 @@ private:
 			nlohmann::json costVector = nlohmann::json::array();
 			for (unsigned short int i = 0; i < node->getVektorDegree(); i++) {
 				costVector.push_back(
-						serializer->serialize(node->getVektor()->get(i)));
+						serializer->serialize(node->getVektor().get(i)));
 			}
 			nodeJson["cost"] = costVector;
 			nodeJsons.push_back(nodeJson);
@@ -119,13 +119,13 @@ private:
 			nlohmann::json edgeJson;
 			edgeJson["source"] = edge->getSource()->getIndex();
 			edgeJson["target"] = edge->getTarget()->getIndex();
-			edgeJson["columns"] = edge->getMatrix()->getColumnCount();
-			edgeJson["rows"] = edge->getMatrix()->getRowCount();
+			edgeJson["columns"] = edge->getMatrix().getColumnCount();
+			edgeJson["rows"] = edge->getMatrix().getRowCount();
 			nlohmann::json matrixValues;
-			unsigned int length = edge->getMatrix()->getElementCount();
+			unsigned int length = edge->getMatrix().getElementCount();
 			for (unsigned int i = 0; i < length; i++) {
 				matrixValues.push_back(
-						serializer->serialize(edge->getMatrix()->getRaw(i)));
+						serializer->serialize(edge->getMatrix().getRaw(i)));
 			}
 			edgeJson["cost"] = matrixValues;
 			edgeJsons.push_back(edgeJson);

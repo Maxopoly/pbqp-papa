@@ -9,10 +9,11 @@
 namespace pbqppapa {
 
 //Generates a Kn (n nodes, each connected with each other and themselves)
-PBQPGraph<int>* genGraph(int size) {
+PBQPGraph<int>* genGraph(unsigned int size) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
-	for (int i = 1; i <= size; i++) {
-		Vektor<int>* vektor = new Vektor<int>(2, new int[2] { 3, 2 });
+	for (unsigned int i = 1; i <= size; i++) {
+		int arr1[] = {3, 2};
+		Vektor<int> vektor = Vektor<int>(2, arr1);
 		graph->addNode(vektor);
 	}
 	for (std::set<PBQPNode<int>*>::iterator it = graph->getNodeBegin();
@@ -21,8 +22,8 @@ PBQPGraph<int>* genGraph(int size) {
 		for (std::set<PBQPNode<int>*>::iterator it2 = graph->getNodeBegin();
 				it2 != graph->getNodeEnd(); it2++) {
 			PBQPNode<int>* node2 = *it2;
-			Matrix<int>* matrix = new Matrix<int>(2, 2,
-					new int[4] { 3, 2, 5, 8 });
+			int matrixCost[] = { 3, 2, 5, 8 };
+			Matrix<int> matrix = Matrix<int>(2, 2, matrixCost);
 			graph->addEdge(node1, node2, matrix);
 		}
 	}

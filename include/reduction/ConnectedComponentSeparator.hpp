@@ -30,11 +30,10 @@ public:
 	~ConnectedComponentSeparator() {
 	}
 
-	std::vector<PBQPGraph<T>*>* reduce() override {
+	std::vector<PBQPGraph<T>*>& reduce() override {
 		while (true) {
-			std::set<PBQPNode<T>*> foundNodes = *new std::set<PBQPNode<T>*>();
-			std::vector<PBQPNode<T>*> todoStack =
-					*new std::vector<PBQPNode<T>*>();
+			std::set<PBQPNode<T>*> foundNodes = std::set<PBQPNode<T>*>();
+			std::vector<PBQPNode<T>*> todoStack = std::vector<PBQPNode<T>*>();
 			if (this->graph->getNodeCount() > 0) {
 				auto iter = this->graph->getNodeBegin();
 				todoStack.push_back(*iter);
@@ -45,8 +44,9 @@ public:
 				if (foundNodes.count(node) > 0) {
 					continue;
 				}
+
 				foundNodes.insert(node);
-				for (PBQPNode<T>* adjacentNode : *(node->getAdjacentNodes())) {
+				for (PBQPNode<T>* adjacentNode : node->getAdjacentNodes()) {
 					if (foundNodes.count(adjacentNode) == 0) {
 						todoStack.push_back(adjacentNode);
 					}
@@ -54,7 +54,7 @@ public:
 			}
 			if (foundNodes.size() == this->graph->getNodeCount()) {
 				//only one connected component
-				this->result->push_back(this->graph);
+				this->result.push_back(this->graph);
 				break;
 			} else {
 				//multiple connected components in this graph, so we remove the one we found and keep going
@@ -65,22 +65,21 @@ public:
 				for (PBQPNode<T>* node : foundNodes) {
 					this->graph->removeNode(node, false);
 					replacementGraph->addNode(node);
-					for (PBQPEdge<T>* edge : *(node->getAdjacentEdges(true))) {
+					for (PBQPEdge<T>* edge : node->getAdjacentEdges(true)) {
 						//makes us iterate only over outgoing edges, so we can always insert all of those safely
 						//while ensuring that every edge is inserted once. We dont need to remove the edge from the
 						//old graph as removing the node already does that
 						replacementGraph->addEdge(edge);
 					}
 				}
-				this->result->push_back(replacementGraph);
+				this->result.push_back(replacementGraph);
 			}
 		}
 		return this->result;
 	}
 
-	PBQPSolution<T>* solve(PBQPSolution<T>* solution) override {
+	void solve(PBQPSolution<T>& solution) override {
 		//don't need to do anything
-		return solution;
 	}
 };
 

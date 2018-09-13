@@ -17,7 +17,7 @@ class PBQPEdge {
 private:
 	PBQPNode<T>* const source;
 	PBQPNode<T>* const target;
-	Matrix<T>* const matrix;
+	Matrix<T> matrix;
 
 public:
 
@@ -29,15 +29,8 @@ public:
 	 * of the vektor associated with the source node and the amount of columns
 	 * in the matrix must match the length of the vektor associated with the target node
 	 */
-	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, Matrix<T>* matrix) :
+	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, Matrix<T>& matrix) :
 			source(source), target(target), matrix(matrix) {
-	}
-
-	/**
-	 * Deletes only the content matrix, but not any related nodes
-	 */
-	~PBQPEdge() {
-		delete matrix;
 	}
 
 	/**
@@ -63,7 +56,7 @@ public:
 	/**
 	 * Gets the cost matrix associated with this edge
 	 */
-	Matrix<T>* getMatrix() const {
+	Matrix<T>& getMatrix() {
 		return matrix;
 	}
 

@@ -31,6 +31,10 @@ public:
 			Matrix<T>(length, 1) {
 	}
 
+	Vektor<T>(const Vektor<T>& vek) :
+			Matrix<T>(vek) {
+	}
+
 	/**
 	 * Gets the index (row number) of the smallest element within the vektor.
 	 * Will encounter undefined behavior if the vektor is of length 0.
