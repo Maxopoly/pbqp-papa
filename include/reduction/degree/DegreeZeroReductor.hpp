@@ -2,7 +2,8 @@
 #define VALIDATION_DEGREEZEROREDUCTOR_HPP_
 
 #include <vector>
-#include <reduction/PBQPReduction.hpp>
+#include "reduction/PBQPReduction.hpp"
+#include "reduction/Dependent_Solution.hpp"
 
 namespace pbqppapa {
 
@@ -18,42 +19,40 @@ class PBQPNode;
 template<typename T>
 class DegreeZeroReductor: public PBQP_Reduction<T> {
 private:
-	Dependent_Solution<T> solution;
+	Dependent_Solution<T>* solution;
 	//we need this a lot, so keeping it around instead of recreating is good
-	static const std::vector<unsigned short int> emptyIntVector =
-			*new std::vector<unsigned short int>(0);
+	static const std::vector<unsigned short int> emptyIntVector;
 
 public:
 	DegreeZeroReductor(PBQPGraph<T>* graph) :
-			PBQP_Reduction<T>(graph) {
-		//solution is initialized by the reduction
+			PBQP_Reduction<T>(graph), solution(0) {
 	}
 
 	~DegreeZeroReductor() {
+		delete solution;
 	}
 
-	std::vector<PBQPGraph*>* reduce() {
-		std::vector<PBQPNode<T>*> targetNodes =
-				*new std::vector<PBQPNode<T>*>();
-		std::vector<int> nodeSolution = new std::vector<int>();
-		for (PBQPNode<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph<T>*>& reduce() override {
+		std::vector<PBQPNode<T>*> targetNodes = std::vector<PBQPNode<T>*>();
+		std::vector<unsigned short int> nodeSolution = std::vector<unsigned short int>();
+		auto iter = this->graph->getNodeBegin();
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter;
+			iter++;
 			if (node->getDegree() == 0) {
-				nodeSolution.push_back(
-						node->getVektor()->getIndexOfSmallestElement());
+				nodeSolution.push_back(node->getVektor().getIndexOfSmallestElement());
 				targetNodes.push_back(node);
-				graph->removeNode(node);
+				this->graph->removeNode(node);
 			}
 		}
-		solution = *new Dependent_Solution<T>(new std::vector<PBQPNode*>(0),
-				&targetNodes);
-		solution.setSolution(&emptyIntVector, &nodeSolution);
-		result->push_back(graph);
-		return result;
+		solution = new Dependent_Solution<T>(std::vector<PBQPNode<T>*>(0), targetNodes);
+		solution->setSolution(emptyIntVector, nodeSolution);
+		this->result.push_back(this->graph);
+		return this->result;
 	}
 
-	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
+	void solve(PBQPSolution<T>& solution) override {
 		this->solution->solve(solution);
-		return solution;
 	}
 
 	/**
@@ -62,18 +61,20 @@ public:
 	 */
 	static Dependent_Solution<T>* reduceDegreeZero(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
-		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
-		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
+		std::vector<PBQPNode<T>*> dependencyNodes = std::vector<PBQPNode<T>*>();
+		std::vector<PBQPNode<T>*> solutionNodes = std::vector<PBQPNode<T>*>();
 		solutionNodes.push_back(node);
-		Dependent_Solution<T>* solution = new Dependent_Solution<T>(
-				dependencyNodes, solutionNodes);
-		std::vector<int> nodeSolution = new std::vector<int>();
-		nodeSolution.push_back(node->getVektor()->getIndexOfSmallestElement());
-		solution->setSolution(&emptyIntVector, &nodeSolution);
+		Dependent_Solution<T>* solution = new Dependent_Solution<T>(dependencyNodes, solutionNodes);
+		std::vector<unsigned short int> nodeSolution = std::vector<unsigned short int>();
+		nodeSolution.push_back(node->getVektor().getIndexOfSmallestElement());
+		solution->setSolution(emptyIntVector, nodeSolution);
 		return solution;
 	}
 };
 
+//dark magic to initialize static members of a template
+template<typename T>
+const std::vector<unsigned short int> DegreeZeroReductor<T>::emptyIntVector = std::vector<unsigned short int>(0);
 }
 
 #endif /* VALIDATION_DEGREEZEROREDUCTOR_HPP_ */

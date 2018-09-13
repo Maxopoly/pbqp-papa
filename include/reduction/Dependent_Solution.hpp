@@ -22,66 +22,65 @@ class PBQPNode;
 template<typename T>
 class Dependent_Solution {
 private:
-	std::vector<int>* dependencyIndices;
-	std::vector<int>* solutionIndices;
-	std::vector<unsigned short int>* dependencyDegrees;
+	std::vector<unsigned long int> dependencyIndices;
+	std::vector<unsigned long int> solutionIndices;
+	std::vector<unsigned short int> dependencyDegrees;
 	unsigned short int* solutions;
 
 public:
-	Dependent_Solution(std::vector<PBQPNode<T>*>* dependencyNodes,
-			std::vector<PBQPNode<T>*>* solutionNodes) {
-		dependencyIndices = new std::vector<int>(dependencyNodes->size());
-		dependencyDegrees = new std::vector<int>(dependencyNodes->size());
-		int degreeProduct = 1;
-		for (unsigned int i = 0; i < dependencyNodes->size(); i++) {
-			(*dependencyIndices)[i] = (*dependencyNodes)[i]->getIndex();
-			int degree = (*dependencyNodes)[i]->getVektorDegree();
-			(*dependencyDegrees)[i] = degree;
+	Dependent_Solution(const std::vector<PBQPNode<T>*>& dependencyNodes,
+			const std::vector<PBQPNode<T>*>& solutionNodes) :
+			dependencyIndices(std::vector<unsigned long int>(dependencyNodes.size())), solutionIndices(
+					std::vector<unsigned long int>(solutionNodes.size())), dependencyDegrees(
+					std::vector<unsigned short int>(dependencyNodes.size())) {
+		unsigned long int degreeProduct = 1;
+		const unsigned long int length = dependencyNodes.size();
+		for (unsigned long int i = 0; i < length; i++) {
+			dependencyIndices[i] = (dependencyNodes[i])->getIndex();
+			unsigned short int degree = (dependencyNodes[i])->getVektorDegree();
+			dependencyDegrees[i] = degree;
 			degreeProduct *= degree;
 		}
-		solutionIndices = new std::vector<int>(solutionNodes->size());
-		for (unsigned int i = 0; i < solutionNodes->size(); i++) {
-			(*solutionIndices)[i] = (*solutionNodes)[i]->getIndex();
+		for (unsigned int i = 0; i < solutionNodes.size(); i++) {
+			solutionIndices[i] = (solutionNodes[i])->getIndex();
 		}
-		solutions = new unsigned short int[dependencyIndices->size()
-				* solutionIndices->size() * degreeProduct];
+		solutions = new unsigned short int[dependencyIndices.size()
+				* solutionIndices.size() * degreeProduct];
 	}
 
-	virtual ~Dependent_Solution() {
-		delete dependencyDegrees;
-		delete dependencyIndices;
-		delete solutionIndices;
+	~Dependent_Solution() {
 		delete[] solutions;
 	}
 
-	void setSolution(std::vector<unsigned short int>* dependencySelections,
-			std::vector<unsigned short int>* solutionSelection) {
-		int index = resolveIndex(dependencySelections);
-		std::copy(solutionSelection->begin(), solutionSelection->end(),
+	void setSolution(
+			const std::vector<unsigned short int>& dependencySelections,
+			const std::vector<unsigned short int>& solutionSelection) {
+		unsigned long int index = resolveIndex(dependencySelections);
+		std::copy(solutionSelection.begin(), solutionSelection.end(),
 				solutions + index);
 	}
 
-	void solve(PBQPSolution<T>* solution) {
-		std::vector<unsigned short int>* dependencySolution = new std::vector<
-				unsigned short int>(dependencyIndices->size());
-		for (unsigned int dependencyId : *dependencyIndices) {
-			dependencySolution->push_back(solution->getSolution(dependencyId));
+	void solve(PBQPSolution<T>& solution) const {
+		std::vector<unsigned short int> dependencySolution = std::vector<
+				unsigned short int>(dependencyIndices.size());
+		for (unsigned long int dependencyId : dependencyIndices) {
+			dependencySolution.push_back(solution.getSolution(dependencyId));
 		}
-		int index = resolveIndex(dependencySolution);
-		for (unsigned int i = 0; i < solutionIndices->size(); i++) {
-			solution->setSolution((*solutionIndices)[i], solutions[index + i]);
+		unsigned long int index = resolveIndex(dependencySolution);
+		for (unsigned long int i = 0; i < solutionIndices.size(); i++) {
+			solution.setSolution(solutionIndices[i], solutions[index + i]);
 		}
 	}
 
 private:
 
-	int resolveIndex(std::vector<unsigned short int>* dependencySelections) {
-		int index = 0;
-		int offset = 1;
-		for (unsigned int i = 0; i < dependencyDegrees->size(); i++) {
-			index += (*dependencyDegrees)[i] * offset
-					* ((*dependencySelections)[i]);
-			offset *= (*dependencyDegrees)[i];
+	unsigned long int resolveIndex(
+			const std::vector<unsigned short int>& dependencySelections) const {
+		unsigned long int index = 0;
+		unsigned long int offset = 1;
+		for (unsigned long int i = 0; i < dependencyDegrees.size(); i++) {
+			index += dependencyDegrees[i] * offset * dependencySelections[i];
+			offset *= dependencyDegrees[i];
 		}
 		return index;
 	}
