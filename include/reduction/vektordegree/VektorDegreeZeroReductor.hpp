@@ -1,5 +1,5 @@
-#ifndef REDUCTION_VEKTORDEGREEZEROREDUCTOR_HPP_
-#define REDUCTION_VEKTORDEGREEZEROREDUCTOR_HPP_
+#ifndef REDUCTION_VectorDEGREEZEROREDUCTOR_HPP_
+#define REDUCTION_VectorDEGREEZEROREDUCTOR_HPP_
 
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
@@ -16,24 +16,24 @@ template<typename T>
 class PBQPNode;
 
 /**
- * Any nodes with a vektor degree of 0 can be deleted from the graph. No selection needs to be made for them
+ * Any nodes with a Vector degree of 0 can be deleted from the graph. No selection needs to be made for them
  */
 template<typename T>
-class VektorDegreeZeroReductor: public PBQP_Reduction<T> {
+class VectorDegreeZeroReductor: public PBQP_Reduction<T> {
 private:
 
 public:
-	VektorDegreeZeroReductor(PBQPGraph<T>* graph) :
+	VectorDegreeZeroReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 	}
 
-	~VektorDegreeZeroReductor() {
+	~VectorDegreeZeroReductor() {
 	}
 
 	std::vector<PBQPGraph*>* reduce() {
 		for (PBQPNode<T>* node : *(graph->getNodes())) {
-			if (node->getVektorDegree() == 0) {
-				reduceVektorDegreeZero(node, graph);
+			if (node->getVectorDegree() == 0) {
+				reduceVectorDegreeZero(node, graph);
 			}
 		}
 		result->push_back(graph);
@@ -47,7 +47,7 @@ public:
 	/**
 	 * Deletes the node as there is nothing to solve
 	 */
-	static void reduceVektorDegreeZero(PBQPNode<T>* node, PBQPGraph<T>* graph) {
+	static void reduceVectorDegreeZero(PBQPNode<T>* node, PBQPGraph<T>* graph) {
 		//TODO: This leaves uninitialized values in the solution. How do we want to deal with unsolvable nodes in general?
 		graph->removeNode(node);
 	}
@@ -55,4 +55,4 @@ public:
 
 }
 
-#endif /* REDUCTION_VEKTORDEGREEZEROREDUCTOR_HPP_ */
+#endif /* REDUCTION_VectorDEGREEZEROREDUCTOR_HPP_ */

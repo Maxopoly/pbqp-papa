@@ -6,7 +6,7 @@
 #include <set>
 
 #include "graph/PBQPGraph.hpp"
-#include "graph/Vektor.hpp"
+#include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "reduction/PBQPReduction.hpp"
@@ -40,8 +40,8 @@ BOOST_AUTO_TEST_CASE(simpleKnTest) {
 			++iter) {
 		PBQPNode<int>* node = *iter;
 		BOOST_CHECK_EQUAL((size - 1) * 2, node->getDegree());
-		BOOST_CHECK_EQUAL(node->getVektor().get(0), 6);
-		BOOST_CHECK_EQUAL(node->getVektor().get(1), 10);
+		BOOST_CHECK_EQUAL(node->getVector().get(0), 6);
+		BOOST_CHECK_EQUAL(node->getVector().get(1), 10);
 	}
 	delete graph;
 }
@@ -49,13 +49,13 @@ BOOST_AUTO_TEST_CASE(simpleKnTest) {
 BOOST_AUTO_TEST_CASE(simpleNumberTest) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
 	int arrVek1 [] = {1, 2, 3};
-	Vektor<int> vek1 = Vektor<int>(3, arrVek1);
+	Vector<int> vek1 = Vector<int>(3, arrVek1);
 	PBQPNode<int>* node1 = graph->addNode(vek1);
 	int arrVek2 [] = {4, 5};
-	Vektor<int> vek2 = Vektor<int>(2,arrVek2);
+	Vector<int> vek2 = Vector<int>(2,arrVek2);
 	PBQPNode<int>* node2 = graph->addNode(vek2);
 	int arrVek3 [] = {6, 7, 8};
-	Vektor<int> vek3 = Vektor<int>(3, arrVek3);
+	Vector<int> vek3 = Vector<int>(3, arrVek3);
 	PBQPNode<int>* node3 = graph->addNode(vek3);
 	//normal edges
 	int arr1 [] = { 5, 5, 5, 5, 5, 5 };
@@ -85,16 +85,16 @@ BOOST_AUTO_TEST_CASE(simpleNumberTest) {
 		graph = result[0];
 	}
 	BOOST_CHECK_EQUAL(node1->getDegree(), 2);
-	BOOST_CHECK_EQUAL(node1->getVektor().get(0), 28);
-	BOOST_CHECK_EQUAL(node1->getVektor().get(1), 41);
-	BOOST_CHECK_EQUAL(node1->getVektor().get(2), 54);
+	BOOST_CHECK_EQUAL(node1->getVector().get(0), 28);
+	BOOST_CHECK_EQUAL(node1->getVector().get(1), 41);
+	BOOST_CHECK_EQUAL(node1->getVector().get(2), 54);
 	BOOST_CHECK_EQUAL(node2->getDegree(), 2);
-	BOOST_CHECK_EQUAL(node2->getVektor().get(0), 24);
-	BOOST_CHECK_EQUAL(node2->getVektor().get(1), 28);
+	BOOST_CHECK_EQUAL(node2->getVector().get(0), 24);
+	BOOST_CHECK_EQUAL(node2->getVector().get(1), 28);
 	BOOST_CHECK_EQUAL(node3->getDegree(), 2);
-	BOOST_CHECK_EQUAL(node3->getVektor().get(0), 6);
-	BOOST_CHECK_EQUAL(node3->getVektor().get(1), 7);
-	BOOST_CHECK_EQUAL(node3->getVektor().get(2), 8);
+	BOOST_CHECK_EQUAL(node3->getVector().get(0), 6);
+	BOOST_CHECK_EQUAL(node3->getVector().get(1), 7);
+	BOOST_CHECK_EQUAL(node3->getVector().get(2), 8);
 	delete graph;
 }
 

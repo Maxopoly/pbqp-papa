@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "graph/PBQPGraph.hpp"
-#include "graph/Vektor.hpp"
+#include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 
@@ -20,14 +20,14 @@ BOOST_AUTO_TEST_CASE(basicEdgeGeneration) {
 	//generate a bunch of nodes
 	for (int i = 1; i <= 50; i++) {
 		int arr [] = {3, 2};
-		Vektor<int> vektor = Vektor<int>(2,arr);
-		PBQPNode<int>* node = graph.addNode(vektor);
+		Vector<int> vector = Vector<int>(2,arr);
+		PBQPNode<int>* node = graph.addNode(vector);
 		BOOST_CHECK_EQUAL(graph.getEdgeCount(), 0);
 		BOOST_CHECK_EQUAL(graph.getNodeCount(), i);
 		BOOST_CHECK_EQUAL(node->getIndex(), i - 1);
-		BOOST_CHECK(vektor == node->getVektor());
+		BOOST_CHECK(vector == node->getVector());
 		BOOST_CHECK_EQUAL(node->getDegree(), 0);
-		BOOST_CHECK_EQUAL(node->getVektorDegree(), 2);
+		BOOST_CHECK_EQUAL(node->getVectorDegree(), 2);
 	}
 
 	//generate a bunch of edges

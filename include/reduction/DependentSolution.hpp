@@ -37,7 +37,7 @@ public:
 		const unsigned long int length = dependencyNodes.size();
 		for (unsigned long int i = 0; i < length; i++) {
 			dependencyIndices[i] = (dependencyNodes[i])->getIndex();
-			unsigned short int degree = (dependencyNodes[i])->getVektorDegree();
+			unsigned short int degree = (dependencyNodes[i])->getVectorDegree();
 			dependencyDegrees[i] = degree;
 			degreeProduct *= degree;
 		}

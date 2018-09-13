@@ -9,12 +9,12 @@ namespace pbqppapa {
 template<typename T>
 class PBQPEdge;
 template<typename T>
-class Vektor;
+class Vector;
 
 template<typename T>
 class PBQPNode {
 private:
-	Vektor<T> values;
+	Vector<T> values;
 	std::vector<PBQPEdge<T>*> incidentEdges = std::vector<PBQPEdge<T>*>();
 	std::vector<PBQPEdge<T>*> outgoingEdges = std::vector<PBQPEdge<T>*>();
 	unsigned const int index;
@@ -23,7 +23,7 @@ public:
 	/**
 	 * Should only be used by PBQPGraph internally. Index counter is held by PBQPGraph instance
 	 */
-	PBQPNode(unsigned const int index, Vektor<T>& values) :
+	PBQPNode(unsigned const int index, Vector<T>& values) :
 			values(values), index(index) {
 	}
 
@@ -60,9 +60,9 @@ public:
 	}
 
 	/**
-	 * Gets the length (amount of rows) of the cost vektor
+	 * Gets the length (amount of rows) of the cost Vector
 	 */
-	unsigned short int getVektorDegree() const {
+	unsigned short int getVectorDegree() const {
 		return values.getRowCount();
 	}
 
@@ -74,9 +74,9 @@ public:
 	}
 
 	/**
-	 * Gets the cost vektor associated with this node
+	 * Gets the cost Vector associated with this node
 	 */
-	Vektor<T>& getVektor() {
+	Vector<T>& getVector() {
 		return values;
 	}
 

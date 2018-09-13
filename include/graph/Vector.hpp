@@ -1,5 +1,5 @@
-#ifndef INCLUDE_GRAPH_VEKTOR_HPP_
-#define INCLUDE_GRAPH_VEKTOR_HPP_
+#ifndef INCLUDE_GRAPH_Vector_HPP_
+#define INCLUDE_GRAPH_Vector_HPP_
 
 #include "graph/Matrix.hpp"
 
@@ -10,34 +10,33 @@ class Matrix;
 
 /**
  * A matrix with only a single column.
- * To avoid confusion with the commonly used std::vector, this one is spelled with a k
  */
 template<class T>
-class Vektor: public Matrix<T> {
+class Vector: public Matrix<T> {
 public:
 	/**
-	 * Creates a new vektor (matrix with one column) with the given amount of rows. The given data
+	 * Creates a new Vector (matrix with one column) with the given amount of rows. The given data
 	 * must be an array with matching length
 	 */
-	Vektor<T>(unsigned short int length, T* data) :
+	Vector<T>(unsigned short int length, T* data) :
 			Matrix<T>(length, 1, data) {
 		//super constructor does everything for us
 	}
 
 	/**
-	 * Creates a new vektor with uninitialized content
+	 * Creates a new Vector with uninitialized content
 	 */
-	Vektor<T>(unsigned short int length) :
+	Vector<T>(unsigned short int length) :
 			Matrix<T>(length, 1) {
 	}
 
-	Vektor<T>(const Vektor<T>& vek) :
+	Vector<T>(const Vector<T>& vek) :
 			Matrix<T>(vek) {
 	}
 
 	/**
-	 * Gets the index (row number) of the smallest element within the vektor.
-	 * Will encounter undefined behavior if the vektor is of length 0.
+	 * Gets the index (row number) of the smallest element within the Vector.
+	 * Will encounter undefined behavior if the Vector is of length 0.
 	 */
 	unsigned short int getIndexOfSmallestElement() const {
 		int minimumIndex = 0;
@@ -58,4 +57,4 @@ public:
 
 }
 
-#endif /* INCLUDE_GRAPH_VEKTOR_HPP_ */
+#endif /* INCLUDE_GRAPH_Vector_HPP_ */

@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include "graph/PBQPGraph.hpp"
-#include "graph/Vektor.hpp"
+#include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "io/PBQP_Serializer.hpp"
@@ -18,13 +18,13 @@ namespace pbqppapa {
 
 BOOST_AUTO_TEST_CASE(dummyTest) {
 	PBQPGraph<unsigned long int>* graph = new PBQPGraph<unsigned long int>();
-	Vektor<unsigned long int> vek1 = Vektor<unsigned long int>(3,
+	Vector<unsigned long int> vek1 = Vector<unsigned long int>(3,
 			new unsigned long int[3] { 1, 2, 3 });
 	PBQPNode<unsigned long int>* node1 = graph->addNode(vek1);
-	Vektor<unsigned long int> vek2 = Vektor<unsigned long int>(2,
+	Vector<unsigned long int> vek2 = Vector<unsigned long int>(2,
 			new unsigned long int[2] { 4, 5 });
 	PBQPNode<unsigned long int>* node2 = graph->addNode(vek2);
-	Vektor<unsigned long int> vek3 = Vektor<unsigned long int>(3,
+	Vector<unsigned long int> vek3 = Vector<unsigned long int>(3,
 			new unsigned long int[3] { 6, 7, 8 });
 	PBQPNode<unsigned long int>* node3 = graph->addNode(vek3);
 	//normal edges

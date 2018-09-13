@@ -40,7 +40,7 @@ public:
 			PBQPNode<T>* node = *iter;
 			iter++;
 			if (node->getDegree() == 0) {
-				nodeSolution.push_back(node->getVektor().getIndexOfSmallestElement());
+				nodeSolution.push_back(node->getVector().getIndexOfSmallestElement());
 				targetNodes.push_back(node);
 				this->graph->removeNode(node);
 			}
@@ -66,7 +66,7 @@ public:
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(dependencyNodes, solutionNodes);
 		std::vector<unsigned short int> nodeSolution = std::vector<unsigned short int>();
-		nodeSolution.push_back(node->getVektor().getIndexOfSmallestElement());
+		nodeSolution.push_back(node->getVector().getIndexOfSmallestElement());
 		solution->setSolution(emptyIntVector, nodeSolution);
 		return solution;
 	}

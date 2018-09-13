@@ -14,10 +14,10 @@ class PBQPNode;
 template<typename T>
 class Matrix;
 template<typename T>
-class Vektor;
+class Vector;
 
 /**
- * A graph representing a PBQP. The template represents the data type of the numbers in the cost vektors
+ * A graph representing a PBQP. The template represents the data type of the numbers in the cost Vectors
  * and cost matrices. It is consistent throughout the entire graph; all edges and all nodes.
  */
 template<typename T>
@@ -50,12 +50,12 @@ public:
 	}
 
 	/**
-	 * Creates a new node with the given cost vektor and adds it to the graph.
+	 * Creates a new node with the given cost Vector and adds it to the graph.
 	 * The new node will not have any edges initially
 	 */
-	PBQPNode<T>* addNode(Vektor<T>& vektor) {
+	PBQPNode<T>* addNode(Vector<T>& Vector) {
 		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++,
-				vektor);
+				Vector);
 		nodes.insert(node);
 		return node;
 	}

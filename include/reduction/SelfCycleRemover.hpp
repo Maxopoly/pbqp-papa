@@ -24,10 +24,10 @@ public:
 		while (iter != this->graph->getEdgeEnd()) {
 			PBQPEdge<T>* edge = *iter;
 			if (edge->getSource() == edge->getTarget()) {
-				//add diagonal of edge matrix to cost vektor and then delete edge
+				//add diagonal of edge matrix to cost Vector and then delete edge
 				for (unsigned short int i = 0;
-						i < edge->getSource()->getVektorDegree(); i++) {
-					edge->getSource()->getVektor().get(i) +=
+						i < edge->getSource()->getVectorDegree(); i++) {
+					edge->getSource()->getVector().get(i) +=
 							edge->getMatrix().get(i, i);
 				}
 				++iter;

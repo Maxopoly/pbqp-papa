@@ -57,7 +57,7 @@ private:
 		nlohmann::json nodeJson = json["nodes"];
 		for (nlohmann::json singleNodeJson : nodeJson) {
 			unsigned int index = singleNodeJson["index"];
-			Vektor<T> vek = parseVektor(singleNodeJson["cost"], serializer);
+			Vector<T> vek = parseVector(singleNodeJson["cost"], serializer);
 			PBQPNode<T>* node = new PBQPNode<T>(index, vek);
 			graph->addNode(node);
 			nodeByIndex.insert(std::make_pair(index, node));
@@ -74,8 +74,8 @@ private:
 		return graph;
 	}
 
-	Vektor<T> parseVektor(nlohmann::json json, TypeSerializer<T>* serializer) {
-		Vektor<T> vek = Vektor<T>((unsigned short int) json.size());
+	Vector<T> parseVector(nlohmann::json json, TypeSerializer<T>* serializer) {
+		Vector<T> vek = Vector<T>((unsigned short int) json.size());
 		for (unsigned short int i = 0; i < json.size(); i++) {
 			vek.get(i) = serializer->deserialize(json[i]);
 		}
@@ -104,9 +104,9 @@ private:
 			PBQPNode<T>* node = *iter;
 			nodeJson["index"] = node->getIndex();
 			nlohmann::json costVector = nlohmann::json::array();
-			for (unsigned short int i = 0; i < node->getVektorDegree(); i++) {
+			for (unsigned short int i = 0; i < node->getVectorDegree(); i++) {
 				costVector.push_back(
-						serializer->serialize(node->getVektor().get(i)));
+						serializer->serialize(node->getVector().get(i)));
 			}
 			nodeJson["cost"] = costVector;
 			nodeJsons.push_back(nodeJson);

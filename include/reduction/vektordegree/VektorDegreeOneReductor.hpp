@@ -1,5 +1,5 @@
-#ifndef REDUCTION_VEKTORDEGREE_VEKTORDEGREEONEREDUCTOR_HPP_
-#define REDUCTION_VEKTORDEGREE_VEKTORDEGREEONEREDUCTOR_HPP_
+#ifndef REDUCTION_VectorDEGREE_VectorDEGREEONEREDUCTOR_HPP_
+#define REDUCTION_VectorDEGREE_VectorDEGREEONEREDUCTOR_HPP_
 
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
@@ -16,27 +16,27 @@ template<typename T>
 class PBQPNode;
 
 /**
- * Any nodes with a vektor degree of 0 can be deleted from the graph. No selection needs to be made for them
+ * Any nodes with a Vector degree of 0 can be deleted from the graph. No selection needs to be made for them
  */
 template<typename T>
-class VektorDegreeOneReductor: public PBQP_Reduction<T> {
+class VectorDegreeOneReductor: public PBQP_Reduction<T> {
 private:
 	std::vector<unsigned int> nodes;
 
 public:
-	VektorDegreeOneReductor(PBQPGraph<T>* graph) :
+	VectorDegreeOneReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 		nodes = *new std::vector<int>();
 	}
 
-	~VektorDegreeOneReductor() {
+	~VectorDegreeOneReductor() {
 	}
 
 	std::vector<PBQPGraph*>* reduce() {
 		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
 		for (PBQPNode<T>* node : *(graph->getNodes())) {
-			if (node->getVektorDegree() == 1) {
+			if (node->getVectorDegree() == 1) {
 				solutionNodes.push_back(node);
 			}
 		}
@@ -48,7 +48,7 @@ public:
 		return solution;
 	}
 
-	static DependentSolution reduceVektorDegreeOne(PBQPNode<T>* node,
+	static DependentSolution reduceVectorDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
 		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
@@ -65,4 +65,4 @@ public:
 
 }
 
-#endif /* REDUCTION_VEKTORDEGREE_VEKTORDEGREEONEREDUCTOR_HPP_ */
+#endif /* REDUCTION_VectorDEGREE_VectorDEGREEONEREDUCTOR_HPP_ */

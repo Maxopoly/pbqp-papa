@@ -19,8 +19,8 @@ class PBQPNode;
  * recalculating the part of the graph that changed compared to the previous iteration.
  *
  * This leads us to a counter where every digit refers to a node in the graph. Each of these digits/nodes
- * can have a possible value within [0,vektorDegree) where vektorDegree is the length of the cost vektor
- * associated with the node. For example for 4 nodes, each with a vektor length of 3, we would count:
+ * can have a possible value within [0,VectorDegree) where VectorDegree is the length of the cost Vector
+ * associated with the node. For example for 4 nodes, each with a Vector length of 3, we would count:
  * [0 0 0 0], [0 0 0 1], [0 0 0 2], [0 0 1 0], .... , [2 2 2 2]
  *
  * The problem with this are the cascading changes when higher indexed digits change, for example here:
@@ -40,10 +40,10 @@ class BruteForceSolver: PBQPSolver<T> {
 private:
 	/**
 	 * Selection arrays equal a possible solution for the PBQP.
-	 * The value at index [i] is the index of the solution in the cost vektor of the node with internal index i
+	 * The value at index [i] is the index of the solution in the cost Vector of the node with internal index i
 	 *
 	 * Example: selection [5] = 3
-	 * means that the third element in the cost vektor of the node with index 5 was chosen for the solution.
+	 * means that the third element in the cost Vector of the node with index 5 was chosen for the solution.
 	 *
 	 * Not all indices in these arrays are actually used. Due to reduction steps some nodes might have been/removed added,
 	 * but to not waste time converting indices when calculating the cost of a solution, the index in this array is the index
@@ -62,7 +62,7 @@ private:
 	 */
 	PBQPNode<T>* nodes[];
 	/**
-	 * The vektor degree of each node, subtracted by 1. Indexing is the same as in the nodes array
+	 * The Vector degree of each node, subtracted by 1. Indexing is the same as in the nodes array
 	 */
 	unsigned short int limits[];
 	/**
@@ -99,7 +99,7 @@ public:
 				iter++) {
 			PBQPNode<T>* node = *iter;
 			nodes[index] = node;
-			limits[index++] = node->getVektorDegree() - 1;
+			limits[index++] = node->getVectorDegree() - 1;
 		}
 		memset(&trend, 1, size * sizeof(bool));
 	}
@@ -136,7 +136,7 @@ private:
 				currentSelection[nodeChanged->getIndex()];
 		unsigned short int previousNodeSelection = currentNodeSelection - 1;
 		if (previousNodeSelection < 0) {
-			previousNodeSelection = nodeChanged->getVektorDegree() - 1;
+			previousNodeSelection = nodeChanged->getVectorDegree() - 1;
 		}
 		for (PBQPEdge<T>* edge : nodeChanged->getAdjacentEdges(false)) {
 			sum += edge->getMatrix()->get(
@@ -157,8 +157,8 @@ private:
 						previousNodeSelection);
 			}
 		}
-		sum += nodeChanged->getVektor()->get(currentNodeSelection);
-		sum -= nodeChanged->getVektor()->get(previousNodeSelection);
+		sum += nodeChanged->getVector()->get(currentNodeSelection);
+		sum -= nodeChanged->getVector()->get(previousNodeSelection);
 		return previousCost + sum;
 	}
 
@@ -173,7 +173,7 @@ private:
 					currentSelection[edge->getTarget()->getIndex()]);
 		}
 		for (PBQPNode<T>* node : graph->getNodes()) {
-			sum += node->getVektor()->get(currentSelection[node->getIndex()]);
+			sum += node->getVector()->get(currentSelection[node->getIndex()]);
 		}
 		return sum;
 	}

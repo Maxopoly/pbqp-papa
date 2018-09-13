@@ -27,7 +27,7 @@ public:
 	unsigned long long int getSolutionAmount() {
 		unsigned long long int amount = 1;
 		for (PBQPNode<T>* node : graph->getNodes()) {
-			amount *= node->getVektorDegree();
+			amount *= node->getVectorDegree();
 		}
 		return amount;
 	}

@@ -20,7 +20,7 @@ class PBQPSolution;
  * so it solves P completly
  *
  * The overall goal here is to simplify the PBQP for the final solving step, how exactly that is achieved is completly up
- * to the implementation. Adding/removing nodes, adding/removing edges and modifying cost matrices/vektors is all allowed.
+ * to the implementation. Adding/removing nodes, adding/removing edges and modifying cost matrices/Vectors is all allowed.
  *
  */
 template<typename T>

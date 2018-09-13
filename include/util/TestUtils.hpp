@@ -2,7 +2,7 @@
 #include <set>
 
 #include "graph/PBQPGraph.hpp"
-#include "graph/Vektor.hpp"
+#include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 
@@ -13,8 +13,8 @@ PBQPGraph<int>* genGraph(unsigned int size) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
 	for (unsigned int i = 1; i <= size; i++) {
 		int arr1[] = {3, 2};
-		Vektor<int> vektor = Vektor<int>(2, arr1);
-		graph->addNode(vektor);
+		Vector<int> vector = Vector<int>(2, arr1);
+		graph->addNode(vector);
 	}
 	for (std::set<PBQPNode<int>*>::iterator it = graph->getNodeBegin();
 			it != graph->getNodeEnd(); it++) {

@@ -61,8 +61,8 @@ public:
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
-		//TODO proof against vektor of length 0
-		for (unsigned short int i = 0; i < otherEnd->getVektorDegree(); i++) {
+		//TODO proof against Vector of length 0
+		for (unsigned short int i = 0; i < otherEnd->getVectorDegree(); i++) {
 			//find minimum for this selection
 			T maximum;
 			if (edge->isSource(node)) {
@@ -71,7 +71,7 @@ public:
 				maximum += calcSum(i, 0, edge);
 			}
 			unsigned short int maxSelection = 0;
-			for (unsigned short int k = 1; k < node->getVektorDegree(); k++) {
+			for (unsigned short int k = 1; k < node->getVectorDegree(); k++) {
 				T compSum;
 				if (edge->isSource(node)) {
 					compSum += calcSum(k, i, edge);
@@ -90,7 +90,7 @@ public:
 			dependencySelections.push_back(i);
 			solutionSelections.push_back(maxSelection);
 			solution->setSolution(dependencySelections, solutionSelections);
-			otherEnd->getVektor()->get(i) = maximum;
+			otherEnd->getVector()->get(i) = maximum;
 		}
 		graph->removeNode(node);
 		//TODO chain effect?
@@ -106,8 +106,8 @@ private:
 	static inline T calcSum(unsigned short int sourceSelection,
 			unsigned short int targetSelection, PBQPEdge<T>* edge) {
 		T sum = new T();
-		sum += edge->getSource()->getVektor()->get(sourceSelection);
-		sum += edge->getTarget()->getVektor()->get(targetSelection);
+		sum += edge->getSource()->getVector()->get(sourceSelection);
+		sum += edge->getTarget()->getVector()->get(targetSelection);
 		sum += edge->getMatrix()->get(sourceSelection, targetSelection);
 		return sum;
 	}

@@ -25,11 +25,11 @@ public:
 	bool check() {
 		for (PBQPEdge<T>* edge : *(graph->getEdges())) {
 			//TODO Design proper exceptions that are thrown here?
-			if (edge->getSource()->getVektorDegree()
+			if (edge->getSource()->getVectorDegree()
 					!= edge->getMatrix()->getColumnCount()) {
 				return false;
 			}
-			if (edge->getTarget()->getVektorDegree()
+			if (edge->getTarget()->getVectorDegree()
 					!= edge->getMatrix()->getRowCount()) {
 				return false;
 			}

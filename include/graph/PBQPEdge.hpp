@@ -26,8 +26,8 @@ public:
 	 * The matrix associated with this edge will be the one given.
 	 *
 	 * For a valid PBQP, the amount of rows in the matrix must match the length
-	 * of the vektor associated with the source node and the amount of columns
-	 * in the matrix must match the length of the vektor associated with the target node
+	 * of the Vector associated with the source node and the amount of columns
+	 * in the matrix must match the length of the Vector associated with the target node
 	 */
 	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, Matrix<T>& matrix) :
 			source(source), target(target), matrix(matrix) {

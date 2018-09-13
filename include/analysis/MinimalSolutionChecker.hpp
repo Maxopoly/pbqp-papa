@@ -9,7 +9,7 @@ template<typename T>
 class PBQPHandler;
 
 /**
- * Calculates the theoretically possible minimum for a given graph, assuming we chose the minimum for every matrix and every vektor
+ * Calculates the theoretically possible minimum for a given graph, assuming we chose the minimum for every matrix and every Vector
  */
 template<typename T>
 class MinimalSolutionChecker: PBQPHandler<T> {

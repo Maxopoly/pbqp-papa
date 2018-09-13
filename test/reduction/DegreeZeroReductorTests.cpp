@@ -6,7 +6,7 @@
 #include <set>
 
 #include "graph/PBQPGraph.hpp"
-#include "graph/Vektor.hpp"
+#include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "reduction/PBQPReduction.hpp"
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(simpleNodeReduction) {
 	PBQPGraph<int> graph = PBQPGraph<int>();
 	for (int i = 0; i < 20; i++) {
 		int arr[] = { 3, 1 };
-		Vektor<int> vek = Vektor<int>(2, arr);
+		Vector<int> vek = Vector<int>(2, arr);
 		PBQPNode<int>* node = graph.addNode(vek);
 	}
 	DegreeZeroReductor<int> zeroReductor = DegreeZeroReductor<int>(&graph);

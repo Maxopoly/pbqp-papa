@@ -77,15 +77,15 @@ public:
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
-		Matrix<T>* resultMatrix = new Matrix<T>(secondNode->getVektorDegree(),
-				firstNode->getVektorDegree());
+		Matrix<T>* resultMatrix = new Matrix<T>(secondNode->getVectorDegree(),
+				firstNode->getVectorDegree());
 		for (unsigned short int firstSelection = 0;
-				firstSelection < firstNode->getVektorDegree();
+				firstSelection < firstNode->getVectorDegree();
 				firstSelection++) {
 			for (unsigned short int secondSelection = 0;
-					secondSelection < secondNode->getVektorDegree();
+					secondSelection < secondNode->getVectorDegree();
 					secondSelection++) {
-				T maximum = node->getVektor()->get(0);
+				T maximum = node->getVector()->get(0);
 				unsigned short int maximumNodeSelection = 0;
 				if (isFirstSource) {
 					maximum += firstEdge->getMatrix()->get(firstSelection, 0);
@@ -98,9 +98,9 @@ public:
 					maximum += secondEdge->getMatrix()->get(0, secondSelection);
 				}
 				for (unsigned short nodeSelection = 0;
-						nodeSelection < node->getVektorDegree();
+						nodeSelection < node->getVectorDegree();
 						nodeSelection++) {
-					T sum = node->getVektor()->get(nodeSelection);
+					T sum = node->getVector()->get(nodeSelection);
 					if (isFirstSource) {
 						sum += firstEdge->getMatrix()->get(firstSelection,
 								nodeSelection);

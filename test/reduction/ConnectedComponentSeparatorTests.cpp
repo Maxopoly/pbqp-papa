@@ -6,7 +6,7 @@
 #include <set>
 
 #include "graph/PBQPGraph.hpp"
-#include "graph/Vektor.hpp"
+#include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "reduction/PBQPReduction.hpp"
@@ -18,7 +18,7 @@ namespace pbqppapa {
 BOOST_AUTO_TEST_CASE(singleNodeTest) {
 	PBQPGraph<int> graph = PBQPGraph<int>();
 	int vekData [] = {2 ,2};
-	Vektor<int> vek = Vektor<int>(2, vekData);
+	Vector<int> vek = Vector<int>(2, vekData);
 	graph.addNode(vek);
 	ConnectedComponentSeparator<int> sep = ConnectedComponentSeparator<int>(&graph);
 	std::vector<PBQPGraph<int>*> components = sep.reduce();
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(basicNodeTest) {
 	int size = 50;
 	for (int i = 0; i < size; i++) {
 		int arr [] = {2, 2};
-		Vektor<int> vek = Vektor<int>(2, arr);
+		Vector<int> vek = Vector<int>(2, arr);
 		graph.addNode(vek);
 	}
 	ConnectedComponentSeparator<int> sep = ConnectedComponentSeparator<int>(&graph);
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(advancedNodeTest) {
 		std::vector<PBQPNode<int>*> otherNodes = std::vector<PBQPNode<int>*>();
 		for (int k = 0; k < localSize; k++) {
 			int arr [] = {2, 2};
-			Vektor<int> vek = Vektor<int>(2, arr);
+			Vector<int> vek = Vector<int>(2, arr);
 			PBQPNode<int>* node = graph->addNode(vek);
 			otherNodes.push_back(node);
 			for (PBQPNode<int>* otherNode : otherNodes) {
