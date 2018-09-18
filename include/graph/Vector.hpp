@@ -44,9 +44,9 @@ public:
 	 * Will encounter undefined behavior if the Vector is of length 0.
 	 */
 	unsigned short int getIndexOfSmallestElement() const {
-		int minimumIndex = 0;
-		double minimumValue = this->content[0];
-		for (int i = 0; i < this->rows; i++) {
+		unsigned short int minimumIndex = 0;
+		T minimumValue = this->content[0];
+		for (unsigned short int i = 0; i < this->rows; i++) {
 			if (this->content[i] < minimumValue) {
 				minimumValue = this->content[i];
 				minimumIndex = i;

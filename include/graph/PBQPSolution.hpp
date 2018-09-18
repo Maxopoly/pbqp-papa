@@ -19,10 +19,10 @@ public:
 	}
 
 	void setSolution(unsigned long int nodeIndex, unsigned short int solution) {
-		selection[nodeIndex] = solution;
+		selection.at(nodeIndex) = solution;
 	}
 	unsigned short int getSolution(unsigned long int nodeIndex) {
-		return selection[nodeIndex];
+		return selection.at(nodeIndex);
 	}
 };
 

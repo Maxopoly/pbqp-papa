@@ -2,6 +2,7 @@
 #define VALIDATION_DEGREEZEROREDUCTOR_HPP_
 
 #include <vector>
+#include <memory>
 #include "reduction/PBQPReduction.hpp"
 #include "reduction/DependentSolution.hpp"
 
@@ -19,17 +20,13 @@ class PBQPNode;
 template<typename T>
 class DegreeZeroReductor: public PBQP_Reduction<T> {
 private:
-	DependentSolution<T>* solution;
+	std::unique_ptr<DependentSolution<T>> solution;
 	//we need this a lot, so keeping it around instead of recreating is good
 	static const std::vector<unsigned short int> emptyIntVector;
 
 public:
 	DegreeZeroReductor(PBQPGraph<T>* graph) :
-			PBQP_Reduction<T>(graph), solution(0) {
-	}
-
-	~DegreeZeroReductor() {
-		delete solution;
+			PBQP_Reduction<T>(graph) {
 	}
 
 	std::vector<PBQPGraph<T>*>& reduce() override {
@@ -45,7 +42,7 @@ public:
 				this->graph->removeNode(node);
 			}
 		}
-		solution = new DependentSolution<T>(std::vector<PBQPNode<T>*>(0), targetNodes);
+		solution = std::unique_ptr<DependentSolution<T>>(new DependentSolution<T>(std::vector<PBQPNode<T>*>(0), targetNodes));
 		solution->setSolution(emptyIntVector, nodeSolution);
 		this->result.push_back(this->graph);
 		return this->result;

@@ -19,19 +19,19 @@ namespace pbqppapa {
 
 BOOST_AUTO_TEST_CASE(emptyGraphTest) {
 	//make sure this doesnt explode
-	PBQPGraph<int> graph = PBQPGraph<int>();
-	DegreeZeroReductor<int> zeroReductor = DegreeZeroReductor<int>(&graph);
+	PBQPGraph<int> graph;
+	DegreeZeroReductor<int> zeroReductor (&graph);
 	std::vector<PBQPGraph<int>*> result = zeroReductor.reduce();
 }
 
 BOOST_AUTO_TEST_CASE(simpleNodeReduction) {
 	PBQPGraph<int> graph = PBQPGraph<int>();
 	for (int i = 0; i < 20; i++) {
-		int arr[] = { 3, 1 };
-		Vector<int> vek = Vector<int>(2, arr);
+		int arr[] { 3, 1 };
+		Vector<int> vek (2, arr);
 		PBQPNode<int>* node = graph.addNode(vek);
 	}
-	DegreeZeroReductor<int> zeroReductor = DegreeZeroReductor<int>(&graph);
+	DegreeZeroReductor<int> zeroReductor(&graph);
 	std::vector<PBQPGraph<int>*> result = zeroReductor.reduce();
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	PBQPGraph<int>* resultGraph = result [0];

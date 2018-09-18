@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
+#include <reduction/DependentSolution.hpp>
+
+#include <boost/test/unit_test.hpp>
 
 namespace pbqppapa {
 
@@ -25,9 +28,8 @@ private:
 	std::vector<DependentSolution<T>*> solutions;
 
 public:
-	DegreeOneReductor(PBQPGraph<T>*) :
+	DegreeOneReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
-		solutions = *new std::vector<DependentSolution<T>*>();
 	}
 
 	~DegreeOneReductor() {
@@ -36,79 +38,79 @@ public:
 		}
 	}
 
-	std::vector<PBQPGraph*>* reduce() {
-		for (PBQPNode<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph<T>*>& reduce() override {
+		auto iter = this->graph->getNodeBegin();
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter++;
 			if (node->getDegree() == 1) {
-				DependentSolution<T>* sol = reduceDegreeOne(node);
-				solutions->push_back(sol);
+				DependentSolution<T>* sol = reduceDegreeOne(node, this->graph);
+				solutions.push_back(sol);
 			}
 		}
-		DependentSolution<T>* solution = new DependentSolution<T>(
-				new std::vector<PBQPNode*>(0), targetNodes);
-		solution->setSolution(new std::vector<int>(0), nodeSolution);
-		result->push_back(graph);
-		return result;
+		this->result.push_back(this->graph);
+		return this->result;
 	}
 
 	static DependentSolution<T>* reduceDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		//will explode if node doesnt have an edge
-		PBQPEdge<T>* edge = (*node->getAdjacentEdges())[0];
+		PBQPEdge<T>* edge = node->getAdjacentEdges().at(0);
 		PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
-		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
-		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
+		std::vector<PBQPNode<T>*> dependencyNodes;
+		std::vector<PBQPNode<T>*> solutionNodes;
 		dependencyNodes.push_back(otherEnd);
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
-		//TODO proof against Vector of length 0
+		bool isSource = edge->isSource(node);
 		for (unsigned short int i = 0; i < otherEnd->getVectorDegree(); i++) {
 			//find minimum for this selection
-			T maximum;
-			if (edge->isSource(node)) {
-				maximum += calcSum(0, i, edge);
+			T minimum = T();
+			if (isSource) {
+				minimum += calcSum(0, i, edge);
 			} else {
-				maximum += calcSum(i, 0, edge);
+				minimum += calcSum(i, 0, edge);
 			}
-			unsigned short int maxSelection = 0;
+			unsigned short int minSelection = 0;
 			for (unsigned short int k = 1; k < node->getVectorDegree(); k++) {
-				T compSum;
-				if (edge->isSource(node)) {
+				T compSum = T ();
+				if (isSource) {
 					compSum += calcSum(k, i, edge);
 				} else {
 					compSum += calcSum(i, k, edge);
 				}
-				if (compSum > maximum) {
-					maximum = compSum;
-					maxSelection = k;
+				if (compSum < minimum) {
+					minimum = compSum;
+					minSelection = k;
 				}
 			}
-			std::vector<unsigned short int> dependencySelections =
-					*new std::vector<unsigned short int>();
-			std::vector<unsigned short int> solutionSelections =
-					*new std::vector<unsigned short int>();
+			std::vector<unsigned short int> dependencySelections;
+			std::vector<unsigned short int> solutionSelections;
 			dependencySelections.push_back(i);
-			solutionSelections.push_back(maxSelection);
+			solutionSelections.push_back(minSelection);
 			solution->setSolution(dependencySelections, solutionSelections);
-			otherEnd->getVector()->get(i) = maximum;
+			otherEnd->getVector().get(i) = minimum;
 		}
 		graph->removeNode(node);
 		//TODO chain effect?
 		return solution;
 	}
 
-	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
-		this->solution->solve(solution);
-		return solution;
+	void solve(PBQPSolution<T>& solution) {
+		auto iter = solutions.rbegin();
+		while(iter != solutions.rend()) {
+			DependentSolution<T>* sol = *iter++;
+			sol->solve(solution);
+		}
 	}
 
 private:
 	static inline T calcSum(unsigned short int sourceSelection,
 			unsigned short int targetSelection, PBQPEdge<T>* edge) {
-		T sum = new T();
-		sum += edge->getSource()->getVector()->get(sourceSelection);
-		sum += edge->getTarget()->getVector()->get(targetSelection);
-		sum += edge->getMatrix()->get(sourceSelection, targetSelection);
+		T sum = T();
+		sum += edge->getSource()->getVector().get(sourceSelection);
+		sum += edge->getTarget()->getVector().get(targetSelection);
+		sum += edge->getMatrix().get(sourceSelection, targetSelection);
 		return sum;
 	}
 };

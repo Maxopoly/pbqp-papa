@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <cstring>
 
 namespace pbqppapa {
 
@@ -27,7 +28,7 @@ public:
 	 */
 	Matrix(unsigned short int rows, unsigned short int columns, T* data) :
 			rows(rows), columns(columns), content(new T[rows * columns]) {
-		memcpy(content, data, sizeof(T) * rows * columns);
+		std::memcpy(content, data, sizeof(T) * rows * columns);
 	}
 
 	/**
@@ -40,11 +41,11 @@ public:
 	Matrix(const Matrix<T>& matrix) :
 			rows(matrix.rows), columns(matrix.columns), content(
 					new T[rows * columns]) {
-		memcpy(content, matrix.content, rows * columns * sizeof(T));
+		std::memcpy(content, matrix.content, rows * columns * sizeof(T));
 	}
 
 	~Matrix() {
-		//delete[] content;
+		delete[] content;
 	}
 
 	Matrix<T>* operator=(const Matrix<T>& other) {

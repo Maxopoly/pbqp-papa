@@ -25,8 +25,7 @@ private:
 	std::vector<unsigned long int> dependencyIndices;
 	std::vector<unsigned long int> solutionIndices;
 	std::vector<unsigned short int> dependencyDegrees;
-	unsigned short int* solutions;
-	unsigned long int solutionAmount = 1;
+	std::vector<unsigned short int> solutions;
 
 public:
 	DependentSolution(const std::vector<PBQPNode<T>*>& dependencyNodes,
@@ -36,30 +35,17 @@ public:
 					std::vector<unsigned long int>(solutionNodes.size())), dependencyDegrees(
 					std::vector<unsigned short int>(dependencyNodes.size())) {
 		const unsigned long int length = dependencyNodes.size();
+		unsigned long solutionAmount = 1;
 		for (unsigned long int i = 0; i < length; i++) {
-			dependencyIndices[i] = (dependencyNodes[i])->getIndex();
-			unsigned short int degree = (dependencyNodes[i])->getVectorDegree();
-			dependencyDegrees[i] = degree;
+			dependencyIndices.at(i) = (dependencyNodes.at(i))->getIndex();
+			unsigned short int degree = (dependencyNodes.at(i))->getVectorDegree();
+			dependencyDegrees.at(i) = degree;
 			solutionAmount *= degree;
 		}
 		for (unsigned int i = 0; i < solutionNodes.size(); i++) {
-			solutionIndices[i] = (solutionNodes[i])->getIndex();
+			solutionIndices.at(i) = (solutionNodes.at(i))->getIndex();
 		}
-		solutions = new unsigned short int[dependencyIndices.size()
-				* solutionIndices.size() * solutionAmount];
-	}
-
-	~DependentSolution() {
-		delete[] solutions;
-	}
-
-	DependentSolution(const DependentSolution<T>& other) :
-			dependencyIndices(other.dependencyIndices), solutionIndices(
-					other.solutionIndices), dependencyDegrees(
-					other.dependencyDegrees), solutions(
-					new unsigned short int[solutionAmount]), solutionAmount(
-					solutionAmount) {
-		memcpy(solutions, other.solutions, solutionAmount * sizeof(T));
+		solutions = std::vector<unsigned short int> (solutionAmount * solutionIndices.size());
 	}
 
 	void setSolution(
@@ -67,18 +53,17 @@ public:
 			const std::vector<unsigned short int>& solutionSelection) {
 		unsigned long int index = resolveIndex(dependencySelections);
 		std::copy(solutionSelection.begin(), solutionSelection.end(),
-				solutions + index);
+				solutions.data() + index);
 	}
 
 	void solve(PBQPSolution<T>& solution) const {
-		std::vector<unsigned short int> dependencySolution = std::vector<
-				unsigned short int>(dependencyIndices.size());
-		for (unsigned long int dependencyId : dependencyIndices) {
-			dependencySolution.push_back(solution.getSolution(dependencyId));
+		std::vector<unsigned short int> dependencySolution (dependencyIndices.size());
+		for(unsigned long int i =0 ; i < dependencyIndices.size(); i++) {
+			dependencySolution.at(i) = solution.getSolution(dependencyIndices.at(i));
 		}
 		unsigned long int index = resolveIndex(dependencySolution);
 		for (unsigned long int i = 0; i < solutionIndices.size(); i++) {
-			solution.setSolution(solutionIndices[i], solutions[index + i]);
+			solution.setSolution(solutionIndices.at(i), solutions.at(index + i));
 		}
 	}
 
@@ -89,8 +74,8 @@ private:
 		unsigned long int index = 0;
 		unsigned long int offset = 1;
 		for (unsigned long int i = 0; i < dependencyDegrees.size(); i++) {
-			index += dependencyDegrees[i] * offset * dependencySelections[i];
-			offset *= dependencyDegrees[i];
+			index += offset * dependencySelections.at(i);
+			offset *= dependencyDegrees.at(i);
 		}
 		return index;
 	}

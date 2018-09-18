@@ -5,6 +5,8 @@
 #include <set>
 #include <iterator>
 
+#include "reduction/DependentSolution.hpp"
+
 namespace pbqppapa {
 
 template<typename T>
@@ -28,7 +30,6 @@ private:
 public:
 	DegreeTwoReductor(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
-		solutions = *new std::vector<DependentSolution<T>*>();
 	}
 
 	~DegreeTwoReductor() {
@@ -37,23 +38,25 @@ public:
 		}
 	}
 
-	std::vector<PBQPGraph*>* reduce() {
-		for (PBQPNode<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph<T>*>& reduce() {
+		auto iter = this->graph->getNodeBegin();
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter++;
 			if (node->getDegree() == 2) {
-				DependentSolution<T>* sol = reduceDegreeTwo(node);
-				solutions->push_back(sol);
+				DependentSolution<T>* sol = reduceDegreeTwo(node, this->graph);
+				solutions.push_back(sol);
 			}
 		}
-		DependentSolution<T>* solution = new DependentSolution<T>(
-				new std::vector<PBQPNode*>(0), targetNodes);
-		solution->setSolution(new std::vector<int>(0), nodeSolution);
-		result->push_back(graph);
-		return result;
+		this->result.push_back(this->graph);
+		return this->result;
 	}
 
-	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
-		this->solution->solve(solution);
-		return solution;
+	void solve(PBQPSolution<T>& solution) {
+		auto iter = solutions.rbegin();
+		while(iter != solutions.rend()) {
+			DependentSolution<T>* sol = *iter++;
+			sol->solve(solution);
+		}
 	}
 
 	/**
@@ -63,71 +66,70 @@ public:
 	 */
 	static DependentSolution<T>* reduceDegreeTwo(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
-		std::vector<PBQPNode*> dependencyNodes = *new std::vector<PBQPNode*>();
-		std::set<PBQPEdge*>::iterator it = graph->getEdges()->begin();
-		PBQPEdge<T>* firstEdge = *it;
+		//TODO exception if vector degree of any is 0
+		std::vector<PBQPNode<T>*> dependencyNodes;
+		auto it = graph->getEdgeBegin();
+		PBQPEdge<T>* firstEdge = *it++;
 		PBQPNode<T>* firstNode = firstEdge->getOtherEnd(node);
 		PBQPEdge<T>* secondEdge = *it;
-		PBQPNode<T>* secondNode = firstEdge->getOtherEnd(node);
+		PBQPNode<T>* secondNode = secondEdge->getOtherEnd(node);
 		dependencyNodes.push_back(firstNode);
 		dependencyNodes.push_back(secondNode);
 		bool isFirstSource = firstEdge->isSource(firstNode);
 		bool isSecondSource = secondEdge->isSource(secondNode);
-		std::vector<PBQPNode*> solutionNodes = *new std::vector<PBQPNode*>();
+		std::vector<PBQPNode<T>*> solutionNodes;
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
-		Matrix<T>* resultMatrix = new Matrix<T>(secondNode->getVectorDegree(),
-				firstNode->getVectorDegree());
+		//edge will go from first to second node
+		Matrix<T> resultMatrix (firstNode->getVectorDegree(), secondNode->getVectorDegree());
 		for (unsigned short int firstSelection = 0;
 				firstSelection < firstNode->getVectorDegree();
 				firstSelection++) {
 			for (unsigned short int secondSelection = 0;
 					secondSelection < secondNode->getVectorDegree();
 					secondSelection++) {
-				T maximum = node->getVector()->get(0);
-				unsigned short int maximumNodeSelection = 0;
+				T minimum = node->getVector().get(0);
+				unsigned short int minimalNodeSelection = 0;
 				if (isFirstSource) {
-					maximum += firstEdge->getMatrix()->get(firstSelection, 0);
+					minimum += firstEdge->getMatrix().get(firstSelection, 0);
 				} else {
-					maximum += firstEdge->getMatrix()->get(0, firstSelection);
+					minimum += firstEdge->getMatrix().get(0, firstSelection);
 				}
 				if (isSecondSource) {
-					maximum += secondEdge->getMatrix()->get(secondSelection, 0);
+					minimum += secondEdge->getMatrix().get(secondSelection, 0);
 				} else {
-					maximum += secondEdge->getMatrix()->get(0, secondSelection);
+					minimum += secondEdge->getMatrix().get(0, secondSelection);
 				}
-				for (unsigned short nodeSelection = 0;
+				for (unsigned short nodeSelection = 1;
 						nodeSelection < node->getVectorDegree();
 						nodeSelection++) {
-					T sum = node->getVector()->get(nodeSelection);
+					T sum = node->getVector().get(nodeSelection);
 					if (isFirstSource) {
-						sum += firstEdge->getMatrix()->get(firstSelection,
+						sum += firstEdge->getMatrix().get(firstSelection,
 								nodeSelection);
 					} else {
-						sum += firstEdge->getMatrix()->get(nodeSelection,
+						sum += firstEdge->getMatrix().get(nodeSelection,
 								firstSelection);
 					}
 					if (isSecondSource) {
-						sum += secondEdge->getMatrix()->get(secondSelection,
+						sum += secondEdge->getMatrix().get(secondSelection,
 								nodeSelection);
 					} else {
-						sum += secondEdge->getMatrix()->get(nodeSelection,
+						sum += secondEdge->getMatrix().get(nodeSelection,
 								secondSelection);
 					}
-					if (sum > maximum) {
-						maximum = sum;
-						maximumNodeSelection = nodeSelection;
+					if (sum < minimum) {
+						minimum = sum;
+						minimalNodeSelection = nodeSelection;
 					}
 				}
-				std::vector<unsigned short int> solutionSelection =
-						*new std::vector<unsigned short int>();
-				solutionSelection.push_back(maximumNodeSelection);
-				std::vector<unsigned short int> dependencySelection =
-						*new std::vector<unsigned short int>();
+				std::vector<unsigned short int> solutionSelection;
+				solutionSelection.push_back(minimalNodeSelection);
+				std::vector<unsigned short int> dependencySelection;
 				dependencySelection.push_back(firstSelection);
 				dependencySelection.push_back(secondSelection);
-				resultMatrix->get(firstSelection, secondSelection) = maximum;
+				resultMatrix.get(firstSelection, secondSelection) = minimum;
 				solution->setSolution(dependencySelection, solutionSelection);
 			}
 		}
