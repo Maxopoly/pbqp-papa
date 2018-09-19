@@ -25,7 +25,8 @@ class PBQPSolver: PBQPHandler<T> {
 
 protected:
 	PBQPSolution<T>* const solution;
-	virtual PBQPSolution<T> solve() = 0;
+
+	virtual void solve() = 0;
 
 public:
 	PBQPSolver(PBQPGraph<T>* graph, PBQPSolution<T>* solution) :
@@ -34,11 +35,11 @@ public:
 
 	virtual ~PBQPSolver();
 
-	PBQPSolution<T> getSolution() {
+	void calcSolution() {
 		if (graph->getNodeCount() == 0) {
-			return solution;
+			return;
 		}
-		return solve();
+		solve();
 	}
 
 };

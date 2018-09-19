@@ -5,8 +5,6 @@
 #include <reduction/PBQPReduction.hpp>
 #include <reduction/DependentSolution.hpp>
 
-#include <boost/test/unit_test.hpp>
-
 namespace pbqppapa {
 
 template<typename T>

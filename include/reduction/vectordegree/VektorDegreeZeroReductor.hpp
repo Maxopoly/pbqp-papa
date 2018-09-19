@@ -40,8 +40,8 @@ public:
 		return result;
 	}
 
-	PBQPSolution<T>* solve(PBQPSolution<T>* solution) {
-		return solution;
+	void solve(PBQPSolution<T>* solution) {
+
 	}
 
 	/**
