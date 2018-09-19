@@ -46,4 +46,9 @@ test_build/
 #CMake
 CMakeFiles/
 CMakeCache.txt
-cmake_install.cmake
+*.cmake
+Testing/
+bin/
+lib/
+MakeFile
+*/**/Makefile
