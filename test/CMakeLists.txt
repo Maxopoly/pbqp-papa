@@ -2,7 +2,9 @@ project(pbqp-papa_tests LANGUAGES CXX)
 
 find_package(Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
 
+SET(GCC_COVERAGE_COMPILE_FLAGS "-std=c++11 -Wall -Wextra -g")
 
+add_definitions(${GCC_COVERAGE_COMPILE_FLAGS})
 
 add_executable(graphTests graph/GraphTests.cpp)
 add_test(NAME graphTests COMMAND $<TARGET_FILE:graphTests> --output_format=HRF --log_level=message --catch_system_error=yes --detect_memory_leaks=1)
@@ -31,4 +33,9 @@ target_link_libraries(degreeTwoReductorTest ${Boost_FILESYSTEM_LIBRARY} ${Boost_
 add_executable(degreeZeroReductorTest reduction/DegreeZeroReductorTests.cpp)
 add_test(NAME degreeZeroReductorTest COMMAND $<TARGET_FILE:degreeZeroReductorTest> --output_format=HRF --log_level=message --catch_system_error=yes --detect_memory_leaks=1)
 target_link_libraries(degreeZeroReductorTest ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} core_pbqp_representation)
+
+add_executable(bruteForceSolverTest solve/BruteForceSolverTests.cpp)
+add_test(NAME bruteForceSolverTest COMMAND $<TARGET_FILE:bruteForceSolverTest> --output_format=HRF --log_level=message --catch_system_error=yes --detect_memory_leaks=1)
+target_link_libraries(bruteForceSolverTest ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} core_pbqp_representation)
+
 

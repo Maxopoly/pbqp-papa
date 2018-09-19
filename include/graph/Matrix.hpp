@@ -51,7 +51,8 @@ public:
 	Matrix<T>* operator=(const Matrix<T>& other) {
 		rows = other.rows;
 		columns = other.columns;
-		content = new T [rows*columns];
+		delete [] content;
+		content = new T[rows * columns];
 		memcpy(content, other.content, rows * columns * sizeof(T));
 		return this;
 	}
@@ -133,14 +134,14 @@ public:
 	/**
 	 * Retrieves a single element by position
 	 */
-	T& get(unsigned short int row, unsigned short int column) const {
+	inline T& get(unsigned short int row, unsigned short int column) const {
 		return content[(row * columns) + column];
 	}
 
 	/**
 	 * Retrieves an element by its raw index in the content array
 	 */
-	T& getRaw(unsigned int index) const {
+	inline T& getRaw(unsigned int index) const {
 		return content[index];
 	}
 
@@ -161,8 +162,116 @@ public:
 	/**
 	 * Gets the amount of elements
 	 */
-	unsigned int getElementCount() const {
+	inline unsigned int getElementCount() const {
 		return columns * rows;
+	}
+
+	/**
+	 * Multiplies a matrix by placing multiple instances of it below each other, for example:
+	 *
+	 * A B
+	 * C D
+	 *
+	 * (with multiplier 2) --->
+	 *
+	 * A B
+	 * C D
+	 * A B
+	 * C D
+	 *
+	 *
+	 */
+	Matrix<T> multiplyRows(const unsigned short int multiplier) const {
+		Matrix<T> result(rows * multiplier, columns);
+		const unsigned long sectorSize = sizeof(T) * rows * columns;
+		for (unsigned short int i = 0; i < multiplier; i++) {
+			std::memcpy(result.content + i * sectorSize, content, sectorSize);
+		}
+		return result;
+	}
+
+	/**
+	 * Multiplies a matrix by placing multiple instances of it below each other by multiplying
+	 * rows individually, for example:
+	 *
+	 * A B
+	 * C D
+	 *
+	 * (with multiplier 2) --->
+	 *
+	 * A B
+	 * A B
+	 * C D
+	 * C D
+	 *
+	 *
+	 */
+	Matrix<T> multiplyRowsIndividually(
+			const unsigned short int multiplier) const {
+		Matrix<T> result(rows * multiplier, columns);
+		const unsigned long rowLength = sizeof(T) * columns;
+		const unsigned long sectionLength = rowLength * multiplier;
+		for (unsigned short int i = 0; i < rows; i++) {
+			for (unsigned short int offset = 0; offset < multiplier; offset++) {
+				std::memcpy(
+						result.content + (rowLength * offset) + (sectionLength * i),
+						content + (rowLength * i), rowLength);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Multiplies a matrix by placing multiple instances of it bext to each other by multiplying
+	 * columns individually, for example:
+	 *
+	 * A B
+	 * C D
+	 *
+	 * (with multiplier 2) --->
+	 *
+	 * A A B B
+	 * C C D D
+	 *
+	 *
+	 */
+	Matrix<T> multiplyColumnsIndividually(
+			const unsigned short int multiplier) const {
+		Matrix<T> result(rows, columns * multiplier);
+		const unsigned long sectorLength = rows * columns;
+		for (unsigned long i = 0; i < rows * columns; i++) {
+			for (int column = 0; column < multiplier; column++) {
+				result.getRaw(i + (column * sectorLength)) = getRaw(i);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Multiplies a matrix by placing multiple instances of it next to each other, for example:
+	 *
+	 * A B
+	 * C D
+	 *
+	 * (with multiplier 2) --->
+	 *
+	 * A B A B
+	 * C D C D
+	 *
+	 *
+	 */
+	Matrix<T> multiplyColumns(const unsigned short int multiplier) const {
+		Matrix<T> result(rows, columns * multiplier);
+		const unsigned long rowLength = columns * sizeof(T);
+		const unsigned long rowDataLength = rowLength * multiplier;
+		for (unsigned short i = 0; i < rows; i++) {
+			for (int column = 0; column < multiplier; column++) {
+				std::memcpy(
+						result.content + (rowDataLength * i) + (column * rowLength),
+						content + (rowLength * i), rowLength);
+			}
+		}
+		return result;
 	}
 
 };

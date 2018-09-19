@@ -1,6 +1,8 @@
 #ifndef SOLVE_BRUTEFORCESOLVER_HPP_
 #define SOLVE_BRUTEFORCESOLVER_HPP_
 
+#include "solve/PBQPSolver.hpp"
+
 namespace pbqppapa {
 
 template<typename T>
@@ -35,7 +37,7 @@ class PBQPNode;
  * we only need to recalculate one node and all of its incident edges per iteration/solution.
  */
 template<typename T>
-class BruteForceSolver: PBQPSolver<T> {
+class BruteForceSolver: public PBQPSolver<T> {
 
 private:
 	/**
@@ -49,8 +51,8 @@ private:
 	 * but to not waste time converting indices when calculating the cost of a solution, the index in this array is the index
 	 * of the node
 	 */
-	unsigned short int currentSelection[];
-	unsigned short int minimalSelection[];
+	std::vector<unsigned short int> currentSelection;
+	std::vector<unsigned short int> minimalSelection;
 	/**
 	 * Node index counter of the graph and the length of any selection arrays
 	 */
@@ -60,15 +62,15 @@ private:
 	 * This array contains all nodes in the graph and the position within this array
 	 * implicitly gives the node associated with it a number in [0, sizeofGraph)
 	 */
-	PBQPNode<T>* nodes[];
+	std::vector<PBQPNode<T>*> nodes;
 	/**
 	 * The Vector degree of each node, subtracted by 1. Indexing is the same as in the nodes array
 	 */
-	unsigned short int limits[];
+	std::vector<unsigned short int> limits;
 	/**
 	 * Trend of each digit, where true means ascending and false means descending. We start with every digit ascending
 	 */
-	bool trend[];
+	std::vector<bool> trend;
 
 	/**
 	 * Cost of the selection we last checked
@@ -79,21 +81,20 @@ private:
 	 */
 	T minimalCost;
 	unsigned short int previousSelectionOfNodeLastUpdated;
-	unsigned int nodeLastUpdated;
+	long nodeLastUpdated;
 
 public:
-	BruteForceSolver(PBQPGraph<T>* graph, PBQPSolution<T>* solution) :
-			PBQPSolver<T>(graph, solution), currentSelection(
-					new unsigned short int[graph->getNodeIndexCounter()]), minimalSelection(
-					new unsigned short int[graph->getNodeIndexCounter()]), size(
+	BruteForceSolver(PBQPGraph<T>* graph) :
+			PBQPSolver<T>(graph), currentSelection(
+					std::vector<unsigned short int>(
+							graph->getNodeIndexCounter(), 0)), minimalSelection(
+					std::vector<unsigned short int>(
+							graph->getNodeIndexCounter(), 0)), size(
 					graph->getNodeIndexCounter()), nodes(
-					new PBQPNode<T>*[graph->getNodeCount()]), limits(
-					new unsigned int[graph->getNodeCount()]), trend(
-					new bool[graph->getNodeCount()]) {
-		//init both solution and starting point to all 0
-		memset(&currentSelection, 0, size * sizeof(unsigned short int));
-		memset(&minimalSelection, 0, size * sizeof(unsigned short int));
-		int index = 0;
+					std::vector<PBQPNode<T>*>(graph->getNodeCount())), limits(
+					std::vector<unsigned short int>(graph->getNodeCount())), trend(
+					std::vector<bool>(graph->getNodeCount(), true)) {
+		unsigned long index = 0;
 		//TODO Speed this up by completly copying the nodes to reduce the amount of reference lookup neccessary later on?
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
@@ -101,64 +102,59 @@ public:
 			nodes[index] = node;
 			limits[index++] = node->getVectorDegree() - 1;
 		}
-		memset(&trend, 1, size * sizeof(bool));
 	}
 
 	~BruteForceSolver() {
 	}
 
-	PBQPSolution<T> solve() {
-		unsigned long long int solutionsCheckedSoFar = 0;
+	void solve() override {
 		minimalCost = calculateNewSolution();
-		previous = minimalCost;
+		previousCost = minimalCost;
 		while ((nodeLastUpdated = incrementSolution()) != -1) {
 			T currValue = calculateDiffSolution();
 			if (currValue < minimalCost) {
-				memcpy(currentSelection, minimalSelection,
-						size * sizeof(unsigned short int));
+				minimalSelection = currentSelection;
 				minimalCost = currValue;
 			}
 			previousCost = currValue;
 		}
-		return solution;
+		//copy solution
+		for(PBQPNode<T>* node : nodes) {
+			this->solution->setSolution(node->getIndex(), minimalSelection.at(node->getIndex()));
+		}
 	}
 
 private:
 
 	/**
-	 * Given the cost of the previous selection, the node which was changed and the previous selection of the node changed,
-	 * this method calculates the total cost of the current selection with minimal effort
+	 * Given the cost of the previous selection, the node which was changed and the previous selection
+	 * of the node changed, this method calculates the total cost of the current selection with
+	 * minimal effort
 	 */
 	T calculateDiffSolution() {
-		T sum = *new T();
+		T sum = T();
 		PBQPNode<T>* nodeChanged = nodes[nodeLastUpdated];
 		unsigned short int currentNodeSelection =
 				currentSelection[nodeChanged->getIndex()];
-		unsigned short int previousNodeSelection = currentNodeSelection - 1;
-		if (previousNodeSelection < 0) {
-			previousNodeSelection = nodeChanged->getVectorDegree() - 1;
-		}
 		for (PBQPEdge<T>* edge : nodeChanged->getAdjacentEdges(false)) {
-			sum += edge->getMatrix()->get(
-					currentSelection[edge->getSource()->getIndex()],
-					currentSelection[edge->getTarget()->getIndex()]);
 			if (edge->getSource() == nodeChanged) {
-				sum += edge->getMatrix()->get(currentNodeSelection,
+				sum += edge->getMatrix().get(currentNodeSelection,
 						currentSelection[edge->getTarget()->getIndex()]);
-				sum -= edge->getMatrix()->get(
-						previous[edge->getSource()->getIndex()],
+				sum -= edge->getMatrix().get(
+						previousSelectionOfNodeLastUpdated,
 						currentSelection[edge->getTarget()->getIndex()]);
 			} else {
-				sum += edge->getMatrix()->get(
+				sum += edge->getMatrix().get(
 						currentSelection[edge->getSource()->getIndex()],
 						currentNodeSelection);
-				sum -= edge->getMatrix()->get(
+				sum -= edge->getMatrix().get(
 						currentSelection[edge->getSource()->getIndex()],
-						previousNodeSelection);
+						previousSelectionOfNodeLastUpdated);
 			}
 		}
-		sum += nodeChanged->getVector()->get(currentNodeSelection);
-		sum -= nodeChanged->getVector()->get(previousNodeSelection);
+		sum += nodeChanged->getVector().get(currentNodeSelection);
+		sum -= nodeChanged->getVector().get(
+				previousSelectionOfNodeLastUpdated);
 		return previousCost + sum;
 	}
 
@@ -166,14 +162,18 @@ private:
 	 * Calculates the total cost for the current solution from scratch
 	 */
 	T calculateNewSolution() {
-		T sum = new T();
-		for (PBQPEdge<T>* edge : graph->getEdges()) {
-			sum += edge->getMatrix()->get(
+		T sum = T();
+		auto iter = this->graph->getEdgeBegin();
+		while (iter != this->graph->getEdgeEnd()) {
+			PBQPEdge<T>* edge = *iter++;
+			sum += edge->getMatrix().get(
 					currentSelection[edge->getSource()->getIndex()],
 					currentSelection[edge->getTarget()->getIndex()]);
 		}
-		for (PBQPNode<T>* node : graph->getNodes()) {
-			sum += node->getVector()->get(currentSelection[node->getIndex()]);
+		auto nodeIter = this->graph->getNodeBegin();
+		while (nodeIter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = (PBQPNode<T>*) *nodeIter++;
+			sum += node->getVector().get(currentSelection[node->getIndex()]);
 		}
 		return sum;
 	}
@@ -181,8 +181,8 @@ private:
 	/**
 	 * Increments the internal gray code selection by one
 	 */
-	unsigned int incrementSolution() {
-		for (int i = 0; i < graph->getNodeCount(); i++) {
+	long incrementSolution() {
+		for (int i = 0; i < this->graph->getNodeCount(); i++) {
 			unsigned int index = (nodes[i])->getIndex();
 			if (trend[i]) {
 				//ascending
@@ -191,7 +191,7 @@ private:
 					trend[i] = false;
 				} else {
 					previousSelectionOfNodeLastUpdated =
-							currentSelection[index]++;
+							currentSelection [index]++;
 					return i;
 				}
 			} else {

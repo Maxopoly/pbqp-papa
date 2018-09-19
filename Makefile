@@ -187,6 +187,19 @@ matrixTest/fast:
 .PHONY : matrixTest/fast
 
 #=============================================================================
+# Target rules for targets named bruteForceSolverTest
+
+# Build rule for target.
+bruteForceSolverTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bruteForceSolverTest
+.PHONY : bruteForceSolverTest
+
+# fast build rule for target.
+bruteForceSolverTest/fast:
+	$(MAKE) -f test/CMakeFiles/bruteForceSolverTest.dir/build.make test/CMakeFiles/bruteForceSolverTest.dir/build
+.PHONY : bruteForceSolverTest/fast
+
+#=============================================================================
 # Target rules for targets named graphTests
 
 # Build rule for target.
@@ -265,6 +278,7 @@ help:
 	@echo "... core_pbqp_representation"
 	@echo "... degreeZeroReductorTest"
 	@echo "... matrixTest"
+	@echo "... bruteForceSolverTest"
 	@echo "... graphTests"
 	@echo "... pbqpSolutionTest"
 	@echo "... connectedComponentSeparatorTest"

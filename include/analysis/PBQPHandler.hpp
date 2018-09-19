@@ -20,7 +20,7 @@ public:
 			graph(graph) {
 	}
 
-	virtual ~PBQPHandler();
+	virtual ~PBQPHandler() {}
 };
 
 }
