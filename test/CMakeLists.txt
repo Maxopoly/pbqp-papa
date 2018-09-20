@@ -38,4 +38,7 @@ add_executable(bruteForceSolverTest solve/BruteForceSolverTests.cpp)
 add_test(NAME bruteForceSolverTest COMMAND $<TARGET_FILE:bruteForceSolverTest> --output_format=HRF --log_level=message --catch_system_error=yes --detect_memory_leaks=1)
 target_link_libraries(bruteForceSolverTest ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} core_pbqp_representation)
 
+add_executable(serializerTests io/PBQP_SerializerTests.cpp)
+add_test(NAME serializerTests COMMAND $<TARGET_FILE:serializerTests> --output_format=HRF --log_level=message --catch_system_error=yes --detect_memory_leaks=1)
+target_link_libraries(serializerTests ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} core_pbqp_representation json pbqp-io)
 

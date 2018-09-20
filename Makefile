@@ -161,6 +161,32 @@ core_pbqp_representation/fast:
 .PHONY : core_pbqp_representation/fast
 
 #=============================================================================
+# Target rules for targets named pbqp-io
+
+# Build rule for target.
+pbqp-io: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 pbqp-io
+.PHONY : pbqp-io
+
+# fast build rule for target.
+pbqp-io/fast:
+	$(MAKE) -f src/CMakeFiles/pbqp-io.dir/build.make src/CMakeFiles/pbqp-io.dir/build
+.PHONY : pbqp-io/fast
+
+#=============================================================================
+# Target rules for targets named json
+
+# Build rule for target.
+json: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 json
+.PHONY : json
+
+# fast build rule for target.
+json/fast:
+	$(MAKE) -f submodules/CMakeFiles/json.dir/build.make submodules/CMakeFiles/json.dir/build
+.PHONY : json/fast
+
+#=============================================================================
 # Target rules for targets named degreeZeroReductorTest
 
 # Build rule for target.
@@ -211,6 +237,19 @@ graphTests: cmake_check_build_system
 graphTests/fast:
 	$(MAKE) -f test/CMakeFiles/graphTests.dir/build.make test/CMakeFiles/graphTests.dir/build
 .PHONY : graphTests/fast
+
+#=============================================================================
+# Target rules for targets named serializerTests
+
+# Build rule for target.
+serializerTests: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 serializerTests
+.PHONY : serializerTests
+
+# fast build rule for target.
+serializerTests/fast:
+	$(MAKE) -f test/CMakeFiles/serializerTests.dir/build.make test/CMakeFiles/serializerTests.dir/build
+.PHONY : serializerTests/fast
 
 #=============================================================================
 # Target rules for targets named pbqpSolutionTest
@@ -276,10 +315,13 @@ help:
 	@echo "... pbqp_io"
 	@echo "... pbqp_solving"
 	@echo "... core_pbqp_representation"
+	@echo "... pbqp-io"
+	@echo "... json"
 	@echo "... degreeZeroReductorTest"
 	@echo "... matrixTest"
 	@echo "... bruteForceSolverTest"
 	@echo "... graphTests"
+	@echo "... serializerTests"
 	@echo "... pbqpSolutionTest"
 	@echo "... connectedComponentSeparatorTest"
 	@echo "... degreeTwoReductorTest"

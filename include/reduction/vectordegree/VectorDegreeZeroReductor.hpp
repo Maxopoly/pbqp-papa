@@ -30,14 +30,16 @@ public:
 	~VectorDegreeZeroReductor() {
 	}
 
-	std::vector<PBQPGraph*>* reduce() {
-		for (PBQPNode<T>* node : *(graph->getNodes())) {
+	std::vector<PBQPGraph<T>*>& reduce() {
+		auto iter = this->graph->getNodeBegin();
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter;
 			if (node->getVectorDegree() == 0) {
-				reduceVectorDegreeZero(node, graph);
+				reduceVectorDegreeZero(node, this->graph);
 			}
 		}
-		result->push_back(graph);
-		return result;
+		this->result->push_back(this->graph);
+		return this->result;
 	}
 
 	void solve(PBQPSolution<T>* solution) {
