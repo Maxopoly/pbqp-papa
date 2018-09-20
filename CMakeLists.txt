@@ -19,17 +19,19 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
 add_subdirectory(include)
-add_subdirectory(src)
+
 add_subdirectory(submodules)
+
+add_subdirectory(src)
 
 target_include_directories(core_pbqp_representation PUBLIC include)
 
 
-add_library(pbqp_io STATIC include/io/PBQP_Serializer.hpp include/io/TypeSerializer.hpp include/io/TypeSerializerFactory.hpp include/io/types/DoubleSerializer.hpp include/io/types/FloatSerializer.hpp include/io/types/UnsignedCharSerializer.hpp include/io/types/UnsignedLongIntSerializer.hpp include/io/types/UnsignedShortIntSerializer.hpp)
-set_target_properties(pbqp_io PROPERTIES LINKER_LANGUAGE CXX)
+#add_library(pbqp_io STATIC include/io/PBQP_Serializer.hpp include/io/TypeSerializer.hpp include/io/TypeSerializerFactory.hpp include/io/types/DoubleSerializer.hpp include/io/types/FloatSerializer.hpp include/io/types/UnsignedCharSerializer.hpp include/io/types/UnsignedLongIntSerializer.hpp include/io/types/UnsignedShortIntSerializer.hpp)
+#set_target_properties(pbqp_io PROPERTIES LINKER_LANGUAGE CXX)
 
 
-add_library(pbqp_solving STATIC include/analysis/PBQPHandler.hpp include/reduction/ConnectedComponentSeparator.hpp include/reduction/DependentSolution.hpp include/reduction/EdgeDeduplicator.hpp include/reduction/NodeMerger.hpp include/reduction/PBQPReduction.hpp include/reduction/SelfCycleRemover.hpp include/reduction/degree/DegreeOneReductor.hpp include/reduction/degree/DegreeTwoReductor.hpp include/reduction/degree/DegreeZeroReductor.hpp include/reduction/heuristic/DegreeNReductor.hpp include/reduction/vectordegree/VektorDegreeZeroReductor.hpp include/reduction/vectordegree/VektorDegreeOneReductor.hpp)
+add_library(pbqp_solving STATIC include/analysis/PBQPHandler.hpp include/reduction/ConnectedComponentSeparator.hpp include/reduction/DependentSolution.hpp include/reduction/EdgeDeduplicator.hpp include/reduction/NodeMerger.hpp include/reduction/PBQPReduction.hpp include/reduction/SelfCycleRemover.hpp include/reduction/degree/DegreeOneReductor.hpp include/reduction/degree/DegreeTwoReductor.hpp include/reduction/degree/DegreeZeroReductor.hpp include/reduction/heuristic/DegreeNReductor.hpp include/reduction/vectordegree/VectorDegreeZeroReductor.hpp include/reduction/vectordegree/VectorDegreeOneReductor.hpp)
 set_target_properties(pbqp_solving PROPERTIES LINKER_LANGUAGE CXX)
 
 add_subdirectory(test)

@@ -12,6 +12,7 @@
 #include "generate/PBQPGenerator.hpp"
 #include "io/types/UnsignedLongIntSerializer.hpp"
 #include "FullSolver.hpp"
+#include "CInterface.h"
 
 #include "util/TestUtils.hpp"
 
@@ -55,6 +56,8 @@ BOOST_AUTO_TEST_CASE(dummyTest) {
 	PBQPGraph<unsigned long int>* secondGraph = serial.loadFromFile(
 			"testgraph.json");
 	BOOST_TEST_MESSAGE(secondGraph->getEdgeCount());
+
+	dump();
 }
 
 BOOST_AUTO_TEST_CASE(generatorTest) {
