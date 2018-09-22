@@ -15,6 +15,8 @@ private:
 	//TODO what if we reach infinite through convential ways, but dont overflow?
 	static T magicInfiniteNumber;
 
+
+
 	inline bool operator==(InfinityWrapper<T> rhs) {
 		return rhs.wrappedValue == this->wrappedValue;
 	}

@@ -30,6 +30,7 @@ public:
 		TypeSerializer<T>* serializer = serializerFactory.get(T());
 		nlohmann::json json = graphToJson(graph, serializer);
 		out << json << std::endl;
+		out.close();
 	}
 
 	PBQPGraph<T>* loadFromFile(std::string path) {
@@ -37,6 +38,7 @@ public:
 		TypeSerializer<T>* serializer = serializerFactory.get(T());
 		nlohmann::json json;
 		in >> json;
+		in.close();
 		return jsonToGraph(json, serializer);
 	}
 

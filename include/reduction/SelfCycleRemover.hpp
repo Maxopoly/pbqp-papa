@@ -6,7 +6,7 @@
 namespace pbqppapa {
 
 template<typename T>
-class NodeConsistentReduction;
+class PBQP_Reduction;
 template<typename T>
 class PBQPGraph;
 template<typename T>
