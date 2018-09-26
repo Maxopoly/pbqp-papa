@@ -7,63 +7,72 @@
 
 namespace pbqppapa {
 
-template<typename T>
-std::string serializeElement(T t);
+template <typename T>
+struct dummyType{};
 
 template<typename T>
-T deserializeElement(std::string);
+std::string serializeElement(T t) {
+	return serializeElement(dummyType<T>{}, t);
+}
 
 template<typename T>
-std::string getTypeName();
+T deserializeElement(std::string serialized) {
+	return deserializeElement(dummyType<T>{}, serialized);
+}
+
+template<typename T>
+std::string getTypeName() {
+	return getTypeName(dummyType<T>{});
+}
 
 
 //unsigned long
 
-template<> std::string serializeElement<unsigned long>(unsigned long element) {
+std::string serializeElement(dummyType<unsigned long>, unsigned long element) {
 	return std::to_string(element);
 }
 
-template<> unsigned long deserializeElement<unsigned long>(std::string serialized) {
+unsigned long deserializeElement(dummyType<unsigned long>, std::string serialized) {
 	return std::strtoul(serialized.c_str(), NULL, 0);
 }
 
-template<> std::string getTypeName<unsigned long>() {
+std::string getTypeName(dummyType<unsigned long>) {
 	return "unsigned long";
 }
 
 //unsigned short
 
-template<> std::string serializeElement<unsigned short>(unsigned short number) {
+std::string serializeElement(dummyType<unsigned short>, unsigned short number) {
 	return std::to_string(number);
 }
 
-template<> unsigned short deserializeElement<unsigned short>(std::string serialized) {
+unsigned short deserializeElement(dummyType<unsigned short>, std::string serialized) {
 	return (unsigned short) std::strtoul(serialized.c_str(), NULL, 0);
 }
 
-template<> std::string getTypeName<unsigned short>() {
+std::string getTypeName(dummyType<unsigned short>) {
 	return "unsigned short";
 }
 
 //InfinityWrapper
 
-template<typename K>
-std::string serializeElement<InfinityWrapper<K>>(InfinityWrapper<K> number) {
+template<typename T>
+std::string serializeElement(dummyType<InfinityWrapper<T>>, InfinityWrapper<T> number) {
 	if (number.isInfinite()) {
 		return "INF";
 	}
-	return serializeElement(number.getValue);
+	return serializeElement<T>(number.getValue);
 }
 
 template<typename T>
-InfinityWrapper<T> deserializeElement(std::string serialized) {
+InfinityWrapper<T> deserializeElement(dummyType<InfinityWrapper<T>>, std::string serialized) {
 	if (serialized == "INF") {
 		return InfinityWrapper<T>::getInfinite();
 	}
 	return InfinityWrapper<T>(deserializeElement<T>(serialized));
 }
 
-template<typename T> std::string getTypeName() {
+template<typename T> std::string getTypeName(dummyType<InfinityWrapper<T>>) {
 	return "INF " + getTypeName<T>();
 }
 

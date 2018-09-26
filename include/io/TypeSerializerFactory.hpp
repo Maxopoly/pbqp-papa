@@ -14,22 +14,12 @@ namespace pbqppapa {
 
 class TypeSerializerFactory {
 
-private:
-	UnsignedLongIntSerializer* unsignedLongIntSerializer =
-			new UnsignedLongIntSerializer();
-	UnsignedShortIntSerializer* unsignedShortIntSerializer =
-			new UnsignedShortIntSerializer();
-	UnsignedCharSerializer* unsignedCharSerializer =
-			new UnsignedCharSerializer();
-	FloatSerializer* floatSerializer = new FloatSerializer();
-	DoubleSerializer* doubleSerializer = new DoubleSerializer();
-
 public:
-	UnsignedLongIntSerializer* get(unsigned long int);
-	UnsignedShortIntSerializer* get(unsigned short int);
-	UnsignedCharSerializer* get(unsigned char);
-	FloatSerializer* get(float);
-	DoubleSerializer* get(double);
+	static UnsignedLongIntSerializer get(unsigned long int);
+	static UnsignedShortIntSerializer get(unsigned short int);
+	static UnsignedCharSerializer get(unsigned char);
+	static FloatSerializer get(float);
+	static DoubleSerializer get(double);
 
 };
 
