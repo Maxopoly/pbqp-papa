@@ -16,7 +16,7 @@ template<typename T>
 class PBQPSolution;
 
 template<typename T>
-class InfinityFilter: public PBQP_Reduction<T> {
+class InfinityFilter: public PBQP_Reduction<InfinityWrapper<T>> {
 
 public:
 	InfinityFilter(PBQPGraph<InfinityWrapper<T>>* graph) :

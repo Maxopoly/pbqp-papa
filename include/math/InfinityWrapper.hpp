@@ -15,7 +15,25 @@ private:
 	//TODO what if we reach infinite through convential ways, but dont overflow?
 	static T magicInfiniteNumber;
 
+	InfinityWrapper<T>() {
+		//this is needed, because if T is for example int, its default constructor would not be called
+		wrappedValue = T();
+	}
 
+	InfinityWrapper<T>(T value) {
+		wrappedValue = value;
+	}
+
+	static InfinityWrapper<T> getInfinite() {
+		InfinityWrapper<T> result;
+		result.wrappedValue = magicInfiniteNumber;
+		return result;
+	}
+
+
+	inline T& getValue() {
+		return wrappedValue;
+	}
 
 	inline bool operator==(InfinityWrapper<T> rhs) {
 		return rhs.wrappedValue == this->wrappedValue;
@@ -29,7 +47,7 @@ private:
 			wrappedValue = magicInfiniteNumber;
 			return *this;
 		}
-		rhs.wrappedValue += this->wrappedValue;
+		this->wrappedValue += rhs.wrappedValue;
 		return *this;
 	}
 
@@ -42,40 +60,8 @@ private:
 			//do nothing for now
 			return *this;
 		}
-		rhs.wrappedValue -= this->wrappedValue;
+		this->wrappedValue -= rhs.wrappedValue;
 		return *this;
-	}
-
-	inline InfinityWrapper<T>& operator+(InfinityWrapper<T> lhs,
-			const InfinityWrapper<T>& rhs) {
-		lhs += rhs;
-		return lhs;
-	}
-
-	inline InfinityWrapper<T>& operator-(InfinityWrapper<T> lhs,
-			const InfinityWrapper<T>& rhs) {
-		lhs -= rhs;
-		return lhs;
-	}
-
-	inline bool operator==(const InfinityWrapper<T>& lhs,
-			const InfinityWrapper<T>& rhs) {
-		return lhs.wrappedValue == rhs.wrappedValue;
-	}
-	inline bool operator!=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-		return lhs.wrappedValue != rhs.wrappedValue;
-	}
-	inline bool operator<(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-		return lhs < rhs;
-	}
-	inline bool operator>(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-		return operator<(rhs, lhs);
-	}
-	inline bool operator<=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-		return !operator>(lhs, rhs);
-	}
-	inline bool operator>=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-		return !operator<(lhs, rhs);
 	}
 
 	inline bool isInfinite() {
@@ -83,6 +69,51 @@ private:
 	}
 
 };
+
+template<typename T>
+inline InfinityWrapper<T>& operator+(InfinityWrapper<T> lhs,
+		const InfinityWrapper<T>& rhs) {
+	lhs += rhs;
+	return lhs;
+}
+
+template<typename T>
+inline InfinityWrapper<T>& operator-(InfinityWrapper<T> lhs,
+		const InfinityWrapper<T>& rhs) {
+	lhs -= rhs;
+	return lhs;
+}
+
+template<typename T>
+inline bool operator==(const InfinityWrapper<T>& lhs,
+		const InfinityWrapper<T>& rhs) {
+	return lhs.wrappedValue == rhs.wrappedValue;
+}
+
+template<typename T>
+inline bool operator!=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	return lhs.wrappedValue != rhs.wrappedValue;
+}
+
+template<typename T>
+inline bool operator<(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	return lhs < rhs;
+}
+
+template<typename T>
+inline bool operator>(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	return operator<(rhs, lhs);
+}
+
+template<typename T>
+inline bool operator<=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	return !operator>(lhs, rhs);
+}
+
+template<typename T>
+inline bool operator>=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	return !operator<(lhs, rhs);
+}
 
 }
 

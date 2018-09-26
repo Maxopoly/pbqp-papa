@@ -7,8 +7,7 @@
 #include <iomanip>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <io/TypeSerializer.hpp>
-#include <io/TypeSerializerFactory.hpp>
+#include <io/TypeSerializers.hpp>
 
 namespace pbqppapa {
 
@@ -20,35 +19,29 @@ class PBQPGraph;
 template<typename T>
 class PBQP_Serializer {
 
-private:
-	TypeSerializerFactory serializerFactory;
-
 public:
 
 	void saveToFile(std::string path, PBQPGraph<T>* graph) {
 		std::ofstream out(path);
-		TypeSerializer<T>* serializer = serializerFactory.get(T());
-		nlohmann::json json = graphToJson(graph, serializer);
+		nlohmann::json json = graphToJson(graph);
 		out << json << std::endl;
 		out.close();
 	}
 
 	PBQPGraph<T>* loadFromFile(std::string path) {
 		std::ifstream in(path);
-		TypeSerializer<T>* serializer = serializerFactory.get(T());
 		nlohmann::json json;
 		in >> json;
 		in.close();
-		return jsonToGraph(json, serializer);
+		return jsonToGraph(json);
 	}
 
 private:
 
-	PBQPGraph<T>* jsonToGraph(nlohmann::json json,
-			TypeSerializer<T>* serializer) {
+	PBQPGraph<T>* jsonToGraph(nlohmann::json json) {
 		nlohmann::json metaJson = json["meta"];
 		std::string parsedType = metaJson["type"];
-		if (parsedType.compare(std::string(serializer->getIdentifier())) != 0) {
+		if (parsedType.compare(getTypeName<T>()) != 0) {
 			//TODO exception
 			std::cout << "Invalid type loading";
 			return NULL;
@@ -59,14 +52,14 @@ private:
 		nlohmann::json nodeJson = json["nodes"];
 		for (nlohmann::json singleNodeJson : nodeJson) {
 			unsigned int index = singleNodeJson["index"];
-			Vector<T> vek = parseVector(singleNodeJson["cost"], serializer);
+			Vector<T> vek = parseVector(singleNodeJson["cost"]);
 			PBQPNode<T>* node = new PBQPNode<T>(index, vek);
 			graph->addNode(node);
 			nodeByIndex.insert(std::make_pair(index, node));
 		}
 		nlohmann::json edgeJson = json["edges"];
 		for (nlohmann::json singleEdgeJson : edgeJson) {
-			Matrix<T> mat = parseMatrix(singleEdgeJson, serializer);
+			Matrix<T> mat = parseMatrix(singleEdgeJson);
 			PBQPNode<T>* source =
 					nodeByIndex.find(singleEdgeJson["source"])->second;
 			PBQPNode<T>* target =
@@ -76,29 +69,28 @@ private:
 		return graph;
 	}
 
-	Vector<T> parseVector(nlohmann::json json, TypeSerializer<T>* serializer) {
-		Vector<T> vek = Vector<T>((unsigned short int) json.size());
+	Vector<T> parseVector(nlohmann::json json) {
+		Vector<T> vek = Vector < T > ((unsigned short int) json.size());
 		for (unsigned short int i = 0; i < json.size(); i++) {
-			vek.get(i) = serializer->deserialize(json[i]);
+			vek.get(i) = deserializeElement<T>(json[i]);
 		}
 		return vek;
 	}
 
-	Matrix<T> parseMatrix(nlohmann::json json, TypeSerializer<T>* serializer) {
+	Matrix<T> parseMatrix(nlohmann::json json) {
 		unsigned short int rows = json["rows"];
 		unsigned short int columns = json["columns"];
 		nlohmann::json valueJson = json["cost"];
-		Matrix<T> mat = Matrix<T>(rows, columns);
+		Matrix<T> mat = Matrix < T > (rows, columns);
 		for (unsigned int i = 0; i < valueJson.size(); i++) {
-			mat.getRaw(i) = serializer->deserialize(valueJson[i]);
+			mat.getRaw(i) = deserializeElement<T>(valueJson[i]);
 		}
 		return mat;
 	}
 
-	nlohmann::json graphToJson(PBQPGraph<T>* graph,
-			TypeSerializer<T>* serializer) {
+	nlohmann::json graphToJson(PBQPGraph<T>* graph) {
 		nlohmann::json json;
-		json["meta"] = serializeMeta(graph, serializer);
+		json["meta"] = serializeMeta(graph);
 		nlohmann::json nodeJsons = nlohmann::json::array();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
@@ -108,7 +100,7 @@ private:
 			nlohmann::json costVector = nlohmann::json::array();
 			for (unsigned short int i = 0; i < node->getVectorDegree(); i++) {
 				costVector.push_back(
-						serializer->serialize(node->getVector().get(i)));
+						serializeElement<T>(node->getVector().get(i)));
 			}
 			nodeJson["cost"] = costVector;
 			nodeJsons.push_back(nodeJson);
@@ -127,7 +119,7 @@ private:
 			unsigned int length = edge->getMatrix().getElementCount();
 			for (unsigned int i = 0; i < length; i++) {
 				matrixValues.push_back(
-						serializer->serialize(edge->getMatrix().getRaw(i)));
+						serializeElement<T>(edge->getMatrix().getRaw(i)));
 			}
 			edgeJson["cost"] = matrixValues;
 			edgeJsons.push_back(edgeJson);
@@ -136,13 +128,12 @@ private:
 		return json;
 	}
 
-	nlohmann::json serializeMeta(PBQPGraph<T>* graph,
-			TypeSerializer<T>* serializer) {
+	nlohmann::json serializeMeta(PBQPGraph<T>* graph) {
 		nlohmann::json json;
 		json["version"] = 1;
 		json["nodeCount"] = graph->getNodeCount();
 		json["edgeCount"] = graph->getEdgeCount();
-		json["type"] = serializer->getIdentifier();
+		json["type"] = getTypeName<T>();
 		return json;
 	}
 
