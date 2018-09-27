@@ -3,6 +3,7 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "io/PBQP_Serializer.hpp"
+#include "io/TypeSerializers.hpp"
 #include "CInterface.h"
 
 #include <stdio.h>

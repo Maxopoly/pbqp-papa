@@ -68,14 +68,14 @@ public:
 			unsigned short length = 0;
 			Vector<InfinityWrapper<T>>* vector = &(*iter->getVector());
 			for (unsigned short i = 0; i < vector->getRowCount(); i++) {
-				if (!sourceVector->get(i).isInfinite()) {
+				if (!vector->get(i).isInfinite()) {
 					length++;
 				}
 			}
 			InfinityWrapper<T>* newData = new InfinityWrapper<T>[length];
 			unsigned short counter = 0;
 			for (unsigned short i = 0; i < vector->getRowCount(); i++) {
-				if (!sourceVector->get(i).isInfinite()) {
+				if (!vector->get(i).isInfinite()) {
 					newData [counter++] = vector->get(i);
 				}
 			}

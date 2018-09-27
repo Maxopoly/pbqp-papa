@@ -24,16 +24,16 @@ BOOST_AUTO_TEST_CASE(reduction) {
 
 
 
-	PBQPGraph<unsigned long>* graph = PBQPGraph<int>();
+	PBQPGraph<unsigned long> graph = PBQPGraph<unsigned long>();
 	for (int i = 0; i < 20; i++) {
-		int arr[] { 3, 1 };
-		Vector<int> vek (2, arr);
-		PBQPNode<int>* node = graph.addNode(vek);
+		unsigned long arr[] { 3, 1 };
+		Vector<unsigned long> vek (2, arr);
+		PBQPNode<unsigned long>* node = graph.addNode(vek);
 	}
-	DegreeZeroReductor<int> zeroReductor(&graph);
-	std::vector<PBQPGraph<int>*> result = zeroReductor.reduce();
+	DegreeZeroReductor<unsigned long> zeroReductor(&graph);
+	std::vector<PBQPGraph<unsigned long>*> result = zeroReductor.reduce();
 	BOOST_CHECK_EQUAL(result.size(), 1);
-	PBQPGraph<int>* resultGraph = result [0];
+	PBQPGraph<unsigned long>* resultGraph = result [0];
 	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 0);
 }
 

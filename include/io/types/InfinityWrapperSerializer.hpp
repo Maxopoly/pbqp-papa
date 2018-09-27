@@ -12,11 +12,11 @@ namespace pbqppapa {
 template<typename T>
 class InfinityWrapperSerializer: public TypeSerializer<InfinityWrapper<T>> {
 
-	TypeSerializer<T> internalSerial = TypeSerializerFactory::get(T ());
+	TypeSerializer<T> internalSerial;
 
 public:
-	InfinityWrapperSerializer() :
-			TypeSerializer<InfinityWrapper<T>>("INF " + internalSerial.getIdentifier()) {
+	InfinityWrapperSerializer(TypeSerializer<T> internalSerial) :
+			TypeSerializer<InfinityWrapper<T>>("INF " + internalSerial.getIdentifier()), internalSerial(internalSerial) {
 	}
 
 	std::string serialize(InfinityWrapper<T> number) const override {

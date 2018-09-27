@@ -57,7 +57,6 @@ BOOST_AUTO_TEST_CASE(dummyTest) {
 			"testgraph.json");
 	BOOST_TEST_MESSAGE(secondGraph->getEdgeCount());
 
-	dump();
 }
 
 BOOST_AUTO_TEST_CASE(generatorTest) {
@@ -65,9 +64,10 @@ BOOST_AUTO_TEST_CASE(generatorTest) {
 	PBQPGraph<unsigned long>* graph = generator.generate();
 	PBQP_Serializer<unsigned long> serial;
 	serial.saveToFile("bigTestGraph.json", graph);
+	/*
 	FullSolver<unsigned long> solver (graph);
 	solver.solve();
-	serial.saveToFile("reducedBigGraph.json", graph);
+	serial.saveToFile("reducedBigGraph.json", graph); */
 	delete graph;
 }
 
