@@ -7,21 +7,21 @@
 
 namespace pbqppapa {
 
-class UnsignedLongIntSerializer: public TypeSerializer<unsigned long int> {
+class UnsignedLongIntSerializer: public TypeSerializer<unsigned long> {
 
 public:
 	UnsignedLongIntSerializer() :
-			TypeSerializer("unsigned long int") {
+			TypeSerializer("unsigned long") {
 
 	}
 
-	std::string serialize(unsigned long int number) override {
+	std::string serialize(unsigned long number) override {
 		std::string s = std::to_string(number);
 		return s;
 	}
 
-	unsigned long int deserialize(std::string serialized) override {
-		return (unsigned long int) std::strtoul(serialized.c_str(), NULL, 0);
+	unsigned long deserialize(std::string serialized) override {
+		return (unsigned long) std::strtoul(serialized.c_str(), NULL, 0);
 	}
 };
 

@@ -12,16 +12,16 @@ template<typename T>
 class PBQPSolution {
 private:
 	//TODO How do we represent positions that are not decided yet?
-	std::vector<unsigned short int> selection;
+	std::vector<unsigned short> selection;
 
 public:
-	PBQPSolution(unsigned long int length) : selection (std::vector<unsigned short int>(length)) {
+	PBQPSolution(unsigned long length) : selection (std::vector<unsigned short>(length)) {
 	}
 
-	void setSolution(unsigned long int nodeIndex, unsigned short int solution) {
+	void setSolution(unsigned long nodeIndex, unsigned short solution) {
 		selection.at(nodeIndex) = solution;
 	}
-	unsigned short int getSolution(unsigned long int nodeIndex) {
+	unsigned short getSolution(unsigned long nodeIndex) {
 		return selection.at(nodeIndex);
 	}
 };

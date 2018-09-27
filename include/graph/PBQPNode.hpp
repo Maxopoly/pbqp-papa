@@ -62,7 +62,7 @@ public:
 	/**
 	 * Gets the length (amount of rows) of the cost Vector
 	 */
-	unsigned short int getVectorDegree() const {
+	unsigned short getVectorDegree() const {
 		return values.getRowCount();
 	}
 

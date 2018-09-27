@@ -55,8 +55,8 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	Vector<int> vek2 (2, node2Arr);
 	PBQPNode<int>* first = graph.addNode(vek1);
 	PBQPNode<int>* second = graph.addNode(vek2);
-	unsigned long int firstIndex = first->getIndex();
-	unsigned long int secondIndex = second->getIndex();
+	unsigned long firstIndex = first->getIndex();
+	unsigned long secondIndex = second->getIndex();
 	int edge1Arr[] {2,6,2,0};
 	Matrix<int> mat1 (2, 2, edge1Arr);
 	graph.addEdge(first, second, mat1);

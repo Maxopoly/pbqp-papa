@@ -22,7 +22,7 @@ class DegreeZeroReductor: public PBQP_Reduction<T> {
 private:
 	std::unique_ptr<DependentSolution<T>> solution;
 	//we need this a lot, so keeping it around instead of recreating is good
-	static const std::vector<unsigned short int> emptyIntVector;
+	static const std::vector<unsigned short> emptyIntVector;
 
 public:
 	DegreeZeroReductor(PBQPGraph<T>* graph) :
@@ -31,7 +31,7 @@ public:
 
 	std::vector<PBQPGraph<T>*>& reduce() override {
 		std::vector<PBQPNode<T>*> targetNodes = std::vector<PBQPNode<T>*>();
-		std::vector<unsigned short int> nodeSolution = std::vector<unsigned short int>();
+		std::vector<unsigned short> nodeSolution = std::vector<unsigned short>();
 		auto iter = this->graph->getNodeBegin();
 		while (iter != this->graph->getNodeEnd()) {
 			PBQPNode<T>* node = *iter;
@@ -62,7 +62,7 @@ public:
 		std::vector<PBQPNode<T>*> solutionNodes = std::vector<PBQPNode<T>*>();
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(dependencyNodes, solutionNodes);
-		std::vector<unsigned short int> nodeSolution = std::vector<unsigned short int>();
+		std::vector<unsigned short> nodeSolution = std::vector<unsigned short>();
 		nodeSolution.push_back(node->getVector().getIndexOfSmallestElement());
 		solution->setSolution(emptyIntVector, nodeSolution);
 		return solution;
@@ -71,7 +71,7 @@ public:
 
 //dark magic to initialize static members of a template
 template<typename T>
-const std::vector<unsigned short int> DegreeZeroReductor<T>::emptyIntVector = std::vector<unsigned short int>(0);
+const std::vector<unsigned short> DegreeZeroReductor<T>::emptyIntVector = std::vector<unsigned short>(0);
 }
 
 #endif /* VALIDATION_DEGREEZEROREDUCTOR_HPP_ */

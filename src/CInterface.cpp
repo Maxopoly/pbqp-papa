@@ -21,7 +21,7 @@ static unsigned long counter = 0;
 
 
 extern "C" int addNode(unsigned long* data, int length, int index) {
-	Vector<unsigned long> vek ((unsigned short int) length, data);
+	Vector<unsigned long> vek ((unsigned short) length, data);
 	PBQPNode<unsigned long>* node = graph->addNode(vek);
 	int internalIndex = node->getIndex();
 	if (remapIndices) {

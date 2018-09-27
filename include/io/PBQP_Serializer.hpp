@@ -70,16 +70,16 @@ private:
 	}
 
 	Vector<T> parseVector(nlohmann::json json) {
-		Vector<T> vek = Vector < T > ((unsigned short int) json.size());
-		for (unsigned short int i = 0; i < json.size(); i++) {
+		Vector<T> vek = Vector < T > ((unsigned short) json.size());
+		for (unsigned short i = 0; i < json.size(); i++) {
 			vek.get(i) = deserializeElement<T>(json[i]);
 		}
 		return vek;
 	}
 
 	Matrix<T> parseMatrix(nlohmann::json json) {
-		unsigned short int rows = json["rows"];
-		unsigned short int columns = json["columns"];
+		unsigned short rows = json["rows"];
+		unsigned short columns = json["columns"];
 		nlohmann::json valueJson = json["cost"];
 		Matrix<T> mat = Matrix < T > (rows, columns);
 		for (unsigned int i = 0; i < valueJson.size(); i++) {
@@ -98,7 +98,7 @@ private:
 			PBQPNode<T>* node = *iter;
 			nodeJson["index"] = node->getIndex();
 			nlohmann::json costVector = nlohmann::json::array();
-			for (unsigned short int i = 0; i < node->getVectorDegree(); i++) {
+			for (unsigned short i = 0; i < node->getVectorDegree(); i++) {
 				costVector.push_back(
 						serializeElement<T>(node->getVector().get(i)));
 			}

@@ -83,14 +83,14 @@ public:
 				dependencyNodes, solutionNodes);
 		//edge will go from first to second node
 		Matrix<T> resultMatrix (firstNode->getVectorDegree(), secondNode->getVectorDegree());
-		for (unsigned short int firstSelection = 0;
+		for (unsigned short firstSelection = 0;
 				firstSelection < firstNode->getVectorDegree();
 				firstSelection++) {
-			for (unsigned short int secondSelection = 0;
+			for (unsigned short secondSelection = 0;
 					secondSelection < secondNode->getVectorDegree();
 					secondSelection++) {
 				T minimum = node->getVector().get(0);
-				unsigned short int minimalNodeSelection = 0;
+				unsigned short minimalNodeSelection = 0;
 				if (isFirstSource) {
 					minimum += firstEdge->getMatrix().get(firstSelection, 0);
 				} else {
@@ -124,9 +124,9 @@ public:
 						minimalNodeSelection = nodeSelection;
 					}
 				}
-				std::vector<unsigned short int> solutionSelection;
+				std::vector<unsigned short> solutionSelection;
 				solutionSelection.push_back(minimalNodeSelection);
-				std::vector<unsigned short int> dependencySelection;
+				std::vector<unsigned short> dependencySelection;
 				dependencySelection.push_back(firstSelection);
 				dependencySelection.push_back(secondSelection);
 				resultMatrix.get(firstSelection, secondSelection) = minimum;

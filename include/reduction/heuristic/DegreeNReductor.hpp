@@ -82,8 +82,8 @@ public:
 		std::vector<PBQPNode<T>*> nodeToSolve;
 		nodeToSolve.push_back(node);
 		DependentSolution<T>* sol = new DependentSolution<T>(dependencies, nodeToSolve);
-		std::vector<unsigned short int> dependencySelections;
-		std::vector<unsigned short int> solutionSelections;
+		std::vector<unsigned short> dependencySelections;
+		std::vector<unsigned short> solutionSelections;
 		solutionSelections.push_back(minSelection);
 		sol->setSolution(dependencySelections, solutionSelections);
 		return sol;

@@ -61,7 +61,7 @@ public:
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
 		bool isSource = edge->isSource(node);
-		for (unsigned short int i = 0; i < otherEnd->getVectorDegree(); i++) {
+		for (unsigned short i = 0; i < otherEnd->getVectorDegree(); i++) {
 			//find minimum for this selection
 			T minimum = T();
 			if (isSource) {
@@ -69,8 +69,8 @@ public:
 			} else {
 				minimum += calcSum(i, 0, edge);
 			}
-			unsigned short int minSelection = 0;
-			for (unsigned short int k = 1; k < node->getVectorDegree(); k++) {
+			unsigned short minSelection = 0;
+			for (unsigned short k = 1; k < node->getVectorDegree(); k++) {
 				T compSum = T ();
 				if (isSource) {
 					compSum += calcSum(k, i, edge);
@@ -82,8 +82,8 @@ public:
 					minSelection = k;
 				}
 			}
-			std::vector<unsigned short int> dependencySelections;
-			std::vector<unsigned short int> solutionSelections;
+			std::vector<unsigned short> dependencySelections;
+			std::vector<unsigned short> solutionSelections;
 			dependencySelections.push_back(i);
 			solutionSelections.push_back(minSelection);
 			solution->setSolution(dependencySelections, solutionSelections);
@@ -103,8 +103,8 @@ public:
 	}
 
 private:
-	static inline T calcSum(unsigned short int sourceSelection,
-			unsigned short int targetSelection, PBQPEdge<T>* edge) {
+	static inline T calcSum(unsigned short sourceSelection,
+			unsigned short targetSelection, PBQPEdge<T>* edge) {
 		T sum = T();
 		sum += edge->getSource()->getVector().get(sourceSelection);
 		sum += edge->getTarget()->getVector().get(targetSelection);

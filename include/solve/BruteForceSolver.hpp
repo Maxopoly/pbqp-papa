@@ -51,8 +51,8 @@ private:
 	 * but to not waste time converting indices when calculating the cost of a solution, the index in this array is the index
 	 * of the node
 	 */
-	std::vector<unsigned short int> currentSelection;
-	std::vector<unsigned short int> minimalSelection;
+	std::vector<unsigned short> currentSelection;
+	std::vector<unsigned short> minimalSelection;
 	/**
 	 * Node index counter of the graph and the length of any selection arrays
 	 */
@@ -66,7 +66,7 @@ private:
 	/**
 	 * The Vector degree of each node, subtracted by 1. Indexing is the same as in the nodes array
 	 */
-	std::vector<unsigned short int> limits;
+	std::vector<unsigned short> limits;
 	/**
 	 * Trend of each digit, where true means ascending and false means descending. We start with every digit ascending
 	 */
@@ -80,19 +80,19 @@ private:
 	 * Minimal cost we found so far
 	 */
 	T minimalCost;
-	unsigned short int previousSelectionOfNodeLastUpdated;
+	unsigned short previousSelectionOfNodeLastUpdated;
 	long nodeLastUpdated;
 
 public:
 	BruteForceSolver(PBQPGraph<T>* graph) :
 			PBQPSolver<T>(graph), currentSelection(
-					std::vector<unsigned short int>(
+					std::vector<unsigned short>(
 							graph->getNodeIndexCounter(), 0)), minimalSelection(
-					std::vector<unsigned short int>(
+					std::vector<unsigned short>(
 							graph->getNodeIndexCounter(), 0)), size(
 					graph->getNodeIndexCounter()), nodes(
 					std::vector<PBQPNode<T>*>(graph->getNodeCount())), limits(
-					std::vector<unsigned short int>(graph->getNodeCount())), trend(
+					std::vector<unsigned short>(graph->getNodeCount())), trend(
 					std::vector<bool>(graph->getNodeCount(), true)) {
 		unsigned long index = 0;
 		//TODO Speed this up by completly copying the nodes to reduce the amount of reference lookup neccessary later on?
@@ -134,7 +134,7 @@ private:
 	T calculateDiffSolution() {
 		T sum = T();
 		PBQPNode<T>* nodeChanged = nodes[nodeLastUpdated];
-		unsigned short int currentNodeSelection =
+		unsigned short currentNodeSelection =
 				currentSelection[nodeChanged->getIndex()];
 		for (PBQPEdge<T>* edge : nodeChanged->getAdjacentEdges(false)) {
 			if (edge->getSource() == nodeChanged) {

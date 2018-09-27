@@ -7,20 +7,20 @@
 
 namespace pbqppapa {
 
-class UnsignedShortIntSerializer: public TypeSerializer<unsigned short int> {
+class UnsignedShortIntSerializer: public TypeSerializer<unsigned short> {
 
 public:
 	UnsignedShortIntSerializer() :
-			TypeSerializer("unsigned short int") {
+			TypeSerializer("unsigned short") {
 
 	}
 
-	std::string serialize(unsigned short int number) override {
+	std::string serialize(unsigned short number) override {
 		return std::to_string(number);
 	}
 
-	unsigned short int deserialize(std::string serialized) override {
-		return (unsigned short int) std::strtoul(serialized.c_str(), NULL, 0);
+	unsigned short deserialize(std::string serialized) override {
+		return (unsigned short) std::strtoul(serialized.c_str(), NULL, 0);
 	}
 
 };

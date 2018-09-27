@@ -12,8 +12,8 @@ template<typename T>
 class Matrix {
 
 protected:
-	const unsigned short int rows;
-	const unsigned short int columns;
+	const unsigned short rows;
+	const unsigned short columns;
 	T* const content;
 
 public:
@@ -26,7 +26,7 @@ public:
 	 *  2 3
 	 *
 	 */
-	Matrix(unsigned short int rows, unsigned short int columns, T* data) :
+	Matrix(unsigned short rows, unsigned short columns, T* data) :
 			rows(rows), columns(columns), content(new T[rows * columns]) {
 		std::memcpy(content, data, sizeof(T) * rows * columns);
 	}
@@ -34,7 +34,7 @@ public:
 	/**
 	 * Creates a new matrix with uninitialized content
 	 */
-	Matrix(unsigned short int rows, unsigned short int columns) :
+	Matrix(unsigned short rows, unsigned short columns) :
 			rows(rows), columns(columns), content(new T[rows * columns]) {
 	}
 
@@ -74,8 +74,8 @@ public:
 	 * If they're not, you're at fault
 	 */
 	Matrix<T>* operator-=(const Matrix<T>& other) {
-		const unsigned long int length = rows * columns;
-		for (unsigned long int i = 0; i < length; i++) {
+		const unsigned long length = rows * columns;
+		for (unsigned long i = 0; i < length; i++) {
 			content[i] -= other.content[i];
 		}
 		return this;
@@ -86,8 +86,8 @@ public:
 				|| other.getColumnCount() != this->getColumnCount()) {
 			return false;
 		}
-		const unsigned long int length = rows * columns;
-		for (unsigned long int i = 0; i < length; i++) {
+		const unsigned long length = rows * columns;
+		for (unsigned long i = 0; i < length; i++) {
 			if (content[i] != other.content[i]) {
 				return false;
 			}
@@ -99,8 +99,8 @@ public:
 	 * Multiplies each value in the entire matrix by a given factor
 	 */
 	Matrix<T>* operator*=(const T& factor) {
-		const unsigned long int length = rows * columns;
-		for (unsigned long int i = 0; i < length; i++) {
+		const unsigned long length = rows * columns;
+		for (unsigned long i = 0; i < length; i++) {
 			content[i] *= factor;
 		}
 		return this;
@@ -110,8 +110,8 @@ public:
 	 * Divides each value in the entire matrix by a given divisor
 	 */
 	Matrix<T>* operator/=(const T& quotient) {
-		const unsigned long int length = rows * columns;
-		for (unsigned long int i = 0; i < length; i++) {
+		const unsigned long length = rows * columns;
+		for (unsigned long i = 0; i < length; i++) {
 			content[i] /= quotient;
 		}
 		return this;
@@ -121,9 +121,9 @@ public:
 	 *  Creates a transposed version of this matrix.
 	 */
 	Matrix<T> transpose() const {
-		const unsigned long int size = columns * rows;
+		const unsigned long size = columns * rows;
 		Matrix<T> result = Matrix<T>(columns, rows);
-		for (unsigned long int n = 0; n < size; n++) {
+		for (unsigned long n = 0; n < size; n++) {
 			int i = n / rows;
 			int j = n % rows;
 			result.getRaw(n) = content[columns * j + i];
@@ -134,7 +134,7 @@ public:
 	/**
 	 * Retrieves a single element by position
 	 */
-	inline T& get(unsigned short int row, unsigned short int column) const {
+	inline T& get(unsigned short row, unsigned short column) const {
 		return content[(row * columns) + column];
 	}
 
@@ -148,14 +148,14 @@ public:
 	/**
 	 * Gets the amount of rows
 	 */
-	const unsigned short int& getRowCount() const {
+	const unsigned short& getRowCount() const {
 		return rows;
 	}
 
 	/**
 	 * Gets the amount of columns
 	 */
-	const unsigned short int& getColumnCount() const {
+	const unsigned short& getColumnCount() const {
 		return columns;
 	}
 
@@ -181,10 +181,10 @@ public:
 	 *
 	 *
 	 */
-	Matrix<T> multiplyRows(const unsigned short int multiplier) const {
+	Matrix<T> multiplyRows(const unsigned short multiplier) const {
 		Matrix<T> result(rows * multiplier, columns);
 		const unsigned long sectorSize = sizeof(T) * rows * columns;
-		for (unsigned short int i = 0; i < multiplier; i++) {
+		for (unsigned short i = 0; i < multiplier; i++) {
 			std::memcpy(result.content + i * sectorSize, content, sectorSize);
 		}
 		return result;
@@ -207,12 +207,12 @@ public:
 	 *
 	 */
 	Matrix<T> multiplyRowsIndividually(
-			const unsigned short int multiplier) const {
+			const unsigned short multiplier) const {
 		Matrix<T> result(rows * multiplier, columns);
 		const unsigned long rowLength = sizeof(T) * columns;
 		const unsigned long sectionLength = rowLength * multiplier;
-		for (unsigned short int i = 0; i < rows; i++) {
-			for (unsigned short int offset = 0; offset < multiplier; offset++) {
+		for (unsigned short i = 0; i < rows; i++) {
+			for (unsigned short offset = 0; offset < multiplier; offset++) {
 				std::memcpy(
 						result.content + (rowLength * offset) + (sectionLength * i),
 						content + (rowLength * i), rowLength);
@@ -236,7 +236,7 @@ public:
 	 *
 	 */
 	Matrix<T> multiplyColumnsIndividually(
-			const unsigned short int multiplier) const {
+			const unsigned short multiplier) const {
 		Matrix<T> result(rows, columns * multiplier);
 		const unsigned long sectorLength = rows * columns;
 		for (unsigned long i = 0; i < rows * columns; i++) {
@@ -260,7 +260,7 @@ public:
 	 *
 	 *
 	 */
-	Matrix<T> multiplyColumns(const unsigned short int multiplier) const {
+	Matrix<T> multiplyColumns(const unsigned short multiplier) const {
 		Matrix<T> result(rows, columns * multiplier);
 		const unsigned long rowLength = columns * sizeof(T);
 		const unsigned long rowDataLength = rowLength * multiplier;

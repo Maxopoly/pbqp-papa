@@ -2,11 +2,11 @@
 
 namespace pbqppapa {
 
-UnsignedLongIntSerializer* TypeSerializerFactory::get(unsigned long int) {
+UnsignedLongIntSerializer* TypeSerializerFactory::get(unsigned long) {
 	return unsignedLongIntSerializer;
 }
 
-UnsignedShortIntSerializer* TypeSerializerFactory::get(unsigned short int) {
+UnsignedShortIntSerializer* TypeSerializerFactory::get(unsigned short) {
 	return unsignedShortIntSerializer;
 }
 

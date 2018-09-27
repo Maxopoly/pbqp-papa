@@ -25,7 +25,7 @@ template<typename T>
 class VectorDegreeOneReductor: public PBQP_Reduction<T> {
 private:
 	std::unique_ptr<DependentSolution<T>> solution;
-	static const std::vector<unsigned short int> emptyIntVector;
+	static const std::vector<unsigned short> emptyIntVector;
 
 public:
 	VectorDegreeOneReductor(PBQPGraph<T>* graph) :
@@ -47,8 +47,8 @@ public:
 		}
 		solution = std::unique_ptr<DependentSolution<T>>(
 				new DependentSolution<T>(dependencyNodes, solutionNodes));
-		std::vector<unsigned short int> dependencySelection;
-		std::vector<unsigned short int> solutionSelection(solutionNodes.size(),
+		std::vector<unsigned short> dependencySelection;
+		std::vector<unsigned short> solutionSelection(solutionNodes.size(),
 				0);
 		solution->setSolution(dependencySelection, solutionSelection);
 		for(PBQPNode<T>* node : solutionNodes) {
@@ -69,14 +69,14 @@ public:
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
-		std::vector<unsigned short int> nodeSolution (1, 0);
+		std::vector<unsigned short> nodeSolution (1, 0);
 		solution->setSolution(emptyIntVector, nodeSolution);
 		return solution;
 	}
 };
 
 template<typename T>
-const std::vector<unsigned short int> VectorDegreeOneReductor<T>::emptyIntVector = std::vector<unsigned short int>(0);
+const std::vector<unsigned short> VectorDegreeOneReductor<T>::emptyIntVector = std::vector<unsigned short>(0);
 }
 
 #endif /* REDUCTION_VectorDEGREE_VectorDEGREEONEREDUCTOR_HPP_ */

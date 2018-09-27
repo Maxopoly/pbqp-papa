@@ -25,8 +25,8 @@ private:
 	DoubleSerializer* doubleSerializer = new DoubleSerializer();
 
 public:
-	UnsignedLongIntSerializer* get(unsigned long int);
-	UnsignedShortIntSerializer* get(unsigned short int);
+	UnsignedLongIntSerializer* get(unsigned long);
+	UnsignedShortIntSerializer* get(unsigned short);
 	UnsignedCharSerializer* get(unsigned char);
 	FloatSerializer* get(float);
 	DoubleSerializer* get(double);

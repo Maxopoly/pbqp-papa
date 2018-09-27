@@ -25,7 +25,7 @@ public:
 			PBQPEdge<T>* edge = *iter;
 			if (edge->getSource() == edge->getTarget()) {
 				//add diagonal of edge matrix to cost Vector and then delete edge
-				for (unsigned short int i = 0;
+				for (unsigned short i = 0;
 						i < edge->getSource()->getVectorDegree(); i++) {
 					edge->getSource()->getVector().get(i) +=
 							edge->getMatrix().get(i, i);

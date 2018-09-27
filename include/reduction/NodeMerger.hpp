@@ -34,8 +34,8 @@ public:
 			PBQPNode<T>* toRemove, PBQPGraph<T>* graph) {
 		Vector<T> resultVector(
 				remaining->getVectorDegree() * toRemove->getVectorDegree());
-		for (unsigned short int i = 0; i < toRemove->getVectorDegree(); i++) {
-			for (unsigned short int k = 0; k < remaining->getVectorDegree();
+		for (unsigned short i = 0; i < toRemove->getVectorDegree(); i++) {
+			for (unsigned short k = 0; k < remaining->getVectorDegree();
 					k++) {
 				resultVector.get(k + i * remaining->getVectorDegree()) =
 						remaining->getVector().get(k)
@@ -78,8 +78,8 @@ public:
 		solutions.push_back(toRemove);
 		DependentSolution<T>* sol = new DependentSolution<T>(dependencies,
 				solutions);
-		for (unsigned short int i = 0; i < toRemove->getVectorDegree(); i++) {
-			for (unsigned short int k = 0; k < remaining->getVectorDegree();
+		for (unsigned short i = 0; i < toRemove->getVectorDegree(); i++) {
+			for (unsigned short k = 0; k < remaining->getVectorDegree();
 					k++) {
 				std::vector<PBQPNode<T>*> dependencySelection;
 				dependencySelection.push_back(

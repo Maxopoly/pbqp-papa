@@ -18,7 +18,7 @@ public:
 	 * Creates a new Vector (matrix with one column) with the given amount of rows. The given data
 	 * must be an array with matching length
 	 */
-	Vector<T>(unsigned short int length, T* data) :
+	Vector<T>(unsigned short length, T* data) :
 			Matrix<T>(length, 1, data) {
 		//super constructor does everything for us
 	}
@@ -26,7 +26,7 @@ public:
 	/**
 	 * Creates a new Vector with uninitialized content
 	 */
-	Vector<T>(unsigned short int length) :
+	Vector<T>(unsigned short length) :
 			Matrix<T>(length, 1) {
 	}
 
@@ -43,10 +43,10 @@ public:
 	 * Gets the index (row number) of the smallest element within the Vector.
 	 * Will encounter undefined behavior if the Vector is of length 0.
 	 */
-	unsigned short int getIndexOfSmallestElement() const {
-		unsigned short int minimumIndex = 0;
+	unsigned short getIndexOfSmallestElement() const {
+		unsigned short minimumIndex = 0;
 		T minimumValue = this->content[0];
-		for (unsigned short int i = 0; i < this->rows; i++) {
+		for (unsigned short i = 0; i < this->rows; i++) {
 			if (this->content[i] < minimumValue) {
 				minimumValue = this->content[i];
 				minimumIndex = i;
@@ -55,7 +55,7 @@ public:
 		return minimumIndex;
 	}
 
-	T& get(unsigned short int index) const {
+	T& get(unsigned short index) const {
 		return this->content[index];
 	}
 };
