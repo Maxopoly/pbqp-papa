@@ -21,16 +21,16 @@ class PBQPNode;
  * node they are connected to
  */
 template<typename T>
-class DegreeOneReductor: public PBQP_Reduction<T> {
+class DegreeOneReducer: public PBQP_Reduction<T> {
 private:
 	std::vector<DependentSolution<T>*> solutions;
 
 public:
-	DegreeOneReductor(PBQPGraph<T>* graph) :
+	DegreeOneReducer(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 	}
 
-	~DegreeOneReductor() {
+	~DegreeOneReducer() {
 		for (DependentSolution<T>* sol : solutions) {
 			delete sol;
 		}

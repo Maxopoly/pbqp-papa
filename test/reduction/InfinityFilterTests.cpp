@@ -10,7 +10,7 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "reduction/InfinityFilter.hpp"
-#include "reduction/degree/DegreeZeroReductor.hpp"
+#include "reduction/degree/DegreeZeroReducer.hpp"
 #include "graph/PBQPSolution.hpp"
 #include "io/PBQP_Serializer.hpp"
 
@@ -30,8 +30,8 @@ BOOST_AUTO_TEST_CASE(reduction) {
 		Vector<unsigned long> vek (2, arr);
 		PBQPNode<unsigned long>* node = graph.addNode(vek);
 	}
-	DegreeZeroReductor<unsigned long> zeroReductor(&graph);
-	std::vector<PBQPGraph<unsigned long>*> result = zeroReductor.reduce();
+	DegreeZeroReducer<unsigned long> zeroReducer(&graph);
+	std::vector<PBQPGraph<unsigned long>*> result = zeroReducer.reduce();
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	PBQPGraph<unsigned long>* resultGraph = result [0];
 	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 0);

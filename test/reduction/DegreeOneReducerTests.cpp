@@ -1,5 +1,5 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE DegreeOneReductorTests
+#define BOOST_TEST_MODULE DegreeOneReducerTests
 #include <boost/test/unit_test.hpp>
 
 #include <vector>
@@ -10,7 +10,7 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "reduction/PBQPReduction.hpp"
-#include "reduction/degree/DegreeOneReductor.hpp"
+#include "reduction/degree/DegreeOneReducer.hpp"
 #include "graph/PBQPSolution.hpp"
 
 #include "util/TestUtils.hpp"
@@ -20,8 +20,8 @@ namespace pbqppapa {
 BOOST_AUTO_TEST_CASE(emptyGraphTest) {
 	//make sure this doesnt explode
 	PBQPGraph<int> graph;
-	DegreeOneReductor<int> oneReductor(&graph);
-	std::vector<PBQPGraph<int>*> result = oneReductor.reduce();
+	DegreeOneReducer<int> oneReducer(&graph);
+	std::vector<PBQPGraph<int>*> result = oneReducer.reduce();
 }
 
 /*
@@ -40,8 +40,8 @@ BOOST_AUTO_TEST_CASE(simpleNodeReductionCount) {
 		Matrix<int> mat (2, 2, arr);
 		graph.addEdge(first, node, mat);
 	}
-	DegreeOneReductor<int> oneReductor(&graph);
-	std::vector<PBQPGraph<int>*> result = oneReductor.reduce();
+	DegreeOneReducer<int> oneReducer(&graph);
+	std::vector<PBQPGraph<int>*> result = oneReducer.reduce();
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	PBQPGraph<int>* resultGraph = result[0];
 	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 1);
@@ -63,8 +63,8 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	//force the second one to be reduced into the first one
 	graph.addEdge(first, first, mat1);
 	graph.addEdge(first, first, mat1);
-	DegreeOneReductor<int> oneReductor(&graph);
-	std::vector<PBQPGraph<int>*> result = oneReductor.reduce();
+	DegreeOneReducer<int> oneReducer(&graph);
+	std::vector<PBQPGraph<int>*> result = oneReducer.reduce();
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	PBQPGraph<int>* resultGraph = result[0];
 	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 1);
@@ -75,11 +75,11 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	BOOST_CHECK_EQUAL(reducedNode->getVector().get(1), 5);
 	PBQPSolution<int> sol (2);
 	sol.setSolution(firstIndex, 0);
-	oneReductor.solve(sol);
+	oneReducer.solve(sol);
 	BOOST_CHECK_EQUAL(sol.getSolution(secondIndex), 0);
 	PBQPSolution<int> sol2 (2);
 	sol2.setSolution(firstIndex, 1);
-	oneReductor.solve(sol2);
+	oneReducer.solve(sol2);
 	BOOST_CHECK_EQUAL(sol2.getSolution(secondIndex), 1);
 }
 

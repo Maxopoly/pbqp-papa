@@ -18,14 +18,14 @@ template<typename T>
 class PBQPNode;
 
 template<typename T>
-class DegreeZeroReductor: public PBQP_Reduction<T> {
+class DegreeZeroReducer: public PBQP_Reduction<T> {
 private:
 	std::unique_ptr<DependentSolution<T>> solution;
 	//we need this a lot, so keeping it around instead of recreating is good
 	static const std::vector<unsigned short> emptyIntVector;
 
 public:
-	DegreeZeroReductor(PBQPGraph<T>* graph) :
+	DegreeZeroReducer(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 	}
 
@@ -71,7 +71,7 @@ public:
 
 //dark magic to initialize static members of a template
 template<typename T>
-const std::vector<unsigned short> DegreeZeroReductor<T>::emptyIntVector = std::vector<unsigned short>(0);
+const std::vector<unsigned short> DegreeZeroReducer<T>::emptyIntVector = std::vector<unsigned short>(0);
 }
 
 #endif /* VALIDATION_DEGREEZEROREDUCTOR_HPP_ */

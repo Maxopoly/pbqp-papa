@@ -19,7 +19,7 @@ template<typename T>
 class PBQP_Reduction;
 
 template<typename T>
-class DegreeNReductor: PBQP_Reduction<T> {
+class DegreeNReducer: PBQP_Reduction<T> {
 
 public:
 	static DependentSolution<T>* reduceRNEarlyDecision(PBQPNode<T>* node,

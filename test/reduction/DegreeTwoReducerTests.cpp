@@ -1,5 +1,5 @@
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE DegreeTwoReductorTests
+#define BOOST_TEST_MODULE DegreeTwoReducerTests
 #include <boost/test/unit_test.hpp>
 
 #include <vector>
@@ -10,7 +10,7 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "reduction/PBQPReduction.hpp"
-#include "reduction/degree/DegreeTwoReductor.hpp"
+#include "reduction/degree/DegreeTwoReducer.hpp"
 #include "graph/PBQPSolution.hpp"
 
 #include "util/TestUtils.hpp"
@@ -20,8 +20,8 @@ namespace pbqppapa {
 BOOST_AUTO_TEST_CASE(emptyGraphTest) {
 	//make sure this doesnt explode
 	PBQPGraph<int> graph;
-	DegreeTwoReductor<int> twoReductor(&graph);
-	std::vector<PBQPGraph<int>*> result = twoReductor.reduce();
+	DegreeTwoReducer<int> twoReducer(&graph);
+	std::vector<PBQPGraph<int>*> result = twoReducer.reduce();
 }
 
 BOOST_AUTO_TEST_CASE(simpleCalculation) {
@@ -45,8 +45,8 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	graph.addEdge(first, second, mat1);
 	graph.addEdge(second, third, mat2);
 	//second one gets removed
-	DegreeTwoReductor<int> twoReductor(&graph);
-	std::vector<PBQPGraph<int>*> result = twoReductor.reduce();
+	DegreeTwoReducer<int> twoReducer(&graph);
+	std::vector<PBQPGraph<int>*> result = twoReducer.reduce();
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	PBQPGraph<int>* resultGraph = result[0];
 	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 2);
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	PBQPSolution<int> sol(3);
 	sol.setSolution(firstIndex, 0);
 	sol.setSolution(thirdIndex, 0);
-	twoReductor.solve(sol);
+	twoReducer.solve(sol);
 	BOOST_CHECK_EQUAL(sol.getSolution(secondIndex), 1);
 }
 

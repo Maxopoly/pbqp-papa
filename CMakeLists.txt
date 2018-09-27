@@ -31,7 +31,7 @@ target_include_directories(core_pbqp_representation PUBLIC include)
 #set_target_properties(pbqp_io PROPERTIES LINKER_LANGUAGE CXX)
 
 
-add_library(pbqp_solving STATIC include/analysis/PBQPHandler.hpp include/reduction/ConnectedComponentSeparator.hpp include/reduction/DependentSolution.hpp include/reduction/EdgeDeduplicator.hpp include/reduction/NodeMerger.hpp include/reduction/PBQPReduction.hpp include/reduction/SelfCycleRemover.hpp include/reduction/degree/DegreeOneReductor.hpp include/reduction/degree/DegreeTwoReductor.hpp include/reduction/degree/DegreeZeroReductor.hpp include/reduction/heuristic/DegreeNReductor.hpp include/reduction/vectordegree/VectorDegreeZeroReductor.hpp include/reduction/vectordegree/VectorDegreeOneReductor.hpp)
+add_library(pbqp_solving STATIC include/analysis/PBQPHandler.hpp include/reduction/ConnectedComponentSeparator.hpp include/reduction/DependentSolution.hpp include/reduction/EdgeDeduplicator.hpp include/reduction/NodeMerger.hpp include/reduction/PBQPReduction.hpp include/reduction/SelfCycleRemover.hpp include/reduction/degree/DegreeOneReducer.hpp include/reduction/degree/DegreeTwoReducer.hpp include/reduction/degree/DegreeZeroReducer.hpp include/reduction/heuristic/DegreeNReducer.hpp include/reduction/vectordegree/VectorDegreeZeroReducer.hpp include/reduction/vectordegree/VectorDegreeOneReducer.hpp)
 set_target_properties(pbqp_solving PROPERTIES LINKER_LANGUAGE CXX)
 
 add_subdirectory(test)

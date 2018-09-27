@@ -19,15 +19,15 @@ class PBQPNode;
  * Any nodes with a Vector degree of 0 can be deleted from the graph. No selection needs to be made for them
  */
 template<typename T>
-class VectorDegreeZeroReductor: public PBQP_Reduction<T> {
+class VectorDegreeZeroReducer: public PBQP_Reduction<T> {
 private:
 
 public:
-	VectorDegreeZeroReductor(PBQPGraph<T>* graph) :
+	VectorDegreeZeroReducer(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 	}
 
-	~VectorDegreeZeroReductor() {
+	~VectorDegreeZeroReducer() {
 	}
 
 	std::vector<PBQPGraph<T>*>& reduce() {

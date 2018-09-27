@@ -23,16 +23,16 @@ template<typename T>
 class PBQP_Reduction;
 
 template<typename T>
-class DegreeTwoReductor: public PBQP_Reduction<T> {
+class DegreeTwoReducer: public PBQP_Reduction<T> {
 private:
 	std::vector<DependentSolution<T>*> solutions;
 
 public:
-	DegreeTwoReductor(PBQPGraph<T>* graph) :
+	DegreeTwoReducer(PBQPGraph<T>* graph) :
 			PBQP_Reduction<T>(graph) {
 	}
 
-	~DegreeTwoReductor() {
+	~DegreeTwoReducer() {
 		for (DependentSolution<T>* sol : solutions) {
 			delete sol;
 		}

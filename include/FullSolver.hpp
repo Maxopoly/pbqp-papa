@@ -6,11 +6,11 @@
 #include "analysis/PBQPHandler.hpp"
 #include "graph/PBQPGraph.hpp"
 #include "graph/PBQPSolution.hpp"
-#include "reduction/degree/DegreeOneReductor.hpp"
-#include "reduction/degree/DegreeTwoReductor.hpp"
-#include "reduction/degree/DegreeZeroReductor.hpp"
-#include "reduction/vectordegree/VectorDegreeOneReductor.hpp"
-#include "reduction/vectordegree/VectorDegreeZeroReductor.hpp"
+#include "reduction/degree/DegreeOneReducer.hpp"
+#include "reduction/degree/DegreeTwoReducer.hpp"
+#include "reduction/degree/DegreeZeroReducer.hpp"
+#include "reduction/vectordegree/VectorDegreeOneReducer.hpp"
+#include "reduction/vectordegree/VectorDegreeZeroReducer.hpp"
 
 namespace pbqppapa {
 
@@ -21,17 +21,17 @@ class PBQPSolution;
 template<typename T>
 class PBQPNode;
 template<typename T>
-class VektorDegreeOneReductor;
+class VektorDegreeOneReducer;
 template<typename T>
-class VectorDegreeZeroReductor;
+class VectorDegreeZeroReducer;
 template<typename T>
-class VectorDegreeZeroReductor;
+class VectorDegreeZeroReducer;
 template<typename T>
-class DegreeOneReductor;
+class DegreeOneReducer;
 template<typename T>
-class DegreeZeroReductor;
+class DegreeZeroReducer;
 template<typename T>
-class DegreeTwoReductor;
+class DegreeTwoReducer;
 
 template<typename T>
 class FullSolver;
@@ -62,10 +62,10 @@ public:
 				unsigned short degree = (*iter)->getVectorDegree();
 				if (degree == 1) {
 					localSolutions.push_back(
-							VectorDegreeOneReductor<T>::reduceVectorDegreeOne(
+							VectorDegreeOneReducer<T>::reduceVectorDegreeOne(
 									*iter, this->graph));
 				} else if (degree == 0) {
-					VectorDegreeZeroReductor<T>::reduceVectorDegreeZero(*iter,
+					VectorDegreeZeroReducer<T>::reduceVectorDegreeZero(*iter,
 							this->graph);
 				}
 				iter++;
@@ -78,12 +78,12 @@ public:
 			if (degree == 2) {
 				iter++;
 				localSolutions.push_back(
-						DegreeTwoReductor<T>::reduceDegreeTwo(*iter,
+						DegreeTwoReducer<T>::reduceDegreeTwo(*iter,
 								this->graph));
 			} else if (degree == 0) {
 				iter++;
 				localSolutions.push_back(
-						DegreeZeroReductor<T>::reduceDegreeZero(*iter,
+						DegreeZeroReducer<T>::reduceDegreeZero(*iter,
 								this->graph));
 			} else {
 				PBQPNode<T>* node = *iter;
@@ -97,7 +97,7 @@ public:
 					other = node->getAdjacentEdges().at(0)->getOtherEnd(node);
 					iter++;
 					localSolutions.push_back(
-							DegreeOneReductor<T>::reduceDegreeOne(node,
+							DegreeOneReducer<T>::reduceDegreeOne(node,
 									this->graph));
 					node = other;
 				}
