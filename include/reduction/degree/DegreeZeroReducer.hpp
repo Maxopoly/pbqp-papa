@@ -49,7 +49,7 @@ public:
 	}
 
 	void solve(PBQPSolution<T>& solution) override {
-		this->solution->solve(solution);
+		this->solution->solve(&solution);
 	}
 
 	/**
@@ -65,6 +65,7 @@ public:
 		std::vector<unsigned short> nodeSolution = std::vector<unsigned short>();
 		nodeSolution.push_back(node->getVector().getIndexOfSmallestElement());
 		solution->setSolution(emptyIntVector, nodeSolution);
+		graph->removeNode(node);
 		return solution;
 	}
 };

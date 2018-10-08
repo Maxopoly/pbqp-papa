@@ -7,7 +7,10 @@
 #include <iomanip>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <io/TypeSerializers.hpp>
+#include <iterator>
+
+#include "io/TypeSerializers.hpp"
+#include "graph/PBQPGraph.hpp"
 
 namespace pbqppapa {
 
@@ -21,9 +24,9 @@ class PBQP_Serializer {
 
 public:
 
-	void saveToFile(std::string path, PBQPGraph<T>* graph) {
+	void saveToFile(std::string path, PBQPGraph<T>* graph, bool debug = false) {
 		std::ofstream out(path);
-		nlohmann::json json = graphToJson(graph);
+		nlohmann::json json = graphToJson(graph, debug);
 		out << json << std::endl;
 		out.close();
 	}
@@ -44,7 +47,7 @@ private:
 		if (parsedType.compare(getTypeName<T>()) != 0) {
 			//TODO exception
 			std::cout << "Invalid type loading";
-			return NULL;
+			//return NULL;
 		}
 		PBQPGraph<T>* graph = new PBQPGraph<T>();
 		std::map<unsigned int, PBQPNode<T>*> nodeByIndex = std::map<
@@ -88,7 +91,7 @@ private:
 		return mat;
 	}
 
-	nlohmann::json graphToJson(PBQPGraph<T>* graph) {
+	nlohmann::json graphToJson(PBQPGraph<T>* graph, bool debug) {
 		nlohmann::json json;
 		json["meta"] = serializeMeta(graph);
 		nlohmann::json nodeJsons = nlohmann::json::array();
@@ -103,6 +106,14 @@ private:
 						serializeElement<T>(node->getVector().get(i)));
 			}
 			nodeJson["cost"] = costVector;
+			if (debug) {
+				nodeJson["degree"] = node->getDegree();
+				nlohmann::json neighborVector = nlohmann::json::array();
+				for (PBQPNode<T>* neighbor : node->getAdjacentNodes())  {
+					neighborVector.push_back(std::to_string(neighbor->getIndex()));
+				}
+				nodeJson["neighbours"] = neighborVector;
+			}
 			nodeJsons.push_back(nodeJson);
 		}
 		json["nodes"] = nodeJsons;

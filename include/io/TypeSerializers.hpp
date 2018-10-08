@@ -37,6 +37,18 @@ unsigned long deserializeElement2(dummyType<unsigned long>, std::string serializ
 
 std::string getTypeName2(dummyType<unsigned long>);
 
+std::string serializeElement2(dummyType<unsigned int>, unsigned int element);
+
+unsigned int deserializeElement2(dummyType<unsigned int>, std::string serialized);
+
+std::string getTypeName2(dummyType<unsigned int>);
+
+std::string serializeElement2(dummyType<unsigned short>, unsigned short element);
+
+unsigned short deserializeElement2(dummyType<unsigned short>, std::string serialized);
+
+std::string getTypeName2(dummyType<unsigned short>);
+
 
 //InfinityWrapper
 
@@ -45,7 +57,7 @@ std::string serializeElement2(dummyType<InfinityWrapper<T>>, InfinityWrapper<T> 
 	if (number.isInfinite()) {
 		return "INF";
 	}
-	return serializeElement<T>(number.getValue);
+	return serializeElement2(dummyType<T> {}, number.getValue());
 }
 
 template<typename T>
@@ -60,26 +72,7 @@ template<typename T> std::string getTypeName2(dummyType<InfinityWrapper<T>>) {
 	return "INF " + getTypeName<T>();
 }
 
-
-
-
-/*
-//unsigned short
-
-std::string serializeElement(dummyType<unsigned short>, unsigned short number) {
-	return std::to_string(number);
 }
-
-unsigned short deserializeElement(dummyType<unsigned short>, std::string serialized) {
-	return (unsigned short) std::strtoul(serialized.c_str(), NULL, 0);
-}
-
-std::string getTypeName(dummyType<unsigned short>) {
-	return "unsigned short";
-} */
-
-}
-
 
 
 #endif /* IO_TYPESERIALIZERS_HPP_ */

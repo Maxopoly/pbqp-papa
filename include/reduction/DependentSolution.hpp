@@ -56,14 +56,14 @@ public:
 				solutions.data() + index);
 	}
 
-	void solve(PBQPSolution<T>& solution) const {
+	void solve(PBQPSolution<T>* solution) const {
 		std::vector<unsigned short> dependencySolution (dependencyIndices.size());
 		for(unsigned long i =0 ; i < dependencyIndices.size(); i++) {
-			dependencySolution.at(i) = solution.getSolution(dependencyIndices.at(i));
+			dependencySolution.at(i) = solution->getSolution(dependencyIndices.at(i));
 		}
 		unsigned long index = resolveIndex(dependencySolution);
 		for (unsigned long i = 0; i < solutionIndices.size(); i++) {
-			solution.setSolution(solutionIndices.at(i), solutions.at(index + i));
+			solution->setSolution(solutionIndices.at(i), solutions.at(index + i));
 		}
 	}
 

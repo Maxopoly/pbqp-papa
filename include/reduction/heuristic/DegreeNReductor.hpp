@@ -28,12 +28,8 @@ public:
 		T minCost = node->getVector().get(0);
 		for (PBQPEdge<T>* edge : node->getAdjacentEdges()) {
 			bool isSource = edge->isSource(node);
-			T rowColMin = otherEnd->getVector().get(0);
-			if (isSource) {
-				localRowColMin += edge->getMatrix().get(0, 0);
-			} else {
-				localRowColMin += edge->getMatrix().get(0, 0);
-			}
+			T rowColMin = edge->getOtherEnd(node)->getVector().get(0);
+			rowColMin += edge->getMatrix().get(0, 0);
 			PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
 			for (unsigned short k = 1; k < otherEnd->getVectorDegree(); k++) {
 				T localRowColMin = otherEnd->getVector().get(k);
@@ -46,17 +42,17 @@ public:
 					rowColMin = localRowColMin;
 				}
 			}
-			curr += rowColMin;
+			minCost += rowColMin;
 		}
 		for (unsigned short i = 1; i < node->getVectorDegree(); i++) {
 			T curr = node->getVector().get(i);
 			for (PBQPEdge<T>* edge : node->getAdjacentEdges()) {
 				bool isSource = edge->isSource(node);
-				T rowColMin = otherEnd->getVector().get(0);
+				T rowColMin = edge->getOtherEnd(node)->getVector().get(0);
 				if (isSource) {
-					localRowColMin += edge->getMatrix().get(i, 0);
+					rowColMin += edge->getMatrix().get(i, 0);
 				} else {
-					localRowColMin += edge->getMatrix().get(0, i);
+					rowColMin += edge->getMatrix().get(0, i);
 				}
 				PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
 				for (unsigned short k = 1; k < otherEnd->getVectorDegree();
@@ -86,6 +82,7 @@ public:
 		std::vector<unsigned short> solutionSelections;
 		solutionSelections.push_back(minSelection);
 		sol->setSolution(dependencySelections, solutionSelections);
+		graph->removeNode(node);
 		return sol;
 	}
 

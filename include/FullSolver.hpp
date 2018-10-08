@@ -11,6 +11,10 @@
 #include "reduction/degree/DegreeZeroReducer.hpp"
 #include "reduction/vectordegree/VectorDegreeOneReducer.hpp"
 #include "reduction/vectordegree/VectorDegreeZeroReducer.hpp"
+#include "reduction/SelfCycleRemover.hpp"
+#include "reduction/heuristic/DegreeNReductor.hpp"
+#include "debug/StatKeeper.hpp"
+#include "debug/DebugTimer.hpp"
 
 namespace pbqppapa {
 
@@ -53,6 +57,7 @@ public:
 	}
 
 	PBQPSolution<T>* solve() {
+		StatKeeper stats;
 		auto iter = this->graph->getNodeBegin();
 		std::vector<DependentSolution<T>*> localSolutions;
 		//always filter out common nonsense like degree 0/1, which would break our advanced reductions
@@ -72,39 +77,93 @@ public:
 			}
 		}
 		iter = this->graph->getNodeBegin();
-		//standard r0-r2
+		//standard r0-r2 as much as possible
+		DebugTimer timerr02 ("R0, R1, R2 Reductions initially");
+		timerr02.startTimer();
 		while (iter != this->graph->getNodeEnd()) {
-			unsigned short degree = (*iter)->getDegree();
-			if (degree == 2) {
+			PBQPNode<T>* node = *iter;
+			unsigned short degree = node->getDegree();
+
+			switch (degree) {
+			case 2:
 				iter++;
 				localSolutions.push_back(
-						DegreeTwoReducer<T>::reduceDegreeTwo(*iter,
+						DegreeTwoReducer<T>::reduceDegreeTwo(node,
 								this->graph));
-			} else if (degree == 0) {
+				stats.applyR2();
+				break;
+			case 0:
 				iter++;
 				localSolutions.push_back(
-						DegreeZeroReducer<T>::reduceDegreeZero(*iter,
+						DegreeZeroReducer<T>::reduceDegreeZero(node,
 								this->graph));
-			} else {
-				PBQPNode<T>* node = *iter;
-				if (node->getDegree() != 1) {
-					iter++;
-					continue;
-				}
+				stats.applyR0();
+				break;
+			case 1:
 				PBQPNode<T>* other;
-				//make sure R1 cascades properly
-				while (node->getDegree() == 1) {
-					other = node->getAdjacentEdges().at(0)->getOtherEnd(node);
-					iter++;
+				other = node->getAdjacentEdges().at(0)->getOtherEnd(node);
+				iter++;
+				localSolutions.push_back(
+						DegreeOneReducer<T>::reduceDegreeOne(node,
+								this->graph));
+				stats.applyR1();
+				if (other->getDegree() == 2) {
+					if (*iter == other) {
+						iter++;
+					}
+					//only need to handle this case, in all others the degree was already
+					//low enough before the reduction
 					localSolutions.push_back(
-							DegreeOneReducer<T>::reduceDegreeOne(node,
+							DegreeTwoReducer<T>::reduceDegreeTwo(other,
 									this->graph));
-					node = other;
+					stats.applyR2();
+				}
+				break;
+			default:
+				iter++;
+
+			}
+		}
+		timerr02.stopTimer();
+		//start applying RN
+		//TODO priorize high degree nodes, follow PEO
+		iter = this->graph->getNodeBegin();
+		DebugTimer rNTimer("RN,R2 combined full reduction");
+		rNTimer.startTimer();
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter++;
+			std::vector<PBQPNode<T>*> neighbors = node->getAdjacentNodes();
+			localSolutions.push_back(
+					DegreeNReducer<T>::reduceRNEarlyDecision(node,
+							this->graph));
+			stats.applyRNEarly();
+			auto neighborIter = neighbors.begin();
+			while (neighborIter != neighbors.end()) {
+				PBQPNode<T>* neighbor = *neighborIter++;
+				if (neighbor->getDegree() == 2) {
+					if (neighbor == *iter) {
+						iter++;
+					}
+					localSolutions.push_back(
+							DegreeTwoReducer<T>::reduceDegreeTwo(neighbor,
+									this->graph));
+					stats.applyR2();
 				}
 			}
 		}
+		rNTimer.stopTimer();
+		DebugTimer backTrackTimer("Backtracking");
+		backTrackTimer.startTimer();
 		PBQPSolution<T>* solution = new PBQPSolution<T>(
 				this->graph->getNodeIndexCounter());
+		for(auto iter = localSolutions.rbegin(); iter != localSolutions.rend(); iter++) {
+			(*iter)->solve(solution);
+		}
+		backTrackTimer.stopTimer();
+		std::cout << timerr02.getOutput();
+		std::cout << rNTimer.getOutput();
+		std::cout << backTrackTimer.getOutput();
+		std::cout << stats.getSumUp();
 		return solution;
 	}
 

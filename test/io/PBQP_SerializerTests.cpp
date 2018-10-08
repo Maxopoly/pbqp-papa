@@ -10,7 +10,7 @@
 #include "graph/PBQPEdge.hpp"
 #include "io/PBQP_Serializer.hpp"
 #include "generate/PBQPGenerator.hpp"
-#include "io/types/UnsignedLongIntSerializer.hpp"
+#include "analysis/SolutionAmountChecker.hpp"
 #include "FullSolver.hpp"
 #include "CInterface.h"
 
@@ -55,20 +55,32 @@ BOOST_AUTO_TEST_CASE(dummyTest) {
 
 	PBQPGraph<unsigned long>* secondGraph = serial.loadFromFile(
 			"testgraph.json");
-	BOOST_TEST_MESSAGE(secondGraph->getEdgeCount());
-
 }
 
 BOOST_AUTO_TEST_CASE(generatorTest) {
-	PBQPGenerator<unsigned long> generator (200, 1.8, 100, 6, 2);
+	PBQPGenerator<unsigned long> generator (20, 1.8, 100, 6, 2);
 	PBQPGraph<unsigned long>* graph = generator.generate();
 	PBQP_Serializer<unsigned long> serial;
-	serial.saveToFile("bigTestGraph.json", graph);
-	/*
+	serial.saveToFile("bigTestGraph.json", graph, true);
+
 	FullSolver<unsigned long> solver (graph);
 	solver.solve();
-	serial.saveToFile("reducedBigGraph.json", graph); */
+	serial.saveToFile("reducedBigGraph.json", graph, true);
 	delete graph;
 }
+
+
+BOOST_AUTO_TEST_CASE(libTest) {
+	PBQP_Serializer<InfinityWrapper<unsigned int>> serial;
+	PBQPGraph<InfinityWrapper<unsigned int>>* graph = serial.loadFromFile("output0____338495.json");
+	FullSolver<InfinityWrapper<unsigned int>> solver (graph);
+	solver.solve();
+	serial.saveToFile("reducedLibfirm.json", graph, true);
+	//SolutionAmountChecker<InfinityWrapper<unsigned int>> sac (graph);
+	//BOOST_TEST_MESSAGE(std::to_string(sac.getSolutionAmount()));
+	delete graph;
+}
+
+
 
 }

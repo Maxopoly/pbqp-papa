@@ -25,9 +25,10 @@ public:
 	}
 
 	unsigned long long int getSolutionAmount() {
-		unsigned long long int amount = 1;
-		for (PBQPNode<T>* node : graph->getNodes()) {
-			amount *= node->getVectorDegree();
+		unsigned long long amount = 1;
+		for (auto iter = this->graph->getNodeBegin(); iter != this->graph->getNodeEnd(); ++iter) {
+			amount *= (*iter)->getVectorDegree();
+			std::cout << std::to_string(amount) << "   ";
 		}
 		return amount;
 	}

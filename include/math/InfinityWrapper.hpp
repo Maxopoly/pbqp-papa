@@ -1,6 +1,8 @@
 #ifndef MATH_INFINITYWRAPPER_HPP_
 #define MATH_INFINITYWRAPPER_HPP_
 
+#include "limits.h"
+
 namespace pbqppapa {
 
 /**
@@ -14,6 +16,8 @@ private:
 	//we assume that this is always the biggest displayable number in the template type
 	//TODO what if we reach infinite through convential ways, but dont overflow?
 	static T magicInfiniteNumber;
+
+public:
 
 	InfinityWrapper<T>() {
 		//this is needed, because if T is for example int, its default constructor would not be called
@@ -31,7 +35,7 @@ private:
 	}
 
 
-	inline T& getValue() {
+	inline const T& getValue() const {
 		return wrappedValue;
 	}
 
@@ -87,17 +91,17 @@ inline InfinityWrapper<T>& operator-(InfinityWrapper<T> lhs,
 template<typename T>
 inline bool operator==(const InfinityWrapper<T>& lhs,
 		const InfinityWrapper<T>& rhs) {
-	return lhs.wrappedValue == rhs.wrappedValue;
+	return lhs.getValue() == rhs.getValue();
 }
 
 template<typename T>
 inline bool operator!=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-	return lhs.wrappedValue != rhs.wrappedValue;
+	return lhs.getValue() != rhs.getValue();
 }
 
 template<typename T>
 inline bool operator<(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
-	return lhs < rhs;
+	return lhs.getValue() < rhs.getValue();
 }
 
 template<typename T>

@@ -15,8 +15,8 @@ template<typename T>
 class PBQPNode {
 private:
 	Vector<T> values;
-	std::vector<PBQPEdge<T>*> incidentEdges = std::vector<PBQPEdge<T>*>();
-	std::vector<PBQPEdge<T>*> outgoingEdges = std::vector<PBQPEdge<T>*>();
+	std::vector<PBQPEdge<T>*> incidentEdges;
+	std::vector<PBQPEdge<T>*> outgoingEdges;
 	unsigned const int index;
 
 public:
@@ -39,9 +39,9 @@ public:
 
 	std::vector<PBQPNode<T>*> getAdjacentNodes(const bool respectDirection =
 			false) {
-		std::set<PBQPNode<T>*> resultSet = std::set<PBQPNode<T>*>();
-		std::vector<PBQPNode<T>*> nodes = std::vector<PBQPNode<T>*>();
-		std::vector<PBQPEdge<T>*>& edgesToLookAt =
+		std::set<PBQPNode<T>*> resultSet;
+		std::vector<PBQPNode<T>*> nodes;
+		const std::vector<PBQPEdge<T>*>& edgesToLookAt =
 				(respectDirection ? outgoingEdges : incidentEdges);
 		for (PBQPEdge<T>* edge : edgesToLookAt) {
 			PBQPNode<T>* other = edge->getOtherEnd(this);
@@ -112,6 +112,9 @@ public:
 		incidentEdges.erase(
 				std::remove(incidentEdges.begin(), incidentEdges.end(), edge),
 				incidentEdges.end());
+		outgoingEdges.erase(
+				std::remove(outgoingEdges.begin(), outgoingEdges.end(), edge),
+				outgoingEdges.end());
 	}
 };
 

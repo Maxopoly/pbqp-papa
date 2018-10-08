@@ -55,7 +55,7 @@ public:
 		auto iter = solutions.rbegin();
 		while(iter != solutions.rend()) {
 			DependentSolution<T>* sol = *iter++;
-			sol->solve(solution);
+			sol->solve(&solution);
 		}
 	}
 

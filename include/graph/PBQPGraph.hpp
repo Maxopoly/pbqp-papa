@@ -25,8 +25,8 @@ class PBQPGraph {
 private:
 	static unsigned int nodeIndexCounter;
 	unsigned int localIndexStart;
-	std::set<PBQPNode<T>*> nodes = std::set<PBQPNode<T>*>();
-	std::set<PBQPEdge<T>*> edges = std::set<PBQPEdge<T>*>();
+	std::set<PBQPNode<T>*> nodes;
+	std::set<PBQPEdge<T>*> edges;
 
 public:
 
@@ -53,9 +53,9 @@ public:
 	 * Creates a new node with the given cost Vector and adds it to the graph.
 	 * The new node will not have any edges initially
 	 */
-	PBQPNode<T>* addNode(Vector<T>& Vector) {
+	PBQPNode<T>* addNode(Vector<T>& vector) {
 		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++,
-				Vector);
+				vector);
 		nodes.insert(node);
 		return node;
 	}
@@ -111,10 +111,30 @@ public:
 				delete edge;
 			}
 		}
-		nodes.erase(node);
 		if (cleanUp) {
 			delete node;
 		}
+	}
+
+	typename std::set<PBQPNode<T>*>::iterator removeNode(
+				typename std::set<PBQPNode<T>*>::iterator iter, bool cleanUp = true) {
+		if (iter == nodes.end()) {
+			return iter;
+		}
+		PBQPNode<T>* node = *iter;
+		for (PBQPEdge<T>* edge : node->getAdjacentEdges(false)) {
+			edges.erase(edge);
+			if (cleanUp) {
+				edge->getOtherEnd(node)->removeEdge(edge);
+				delete edge;
+			}
+		}
+		auto resultIter = nodes.erase(iter);
+		if (cleanUp) {
+			delete node;
+		}
+		return resultIter;
+
 	}
 
 	/**
@@ -126,6 +146,19 @@ public:
 		edge->getSource()->removeEdge(edge);
 		edge->getTarget()->removeEdge(edge);
 		delete edge;
+	}
+
+	typename std::set<PBQPEdge<T>*>::iterator removeEdge(
+			typename std::set<PBQPEdge<T>*>::iterator iter) {
+		if (iter == edges.end()) {
+			return iter;
+		}
+		PBQPEdge<T>* edge = *iter;
+		auto resultIter = edges.erase(iter);
+		edge->getSource()->removeEdge(edge);
+		edge->getTarget()->removeEdge(edge);
+		delete edge;
+		return resultIter;
 	}
 
 	/**
