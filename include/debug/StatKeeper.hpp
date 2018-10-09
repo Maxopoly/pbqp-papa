@@ -26,7 +26,7 @@ public:
 		edgeCount = graph->getEdgeCount();
 		float vectorDegreeSum = 0;
 		for(auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd(); iter++) {
-			vectorDegreeSum += (float) ((*iter).getVectorDegree());
+			vectorDegreeSum += (float) ((*iter)->getVectorDegree());
 		}
 		averageVectorDegree = vectorDegreeSum / (float) nodeCount;
 	}

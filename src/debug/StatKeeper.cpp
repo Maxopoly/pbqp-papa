@@ -7,6 +7,7 @@ std::string StatKeeper::getSumUp() {
 	result += "Nodes: ";
 	result += std::to_string(nodeCount);
 	result += ", Edges: ";
+	result += std::to_string(edgeCount);
 	result += ", E/N ratio: ";
 	result += std::to_string((float) edgeCount / (float) nodeCount);
 	result += '\n';

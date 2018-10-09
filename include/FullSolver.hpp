@@ -58,6 +58,7 @@ public:
 
 	PBQPSolution<T>* solve() {
 		StatKeeper stats;
+		stats.submitGraphBefore(this->graph);
 		auto iter = this->graph->getNodeBegin();
 		std::vector<DependentSolution<T>*> localSolutions;
 		//always filter out common nonsense like degree 0/1, which would break our advanced reductions

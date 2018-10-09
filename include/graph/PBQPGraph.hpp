@@ -111,6 +111,7 @@ public:
 				delete edge;
 			}
 		}
+		nodes.erase(node);
 		if (cleanUp) {
 			delete node;
 		}
