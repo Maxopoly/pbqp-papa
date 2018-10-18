@@ -41,6 +41,8 @@ public:
 
 	std::string getSumUp();
 
+	std::string getGraphDescription();
+
 };
 
 }

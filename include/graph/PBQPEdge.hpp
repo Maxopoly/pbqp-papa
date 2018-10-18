@@ -33,6 +33,10 @@ public:
 			source(source), target(target), matrix(matrix) {
 	}
 
+	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, PBQPEdge<T>* edge) :
+			source(source), target(target), matrix(edge->matrix) {
+	}
+
 	/**
 	 * Checks whether the given node is the source of this edge and returns true in that case
 	 */

@@ -75,14 +75,14 @@ public:
 };
 
 template<typename T>
-inline InfinityWrapper<T>& operator+(InfinityWrapper<T> lhs,
+inline InfinityWrapper<T> operator+(InfinityWrapper<T> lhs,
 		const InfinityWrapper<T>& rhs) {
 	lhs += rhs;
 	return lhs;
 }
 
 template<typename T>
-inline InfinityWrapper<T>& operator-(InfinityWrapper<T> lhs,
+inline InfinityWrapper<T> operator-(InfinityWrapper<T> lhs,
 		const InfinityWrapper<T>& rhs) {
 	lhs -= rhs;
 	return lhs;

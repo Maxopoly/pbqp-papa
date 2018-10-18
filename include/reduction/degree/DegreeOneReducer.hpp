@@ -60,26 +60,34 @@ public:
 		solutionNodes.push_back(node);
 		DependentSolution<T>* solution = new DependentSolution<T>(
 				dependencyNodes, solutionNodes);
-		bool isSource = edge->isSource(node);
-		for (unsigned short i = 0; i < otherEnd->getVectorDegree(); i++) {
+		const bool isSource = edge->isSource(node);
+		const unsigned short otherEndDegree = otherEnd->getVectorDegree();
+		const unsigned short nodeDegree = node->getVectorDegree();
+		const T oneElement = T(1);
+		for (unsigned short i = 0; i < otherEndDegree; i++) {
 			//find minimum for this selection
-			T minimum = T();
-			if (isSource) {
-				minimum += calcSum(0, i, edge);
-			} else {
-				minimum += calcSum(i, 0, edge);
-			}
+			T otherEndCost = otherEnd->getVector().get(i);
 			unsigned short minSelection = 0;
-			for (unsigned short k = 1; k < node->getVectorDegree(); k++) {
-				T compSum = T ();
+			T minimum = otherEndCost;
+			if (otherEndCost + oneElement != otherEndCost) { //not infinite!
+				minimum += node->getVector().get(0);
 				if (isSource) {
-					compSum += calcSum(k, i, edge);
+					minimum += edge->getMatrix().get(0, i);
 				} else {
-					compSum += calcSum(i, k, edge);
+					minimum += edge->getMatrix().get(i, 0);
 				}
-				if (compSum < minimum) {
-					minimum = compSum;
-					minSelection = k;
+				for (unsigned short k = 1; k < nodeDegree; k++) {
+					T compSum = otherEndCost;
+					minimum += node->getVector().get(k);
+					if (isSource) {
+						compSum += edge->getMatrix().get(k, i);
+					} else {
+						compSum += edge->getMatrix().get(i, k);
+					}
+					if (compSum < minimum) {
+						minimum = compSum;
+						minSelection = k;
+					}
 				}
 			}
 			std::vector<unsigned short> dependencySelections;
@@ -96,7 +104,7 @@ public:
 
 	void solve(PBQPSolution<T>& solution) {
 		auto iter = solutions.rbegin();
-		while(iter != solutions.rend()) {
+		while (iter != solutions.rend()) {
 			DependentSolution<T>* sol = *iter++;
 			sol->solve(&solution);
 		}

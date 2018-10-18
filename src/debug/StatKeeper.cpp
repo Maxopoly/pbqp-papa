@@ -4,16 +4,7 @@ namespace pbqppapa {
 
 std::string StatKeeper::getSumUp() {
 	std::string result;
-	result += "Nodes: ";
-	result += std::to_string(nodeCount);
-	result += ", Edges: ";
-	result += std::to_string(edgeCount);
-	result += ", E/N ratio: ";
-	result += std::to_string((float) edgeCount / (float) nodeCount);
-	result += '\n';
-	result += "Avg. vector degree: ";
-	result += std::to_string(averageVectorDegree);
-	result += '\n';
+	result += getGraphDescription();
 	result += "R0 applied: ";
 	result += std::to_string(r0Applied);
 	result += '\n';
@@ -23,8 +14,22 @@ std::string StatKeeper::getSumUp() {
 	result += "R2 applied: ";
 	result += std::to_string(r2Applied);
 	result += '\n';
-	result += "R2 applied: ";
+	result += "RN Early applied: ";
 	result += std::to_string(rNEarlyApplied);
+	result += '\n';
+	return result;
+}
+
+std::string StatKeeper::getGraphDescription() {
+	std::string result;
+	result += "Nodes: ";
+	result += std::to_string(nodeCount);
+	result += ", Edges: ";
+	result += std::to_string(edgeCount);
+	result += ", E/N ratio: ";
+	result += std::to_string((float) edgeCount / (float) nodeCount);
+	result += ", Avg. vector degree: ";
+	result += std::to_string(averageVectorDegree);
 	result += '\n';
 	return result;
 }

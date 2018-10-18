@@ -46,7 +46,7 @@ private:
 		std::string parsedType = metaJson["type"];
 		if (parsedType.compare(getTypeName<T>()) != 0) {
 			//TODO exception
-			std::cout << "Invalid type loading";
+			//std::cout << "Invalid type loading";
 			//return NULL;
 		}
 		PBQPGraph<T>* graph = new PBQPGraph<T>();

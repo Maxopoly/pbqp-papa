@@ -4,6 +4,7 @@
 #include <vector>
 #include <set>
 #include <iterator>
+#include <map>
 
 namespace pbqppapa {
 
@@ -23,10 +24,10 @@ class Vector;
 template<typename T>
 class PBQPGraph {
 private:
-	static unsigned int nodeIndexCounter;
-	unsigned int localIndexStart;
+	unsigned int indexMaximum = 0;
 	std::set<PBQPNode<T>*> nodes;
 	std::set<PBQPEdge<T>*> edges;
+	std::vector<PBQPNode<T>*> deletedNodes;
 
 public:
 
@@ -34,19 +35,45 @@ public:
 	 * Create a new empty graph with no nodes
 	 */
 	PBQPGraph() {
-		localIndexStart = PBQPGraph::nodeIndexCounter;
 	}
 
 	/**
 	 * Deletes all nodes and edges contained within the graph
 	 */
 	~PBQPGraph() {
+		clear();
+	}
+
+	PBQPGraph(const PBQPGraph<T>* graph) : indexMaximum(graph->indexMaximum) {
+		std::map<PBQPNode<T>*,PBQPNode<T>*> nodeReMapping;
+		for(PBQPNode<T>* node : graph->nodes) {
+			PBQPNode<T>* createdNode = new PBQPNode<T>(node);
+			addNode(createdNode);
+			nodeReMapping.insert(std::pair<PBQPNode<T>*,PBQPNode<T>*>(node, createdNode));
+		}
+		for(PBQPEdge<T>* edge: graph->edges) {
+			PBQPNode<T>* newSource = nodeReMapping.find(edge->getSource())->second;
+			PBQPNode<T>* newTarget = nodeReMapping.find(edge->getTarget())->second;
+			PBQPEdge<T>* createdEdge = new PBQPEdge<T>(newSource, newTarget, edge);
+			addEdge(createdEdge);
+			newSource->addEdge(createdEdge);
+			newTarget->addEdge(createdEdge);
+		}
+	}
+
+	void clear() {
 		for (PBQPEdge<T>* edge : edges) {
 			delete edge;
 		}
+		edges.clear();
 		for (PBQPNode<T>* node : nodes) {
 			delete node;
 		}
+		nodes.clear();
+		for (PBQPNode<T>* node : deletedNodes) {
+			delete node;
+		}
+		deletedNodes.clear();
 	}
 
 	/**
@@ -54,7 +81,7 @@ public:
 	 * The new node will not have any edges initially
 	 */
 	PBQPNode<T>* addNode(Vector<T>& vector) {
-		PBQPNode<T>* node = new PBQPNode<T>(PBQPGraph::nodeIndexCounter++,
+		PBQPNode<T>* node = new PBQPNode<T>(indexMaximum++,
 				vector);
 		nodes.insert(node);
 		return node;
@@ -66,6 +93,9 @@ public:
 	 */
 	void addNode(PBQPNode<T>* node) {
 		nodes.insert(node);
+		if (node->getIndex() >= indexMaximum) {
+			indexMaximum = node->getIndex() + 1;
+		}
 	}
 
 	/**
@@ -83,6 +113,17 @@ public:
 	 */
 	PBQPEdge<T>* addEdge(PBQPNode<T>* source, PBQPNode<T>* target,
 			Matrix<T>& matrix) {
+		for(PBQPEdge<T>* edge : source->getAdjacentEdges(false)) {
+			if(edge->getOtherEnd(source) == target) {
+				if(edge->getSource() == source) {
+					edge->getMatrix() += matrix;
+				}
+				else {
+					edge->getMatrix() += matrix.transpose();
+				}
+				return edge;
+			}
+		}
 		PBQPEdge<T>* edge = new PBQPEdge<T>(source, target, matrix);
 		edges.insert(edge);
 		source->addEdge(edge);
@@ -113,29 +154,9 @@ public:
 		}
 		nodes.erase(node);
 		if (cleanUp) {
-			delete node;
+			node->setDeleted(true);
+			deletedNodes.push_back(node);
 		}
-	}
-
-	typename std::set<PBQPNode<T>*>::iterator removeNode(
-				typename std::set<PBQPNode<T>*>::iterator iter, bool cleanUp = true) {
-		if (iter == nodes.end()) {
-			return iter;
-		}
-		PBQPNode<T>* node = *iter;
-		for (PBQPEdge<T>* edge : node->getAdjacentEdges(false)) {
-			edges.erase(edge);
-			if (cleanUp) {
-				edge->getOtherEnd(node)->removeEdge(edge);
-				delete edge;
-			}
-		}
-		auto resultIter = nodes.erase(iter);
-		if (cleanUp) {
-			delete node;
-		}
-		return resultIter;
-
 	}
 
 	/**
@@ -147,19 +168,6 @@ public:
 		edge->getSource()->removeEdge(edge);
 		edge->getTarget()->removeEdge(edge);
 		delete edge;
-	}
-
-	typename std::set<PBQPEdge<T>*>::iterator removeEdge(
-			typename std::set<PBQPEdge<T>*>::iterator iter) {
-		if (iter == edges.end()) {
-			return iter;
-		}
-		PBQPEdge<T>* edge = *iter;
-		auto resultIter = edges.erase(iter);
-		edge->getSource()->removeEdge(edge);
-		edge->getTarget()->removeEdge(edge);
-		delete edge;
-		return resultIter;
 	}
 
 	/**
@@ -213,28 +221,15 @@ public:
 	}
 
 	/**
-	 * The index counter at which this graph was created, meaning all nodes in the graph will have
-	 * an index equal or bigger
-	 */
-	unsigned int getLocalIndexStart() const {
-		return localIndexStart;
-	}
-
-	/**
 	 * Gets the internal counter for node indices. All nodes that ever existed in any graph so far
 	 * will have an index smaller than this counter. To ensure that every node has a unique number, even
 	 * if we split up graphs and parallelize work on the smaller pieces, this counter is global
 	 */
-	static unsigned int getNodeIndexCounter() {
-		return nodeIndexCounter;
+	unsigned int getNodeIndexCounter() {
+		return indexMaximum;
 	}
 
 };
-
-//dark magic to initialize static members of a template
-template<typename T>
-unsigned int PBQPGraph<T>::nodeIndexCounter = 0;
-
 }
 
 #endif /* PBQPGRAPH_H_ */

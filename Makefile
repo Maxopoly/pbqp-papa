@@ -63,7 +63,7 @@ test: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
 #Run tests
 $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
 	@echo "Running test: $^"
-	@./$^ --output_format=XML --log_level=message > $(^)-report.xml
+	@./$^ --output_format=HRF --log_level=message > $(^)-report.txt
 	
 #Compile tests
 $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)

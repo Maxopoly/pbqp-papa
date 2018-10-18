@@ -18,13 +18,18 @@ private:
 	std::vector<PBQPEdge<T>*> incidentEdges;
 	std::vector<PBQPEdge<T>*> outgoingEdges;
 	unsigned const int index;
+	bool deleted;
 
 public:
 	/**
 	 * Should only be used by PBQPGraph internally. Index counter is held by PBQPGraph instance
 	 */
 	PBQPNode(unsigned const int index, Vector<T>& values) :
-			values(values), index(index) {
+			values(values), index(index), deleted(false) {
+	}
+
+	PBQPNode(PBQPNode<T>* node) :
+			values(node->values), index(node->index), deleted(false) {
 	}
 
 	//TODO make proper iterators here
@@ -112,9 +117,19 @@ public:
 		incidentEdges.erase(
 				std::remove(incidentEdges.begin(), incidentEdges.end(), edge),
 				incidentEdges.end());
+		if (edge->getSource() == this) {
 		outgoingEdges.erase(
 				std::remove(outgoingEdges.begin(), outgoingEdges.end(), edge),
 				outgoingEdges.end());
+		}
+	}
+
+	void setDeleted(bool state) {
+		deleted = state;
+	}
+
+	bool isDeleted() {
+		return deleted;
 	}
 };
 

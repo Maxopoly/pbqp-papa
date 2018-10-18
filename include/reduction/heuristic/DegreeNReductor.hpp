@@ -46,6 +46,9 @@ public:
 		}
 		for (unsigned short i = 1; i < node->getVectorDegree(); i++) {
 			T curr = node->getVector().get(i);
+			if (curr >= minCost) {
+				continue;
+			}
 			for (PBQPEdge<T>* edge : node->getAdjacentEdges()) {
 				bool isSource = edge->isSource(node);
 				T rowColMin = edge->getOtherEnd(node)->getVector().get(0);

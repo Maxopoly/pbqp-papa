@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	BOOST_CHECK_EQUAL(result.size(), 1);
 	PBQPGraph<int>* resultGraph = result[0];
 	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 1);
-	BOOST_CHECK_EQUAL(resultGraph->getEdgeCount(), 2);
+	BOOST_CHECK_EQUAL(resultGraph->getEdgeCount(), 1);
 	PBQPNode<int>* reducedNode = *(resultGraph->getNodeBegin());
 	BOOST_CHECK_EQUAL(reducedNode->getVectorDegree(), 2);
 	BOOST_CHECK_EQUAL(reducedNode->getVector().get(0), 5);

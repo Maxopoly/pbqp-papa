@@ -34,12 +34,12 @@ BOOST_AUTO_TEST_CASE(simpleKnTest) {
 		delete graph;
 		graph = result[0];
 	}
-	BOOST_CHECK_EQUAL(graph->getEdgeCount(), size * (size - 1));
+	BOOST_CHECK_EQUAL(graph->getEdgeCount(), size * (size - 1) / 2);
 	BOOST_CHECK_EQUAL(graph->getNodeCount(), size);
 	for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 			++iter) {
 		PBQPNode<int>* node = *iter;
-		BOOST_CHECK_EQUAL((size - 1) * 2, node->getDegree());
+		BOOST_CHECK_EQUAL(size - 1, node->getDegree());
 		BOOST_CHECK_EQUAL(node->getVector().get(0), 6);
 		BOOST_CHECK_EQUAL(node->getVector().get(1), 10);
 	}
