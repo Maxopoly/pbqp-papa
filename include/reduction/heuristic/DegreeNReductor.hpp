@@ -3,14 +3,14 @@
 
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
-#include <reduction/DependentSolution.hpp>
+#include <reduction/solutions/DependentSolution.hpp>
 
 namespace pbqppapa {
 
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class DependentSolution;
+class NtoNDependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -22,7 +22,7 @@ template<typename T>
 class DegreeNReducer: PBQP_Reduction<T> {
 
 public:
-	static DependentSolution<T>* reduceRNEarlyDecision(PBQPNode<T>* node,
+	static NtoNDependentSolution<T>* reduceRNEarlyDecision(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		unsigned short minSelection = 0;
 		T minCost = node->getVector().get(0);
@@ -80,7 +80,7 @@ public:
 		std::vector<PBQPNode<T>*> dependencies;
 		std::vector<PBQPNode<T>*> nodeToSolve;
 		nodeToSolve.push_back(node);
-		DependentSolution<T>* sol = new DependentSolution<T>(dependencies, nodeToSolve);
+		NtoNDependentSolution<T>* sol = new NtoNDependentSolution<T>(dependencies, nodeToSolve);
 		std::vector<unsigned short> dependencySelections;
 		std::vector<unsigned short> solutionSelections;
 		solutionSelections.push_back(minSelection);

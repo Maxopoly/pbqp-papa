@@ -10,7 +10,7 @@ namespace pbqppapa {
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class DependentSolution;
+class NtoNDependentSolution;
 template<typename T>
 class NodeConsistentReduction;
 template<typename T>
@@ -30,7 +30,7 @@ public:
 
 	}
 
-	static DependentSolution<T>* mergeNodes(PBQPNode<T>* remaining,
+	static NtoNDependentSolution<T>* mergeNodes(PBQPNode<T>* remaining,
 			PBQPNode<T>* toRemove, PBQPGraph<T>* graph) {
 		Vector<T> resultVector(
 				remaining->getVectorDegree() * toRemove->getVectorDegree());
@@ -76,7 +76,7 @@ public:
 		std::vector<PBQPNode<T>*> solutions;
 		solutions.push_back(remaining);
 		solutions.push_back(toRemove);
-		DependentSolution<T>* sol = new DependentSolution<T>(dependencies,
+		NtoNDependentSolution<T>* sol = new NtoNDependentSolution<T>(dependencies,
 				solutions);
 		for (unsigned short i = 0; i < toRemove->getVectorDegree(); i++) {
 			for (unsigned short k = 0; k < remaining->getVectorDegree();

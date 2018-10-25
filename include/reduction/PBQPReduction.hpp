@@ -3,12 +3,16 @@
 
 #include <vector>
 
+#include "solve/UnsolvablePBQPException.hpp"
+
 namespace pbqppapa {
 
 template<typename T>
 class PBQPGraph;
 template<typename T>
 class PBQPSolution;
+
+struct UnsolvablePBQPException;
 
 /**
  * Simplifies a PBQP by removing a part of it.

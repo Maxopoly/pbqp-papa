@@ -27,7 +27,7 @@ private:
 	unsigned int indexMaximum = 0;
 	std::set<PBQPNode<T>*> nodes;
 	std::set<PBQPEdge<T>*> edges;
-	std::vector<PBQPNode<T>*> deletedNodes;
+	std::set<PBQPNode<T>*> deletedNodes;
 
 public:
 
@@ -93,6 +93,10 @@ public:
 	 */
 	void addNode(PBQPNode<T>* node) {
 		nodes.insert(node);
+		if (node->isDeleted()) {
+			node->setDeleted(false);
+			deletedNodes.erase(node);
+		}
 		if (node->getIndex() >= indexMaximum) {
 			indexMaximum = node->getIndex() + 1;
 		}
@@ -149,13 +153,14 @@ public:
 			edges.erase(edge);
 			if (cleanUp) {
 				edge->getOtherEnd(node)->removeEdge(edge);
+				node->removeEdge(edge);
 				delete edge;
 			}
 		}
 		nodes.erase(node);
 		if (cleanUp) {
 			node->setDeleted(true);
-			deletedNodes.push_back(node);
+			deletedNodes.insert(node);
 		}
 	}
 

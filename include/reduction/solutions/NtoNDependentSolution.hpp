@@ -3,12 +3,16 @@
 
 #include <vector>
 
+#include "reduction/solutions/DependentSolution.hpp"
+
 namespace pbqppapa {
 
 template<typename T>
 class PBQPSolution;
 template<typename T>
 class PBQPNode;
+template<typename T>
+class DependentSolution;
 
 /**
  * Stores the solution of a set of nodes A dependent on the solution of another set of nodes B
@@ -20,36 +24,33 @@ class PBQPNode;
  * a solution for B once A (which is part of the remaining graph) is solved
  */
 template<typename T>
-class DependentSolution {
+class NtoNDependentSolution: public DependentSolution<T> {
 private:
-	std::vector<unsigned long> dependencyIndices;
-	std::vector<unsigned long> solutionIndices;
-	std::vector<unsigned short> dependencyDegrees;
+
+	std::vector<PBQPNode<T>*> solutionNodes;
+	std::vector<PBQPNode<T>*> dependencyNodes;
 	std::vector<unsigned short> solutions;
+	std::vector<PBQPEdge<T>> edges;
+	std::vector<Vector<T>> dependencyVectorsPreChange;
 
 public:
-	DependentSolution(const std::vector<PBQPNode<T>*>& dependencyNodes,
+	NtoNDependentSolution(const std::vector<PBQPNode<T>*>& dependencyNodes,
 			const std::vector<PBQPNode<T>*>& solutionNodes) :
-			dependencyIndices(
-					std::vector<unsigned long>(dependencyNodes.size())), solutionIndices(
-					std::vector<unsigned long>(solutionNodes.size())), dependencyDegrees(
-					std::vector<unsigned short>(dependencyNodes.size())) {
+			dependencyNodes(dependencyNodes), solutionNodes(solutionNodes) {
 		const unsigned long length = dependencyNodes.size();
 		unsigned long solutionAmount = 1;
 		for (unsigned long i = 0; i < length; i++) {
-			dependencyIndices.at(i) = (dependencyNodes.at(i))->getIndex();
-			unsigned short degree = (dependencyNodes.at(i))->getVectorDegree();
-			dependencyDegrees.at(i) = degree;
-			solutionAmount *= degree;
+			PBQPNode<T>* node = dependencyNodes.at(i);
+			dependencyVectorsPreChange.push_back(node->getVector());
+			//TODO fix this
+			solutionAmount *= node->getVectorDegree();
 		}
-		for (unsigned int i = 0; i < solutionNodes.size(); i++) {
-			solutionIndices.at(i) = (solutionNodes.at(i))->getIndex();
-		}
-		solutions = std::vector<unsigned short> (solutionAmount * solutionIndices.size());
+
+		solutions = std::vector<unsigned short>(
+				solutionAmount * solutionNodes.size());
 	}
 
-	void setSolution(
-			const std::vector<unsigned short>& dependencySelections,
+	void setSolution(const std::vector<unsigned short>& dependencySelections,
 			const std::vector<unsigned short>& solutionSelection) {
 		unsigned long index = resolveIndex(dependencySelections);
 		std::copy(solutionSelection.begin(), solutionSelection.end(),
@@ -57,14 +58,21 @@ public:
 	}
 
 	void solve(PBQPSolution<T>* solution) const {
-		std::vector<unsigned short> dependencySolution (dependencyIndices.size());
-		for(unsigned long i =0 ; i < dependencyIndices.size(); i++) {
-			dependencySolution.at(i) = solution->getSolution(dependencyIndices.at(i));
+		std::vector<unsigned short> dependencySolution(
+				dependencyNodes.size());
+		for (unsigned long i = 0; i < dependencyNodes.size(); i++) {
+			dependencySolution.at(i) = solution->getSolution(
+					dependencyNodes.at(i)->getIndex());
 		}
 		unsigned long index = resolveIndex(dependencySolution);
-		for (unsigned long i = 0; i < solutionIndices.size(); i++) {
-			solution->setSolution(solutionIndices.at(i), solutions.at(index + i));
+		for (unsigned long i = 0; i < solutionNodes.size(); i++) {
+			solution->setSolution(solutionNodes.at(i)->getIndex(),
+					solutions.at(index + i));
 		}
+	}
+
+	void revertChange(PBQPGraph<T>* graph) const {
+		//TODO
 	}
 
 private:
@@ -73,9 +81,9 @@ private:
 			const std::vector<unsigned short>& dependencySelections) const {
 		unsigned long index = 0;
 		unsigned long offset = 1;
-		for (unsigned long i = 0; i < dependencyDegrees.size(); i++) {
+		for (unsigned long i = 0; i < dependencyNodes.size(); i++) {
 			index += offset * dependencySelections.at(i);
-			offset *= dependencyDegrees.at(i);
+			offset *= dependencyNodes.at(i)->getVectorDegree();
 		}
 		return index;
 	}

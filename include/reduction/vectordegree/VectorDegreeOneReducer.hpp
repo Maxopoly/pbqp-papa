@@ -5,14 +5,14 @@
 #include <memory>
 
 #include <reduction/PBQPReduction.hpp>
-#include <reduction/DependentSolution.hpp>
+#include <reduction/solutions/DependentSolution.hpp>
 
 namespace pbqppapa {
 
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class DependentSolution;
+class NtoNDependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -24,7 +24,7 @@ class PBQPNode;
 template<typename T>
 class VectorDegreeOneReducer: public PBQP_Reduction<T> {
 private:
-	std::unique_ptr<DependentSolution<T>> solution;
+	std::unique_ptr<NtoNDependentSolution<T>> solution;
 	static const std::vector<unsigned short> emptyIntVector;
 
 public:
@@ -45,8 +45,8 @@ public:
 				solutionNodes.push_back(node);
 			}
 		}
-		solution = std::unique_ptr<DependentSolution<T>>(
-				new DependentSolution<T>(dependencyNodes, solutionNodes));
+		solution = std::unique_ptr<NtoNDependentSolution<T>>(
+				new NtoNDependentSolution<T>(dependencyNodes, solutionNodes));
 		std::vector<unsigned short> dependencySelection;
 		std::vector<unsigned short> solutionSelection(solutionNodes.size(),
 				0);
@@ -62,12 +62,12 @@ public:
 		this->solution->solve(solution);
 	}
 
-	static DependentSolution<T>* reduceVectorDegreeOne(PBQPNode<T>* node,
+	static NtoNDependentSolution<T>* reduceVectorDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		std::vector<PBQPNode<T>*> dependencyNodes;
 		std::vector<PBQPNode<T>*> solutionNodes;
 		solutionNodes.push_back(node);
-		DependentSolution<T>* solution = new DependentSolution<T>(
+		NtoNDependentSolution<T>* solution = new NtoNDependentSolution<T>(
 				dependencyNodes, solutionNodes);
 		std::vector<unsigned short> nodeSolution (1, 0);
 		solution->setSolution(emptyIntVector, nodeSolution);

@@ -12,9 +12,9 @@ template<typename T>
 class Matrix {
 
 protected:
-	const unsigned short rows;
-	const unsigned short columns;
-	T* const content;
+	unsigned short rows;
+	unsigned short columns;
+	T* content;
 
 public:
 	/**

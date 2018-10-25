@@ -9,7 +9,7 @@ namespace pbqppapa {
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class DependentSolution;
+class NtoNDependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>

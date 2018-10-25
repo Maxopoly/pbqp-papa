@@ -46,7 +46,7 @@ class FullSolver: PBQPHandler<T> {
 
 private:
 	bool hasVektorDegreeZeroOrOne;
-	std::vector<DependentSolution<T>*> localSolutions;
+	std::vector<NtoNDependentSolution<T>*> localSolutions;
 
 public:
 
@@ -55,7 +55,7 @@ public:
 	}
 
 	~FullSolver() {
-		for(DependentSolution<T>* sol : localSolutions) {
+		for(NtoNDependentSolution<T>* sol : localSolutions) {
 			delete sol;
 		}
 	}
