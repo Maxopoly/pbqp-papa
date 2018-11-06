@@ -14,175 +14,111 @@
 
 namespace pbqppapa {
 
-/*
- bool remapIndices = false;
-
- #define cInterfaceImplementation(X)   \
-PBQPGraph<X>* graphX; \
-std::map<unsigned int, PBQPNode<X>*> nodesX; \
-extern "C" int addNode(X* data, unsigned short length, unsigned int index) { \
-	Vector<X> vek (length, data); \
-	PBQPNode<X>* node = graphX->addNode(vek); \
-	unsigned int internalIndex = node->getIndex(); \
-	if (remapIndices) { \
-		nodesX.insert(std::pair<unsigned int, PBQPNode<X>*>(index, node)); \
-		return index; \
+#define CINTERFACEIMPL(TYPENAME,SHORTNAME) \
+struct pbqp_ ## SHORTNAME ## _parsing { \
+PBQPGraph<InfinityWrapper< TYPENAME >>* graph; \
+std::map<unsigned int, PBQPNode<InfinityWrapper< TYPENAME >>*> nodes; \
+std::vector<PBQPNode<InfinityWrapper< TYPENAME >>*> peo; \
+bool remapIndices = false; \
+}; \
+extern "C" unsigned int pbqp_ ## SHORTNAME ## _addNode(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
+		TYPENAME* data, unsigned short length, unsigned int index) { \
+	InfinityWrapper<TYPENAME> infData[length]; \
+	for (unsigned short i = 0; i < length; i++) { \
+		infData[i] = InfinityWrapper<TYPENAME>(data[i]); \
 	} \
-	else { \
-		nodesX.insert(std::pair<unsigned int, PBQPNode<X>*>(internalIndex, node)); \
+	Vector<InfinityWrapper<TYPENAME>> vek(length, infData); \
+	PBQPNode<InfinityWrapper<TYPENAME>>* node = \
+			pbqpparsing->graph->addNode(vek); \
+	unsigned int internalIndex = node->getIndex(); \
+	if (pbqpparsing->remapIndices) { \
+		pbqpparsing->nodes.insert( \
+				std::pair<unsigned int, PBQPNode<InfinityWrapper<TYPENAME>>*>(index, \
+						node)); \
+		return index; \
+	} else { \
+		pbqpparsing->nodes.insert( \
+				std::pair<unsigned int, PBQPNode<InfinityWrapper<TYPENAME>>*>( \
+						internalIndex, node)); \
 		return internalIndex; \
 	} \
 } \
-extern "C" void addEdge(unsigned int sourceIndex, unsigned int targetIndex, X* data) { \
-	PBQPNode<X>* source; \
-	PBQPNode<X>* target; \
-	if (remapIndices) { \
-		auto iterSource = nodesX.find(sourceIndex); \
-		if (iterSource == nodesX.end()) { \
+extern "C" void pbqp_ ## SHORTNAME ## _addEdge(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
+	unsigned int sourceIndex, unsigned int targetIndex, TYPENAME* data) { \
+	PBQPNode<InfinityWrapper<TYPENAME>>* source; \
+	PBQPNode<InfinityWrapper<TYPENAME>>* target; \
+	if (pbqpparsing->remapIndices) { \
+		auto iterSource = pbqpparsing->nodes.find(sourceIndex); \
+		if (iterSource == pbqpparsing->nodes.end()) { \
 			std::cout << "Could not find index while remapping, skipped egde"; \
 			return; \
 		} \
 		source = iterSource->second; \
-		auto iterTarget = nodesX.find(targetIndex); \
-		if (iterTarget == nodesX.end()) { \
+		auto iterTarget = pbqpparsing->nodes.find(targetIndex); \
+		if (iterTarget == pbqpparsing->nodes.end()) { \
 			std::cout << "Could not find index while remapping, skipped egde"; \
 			return; \
 		} \
 		target = iterTarget->second; \
+	} else { \
+		source = pbqpparsing->nodes.at(sourceIndex); \
+		target = pbqpparsing->nodes.at(targetIndex); \
 	} \
-	else { \
-		source = nodesX.at(sourceIndex); \
-		target = nodesX.at(targetIndex); \
+	const unsigned short length = source->getVectorDegree() * target->getVectorDegree(); \
+	InfinityWrapper<TYPENAME> infData[length]; \
+	for (unsigned short i = 0; i < length; i++) { \
+		infData[i] = InfinityWrapper<TYPENAME>(data[i]); \
 	} \
-	Matrix<X> mat (source->getVectorDegree(), target->getVectorDegree(), data); \
-	graphX->addEdge(source, target, mat); \
+	Matrix<InfinityWrapper<TYPENAME>> mat(source->getVectorDegree(), \
+			target->getVectorDegree(), infData); \
+	pbqpparsing->graph->addEdge(source, target, mat); \
 } \
-extern "C" void dump(char* path, X type) { \
-	if (graphX->getNodeCount() == 0) { \
+extern "C" void pbqp_ ## SHORTNAME ## _solve(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+	if (pbqpparsing->graph->getNodeCount() == 0) { \
+		return; \
+	} \
+	FullSolver<InfinityWrapper<TYPENAME>> solver(pbqpparsing->graph); \
+	PBQPSolution<InfinityWrapper<TYPENAME>>* sol = solver.solve(); \
+	delete sol; \
+} \
+extern "C" pbqp_ ## SHORTNAME ## _parsing* pbqp_ ## SHORTNAME ## _createInstance( \
+		bool useNodeRemapping, unsigned int nodeAmount) { \
+	pbqp_ ## SHORTNAME ## _parsing* result = new pbqp_ ## SHORTNAME ## _parsing (); \
+	result->remapIndices = useNodeRemapping; \
+	result->graph = new PBQPGraph<InfinityWrapper<TYPENAME>>(); \
+	return result; \
+} \
+extern "C" void pbqp_ ## SHORTNAME ## _addToPEO(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
+		unsigned int index) { \
+		pbqpparsing->peo.push_back(pbqpparsing->nodes.find(index)->second); \
+} \
+extern "C" void pbqp_ ## SHORTNAME ## _dump(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, char* path) { \
+	if (pbqpparsing->graph->getNodeCount() == 0) { \
 		std::cout << "Graph requested to dump to flat file was empty, did not dump"; \
 		return; \
 	} \
-	PBQP_Serializer<X> serial; \
-	serial.saveToFile(path, graphX); \
+	PBQP_Serializer<InfinityWrapper<TYPENAME>> serial; \
+	serial.saveToFile(path, pbqpparsing->graph); \
 } \
-extern "C" void resetAndPrepare(unsigned int nodeAmount, bool useNodeRemapping, X type) { \
-	nodesX.clear(); \
-	if (graphX != NULL) { \
-		delete graphX; \
-	} \
-	remapIndices = useNodeRemapping; \
-	graphX = new PBQPGraph<X>(); \
+extern "C" void pbqp_ ## SHORTNAME ## _free(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+	delete pbqpparsing->graph; \
+	delete pbqpparsing; \
 }
 
+CINTERFACEIMPL(unsigned int,uint)
 
- cInterfaceImplementation(unsigned int)
+CINTERFACEIMPL(unsigned short,ushort)
 
- cInterfaceImplementation(unsigned short)
+CINTERFACEIMPL(unsigned long,ulong)
 
- cInterfaceImplementation(unsigned long)
+/*
+CINTERFACEIMPL(unsigned char,uchar)
 
- cInterfaceImplementation(unsigned char)
+CINTERFACEIMPL(float,float)
 
- cInterfaceImplementation(float)
+CINTERFACEIMPL(double,double) */
 
- cInterfaceImplementation(double)
- */
 
-extern "C" int addNodePBQP(pbqpparsing* pbqpparsing, unsigned long* data,
-		int length, int index) {
-	InfinityWrapper<unsigned long> infData[length];
-	for (int i = 0; i < length; i++) {
-		infData[i] = InfinityWrapper<unsigned long>(data[i]);
-	}
-	Vector<InfinityWrapper<unsigned long>> vek((unsigned short) length,
-			infData);
-	PBQPNode<InfinityWrapper<unsigned long>>* node =
-			pbqpparsing->graph->addNode(vek);
-	int internalIndex = node->getIndex();
-	if (pbqpparsing->remapIndices) {
-		pbqpparsing->nodes.insert(
-				std::pair<int, PBQPNode<InfinityWrapper<unsigned long>>*>(index,
-						node));
-		return index;
-	} else {
-		pbqpparsing->nodes.insert(
-				std::pair<int, PBQPNode<InfinityWrapper<unsigned long>>*>(
-						internalIndex, node));
-		return internalIndex;
-	}
-}
 
-extern "C" void addEdgePBQP(pbqpparsing* pbqpparsing, int sourceIndex,
-		int targetIndex, unsigned long* data) {
-	PBQPNode<InfinityWrapper<unsigned long>>* source;
-	PBQPNode<InfinityWrapper<unsigned long>>* target;
-	if (pbqpparsing->remapIndices) {
-		auto iterSource = pbqpparsing->nodes.find(sourceIndex);
-		if (iterSource == pbqpparsing->nodes.end()) {
-			std::cout << "Could not find index while remapping, skipped egde";
-			//TODO Exception?
-			return;
-		}
-		source = iterSource->second;
-		auto iterTarget = pbqpparsing->nodes.find(targetIndex);
-		if (iterTarget == pbqpparsing->nodes.end()) {
-			std::cout << "Could not find index while remapping, skipped egde";
-			//TODO Exception?
-			return;
-		}
-		target = iterTarget->second;
-	} else {
-		source = pbqpparsing->nodes.at(sourceIndex);
-		target = pbqpparsing->nodes.at(targetIndex);
-	}
-	int length = source->getVectorDegree() * target->getVectorDegree();
-	InfinityWrapper<unsigned long> infData[length];
-	for (int i = 0; i < length; i++) {
-		infData[i] = InfinityWrapper<unsigned long>(data[i]);
-	}
-	Matrix<InfinityWrapper<unsigned long>> mat(source->getVectorDegree(),
-			target->getVectorDegree(), infData);
-	pbqpparsing->graph->addEdge(source, target, mat);
-}
-
-extern "C" void solvePBQP(pbqpparsing* pbqpparsing) {
-	if (pbqpparsing->graph->getNodeCount() == 0) {
-		return;
-	}
-	printf("\n Solving graph with size: %d; Counter: %d\n",
-			pbqpparsing->graph->getNodeCount());
-	DebugTimer timer;
-	timer.startTimer();
-	FullSolver<InfinityWrapper<unsigned long>> solver(pbqpparsing->graph);
-	PBQPSolution<InfinityWrapper<unsigned long>>* sol = solver.solve();
-	timer.stopTimer();
-	delete sol;
-	std::cout << timer.getOutput();
-}
-
-extern "C" pbqpparsing* createInstancePBQP(bool useNodeRemapping, int nodeAmount) {
-	pbqpparsing* result = new pbqpparsing;
-	result->remapIndices = useNodeRemapping;
-	result->graph = new PBQPGraph<InfinityWrapper<unsigned long>>();
-	return result;
-}
-
-extern "C" void addToPEOPBQP(pbqpparsing* pbqpparsing, int index) {
-	pbqpparsing->peo.push_back(getNode(pbqpparsing, index));
-}
-
-extern "C" void dumpPBQP(pbqpparsing* pbqpparsing, char* path) {
-	if (pbqpparsing->graph->getNodeCount() == 0) {
-		std::cout << "Graph requested to dump to flat file was empty, did not dump";
-		return;
-	}
-	PBQP_Serializer<InfinityWrapper<unsigned long>> serial;
-	serial.saveToFile(path, pbqpparsing->graph);
-}
-
-PBQPNode<InfinityWrapper<unsigned long>>* getNode(pbqpparsing* pbqpparsing, int index) {
-	//TODO what happens if a bad index is given?
-	return pbqpparsing->nodes.find(index)->second;
-}
 
 }

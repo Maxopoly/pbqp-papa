@@ -12,60 +12,35 @@
 extern "C" {
 #endif
 
+#define CINTERFACESIG(TYPENAME,SHORTNAME) \
+struct pbqp_ ## SHORTNAME ## _parsing; \
+unsigned int pbqp_ ## SHORTNAME ## _addNode(pbqp_ ## SHORTNAME ## _parsing*, TYPENAME* data, \
+		unsigned short length, unsigned int index); \
+void pbqp_ ## SHORTNAME ## _addEdge(pbqp_ ## SHORTNAME ## _parsing*, unsigned int sourceIndex, \
+		unsigned int targetIndex, TYPENAME* data); \
+void pbqp_ ## SHORTNAME ## _solve(pbqp_ ## SHORTNAME ## _parsing*); \
+pbqp_ ## SHORTNAME ## _parsing* pbqp_ ## SHORTNAME ## _createInstance( \
+		bool useNodeRemapping, unsigned int nodeAmount); \
+void pbqp_ ## SHORTNAME ## _addToPEO(pbqp_ ## SHORTNAME ## _parsing*, unsigned int index); \
+void pbqp_ ## SHORTNAME ## _dump(pbqp_ ## SHORTNAME ## _parsing*, char* path); \
+void pbqp_ ## SHORTNAME ## _free(pbqp_ ## SHORTNAME ## _parsing*);
+
+
+CINTERFACESIG(unsigned int,uint)
+
+CINTERFACESIG(unsigned short,ushort)
+
+CINTERFACESIG(unsigned long,ulong)
+
 /*
+CINTERFACESIG(unsigned char,uchar)
 
-#define cInterfaceSignature(X)   \
-unsigned int addNode(X* data, unsigned short length, unsigned int index); \
-void addEdge(unsigned int sourceIndex, unsigned int targetIndex, X* data); \
-void dump(char* path, X type); \
-void resetAndPrepare(unsigned int nodeAmount, bool useNodeRemapping);
+CINTERFACESIG(float,float)
 
-cInterfaceSignature(unsigned int)
-
-cInterfaceSignature(unsigned short)
-
-cInterfaceSignature(unsigned long)
-
-cInterfaceSignature(unsigned char)
-
-cInterfaceSignature(float)
-
-cInterfaceSignature(double) */
-
-struct pbqpparsing {
-
-#ifdef __cplusplus
-
-PBQPGraph<InfinityWrapper<unsigned long>>* graph;
-std::map<int, PBQPNode<InfinityWrapper<unsigned long>>*> nodes;
-std::vector<PBQPNode<InfinityWrapper<unsigned long>>*> peo;
-bool remapIndices = false;
-static unsigned long counter = 0;
-
-#endif
-
-};
-
-
-int addNode(pbqpparsing*,unsigned long* data, int length, int index);
-
-void addEdgePBQP(pbqpparsing*, int sourceIndex, int targetIndex, unsigned long* data);
-
-void solvePBQP(pbqpparsing*);
-
-pbqpparsing* createInstancePBQP(bool useNodeRemapping, int nodeAmount);
-
-void addToPEOPBQP(pbqpparsing*, int index);
-
-void dumpPBQP(pbqpparsing*, char* path);
-
-void freePBQP(pbqpparsing*);
-
+CINTERFACESIG(double,double) */
 
 #ifdef __cplusplus
 } //end extern "C"
 #endif
-
-
 
 #endif /* CINTERFACE_H_ */

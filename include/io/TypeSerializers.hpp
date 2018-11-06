@@ -55,14 +55,14 @@ std::string getTypeName2(dummyType<unsigned short>);
 template<typename T>
 std::string serializeElement2(dummyType<InfinityWrapper<T>>, InfinityWrapper<T> number) {
 	if (number.isInfinite()) {
-		return "INF";
+		return "∞";
 	}
 	return serializeElement2(dummyType<T> {}, number.getValue());
 }
 
 template<typename T>
 InfinityWrapper<T> deserializeElement2(dummyType<InfinityWrapper<T>>, std::string serialized) {
-	if (serialized == "INF") {
+	if (serialized == "∞" || serialized == "INF") {
 		return InfinityWrapper<T>::getInfinite();
 	}
 	return InfinityWrapper<T>(deserializeElement<T>(serialized));

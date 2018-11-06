@@ -39,6 +39,19 @@ public:
 		return jsonToGraph(json);
 	}
 
+	std::string matrixToString(Matrix<T> matrix, std::string separator = " ") {
+		std::string output;
+		for (unsigned short row = 0; row < matrix.getRowCount(); row++) {
+			for (unsigned short column = 0; column < matrix.getColumnCount();
+					column++) {
+				output += serializeElement<T>(matrix.get(row, column));
+				output += separator;
+			}
+			output += '\n';
+		}
+		return output;
+	}
+
 private:
 
 	PBQPGraph<T>* jsonToGraph(nlohmann::json json) {
@@ -73,7 +86,7 @@ private:
 	}
 
 	Vector<T> parseVector(nlohmann::json json) {
-		Vector<T> vek = Vector < T > ((unsigned short) json.size());
+		Vector<T> vek = Vector<T>((unsigned short) json.size());
 		for (unsigned short i = 0; i < json.size(); i++) {
 			vek.get(i) = deserializeElement<T>(json[i]);
 		}
@@ -84,7 +97,7 @@ private:
 		unsigned short rows = json["rows"];
 		unsigned short columns = json["columns"];
 		nlohmann::json valueJson = json["cost"];
-		Matrix<T> mat = Matrix < T > (rows, columns);
+		Matrix<T> mat = Matrix<T>(rows, columns);
 		for (unsigned int i = 0; i < valueJson.size(); i++) {
 			mat.getRaw(i) = deserializeElement<T>(valueJson[i]);
 		}
@@ -109,8 +122,9 @@ private:
 			if (debug) {
 				nodeJson["degree"] = node->getDegree();
 				nlohmann::json neighborVector = nlohmann::json::array();
-				for (PBQPNode<T>* neighbor : node->getAdjacentNodes())  {
-					neighborVector.push_back(std::to_string(neighbor->getIndex()));
+				for (PBQPNode<T>* neighbor : node->getAdjacentNodes()) {
+					neighborVector.push_back(
+							std::to_string(neighbor->getIndex()));
 				}
 				nodeJson["neighbours"] = neighborVector;
 			}

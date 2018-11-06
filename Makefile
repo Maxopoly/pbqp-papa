@@ -28,10 +28,11 @@ TEST_OBJECTS = $(TESTS:$(TEST_PATH)/%.$(SRC_EXT)=$(TEST_BUILD_PATH)/%.o)
 DEPS = $(OBJECTS:.o=.d)
 
 # flags #
-COMPILE_FLAGS = -std=c++11 -Wall -Wextra -g
+COMPILE_FLAGS = -std=c++17 -Wall -Wextra -g `pkg-config libgvc --cflags`
+LDFLAGS = `pkg-config libgvc --libs`
 INCLUDES = -I include/ -I submodules/json/single_include/
 # Space-separated pkg-config libraries used by this project
-LIBS =
+LIBS = libgvc
 
 .PHONY: default_target
 default_target: release
@@ -68,7 +69,7 @@ $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
 #Compile tests
 $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
 	@echo "Compiling: $< -> $@"
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework `pkg-config libgvc --libs`
 	
 # Source file rules
 # After the first compilation they will be joined with the rules from the
