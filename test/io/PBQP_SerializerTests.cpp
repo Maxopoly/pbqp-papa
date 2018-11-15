@@ -8,6 +8,7 @@
 #include "graph/Vector.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
+#include "graph/PBQPSolution.hpp"
 #include "io/PBQP_Serializer.hpp"
 #include "generate/PBQPGenerator.hpp"
 #include "analysis/SolutionAmountChecker.hpp"
@@ -62,9 +63,8 @@ BOOST_AUTO_TEST_CASE(generatorTest) {
 	PBQPGraph<unsigned long>* graph = generator.generate();
 	PBQP_Serializer<unsigned long> serial;
 	serial.saveToFile("bigTestGraph.json", graph, true);
-
 	FullSolver<unsigned long> solver (graph);
-	solver.solve();
+	PBQPSolution<unsigned long>* solution = solver.solve();
 	serial.saveToFile("reducedBigGraph.json", graph, true);
 	delete graph;
 }

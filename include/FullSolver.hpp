@@ -127,6 +127,121 @@ public:
 			}
 		}
 		//start applying RN
+		iter = this->graph->getNodeBegin();
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter++;
+			if (node->isDeleted()) {
+				continue;
+			}
+			for (PBQPNode<T>* neighborNode : node->getAdjacentNodes()) {
+				queue.push(neighborNode);
+			}
+			localSolutions.push_back(
+					DegreeNReducer<T>::reduceRNEarlyDecision(node,
+							this->graph));
+			while (!queue.empty()) {
+				node = queue.front();
+				queue.pop();
+				if (node->isDeleted()) {
+					continue;
+				}
+				if (node == *iter) {
+					iter++;
+				}
+				unsigned short degree = node->getDegree();
+				switch (degree) {
+				case 2: {
+					std::vector<PBQPNode<T>*> neighbors =
+							node->getAdjacentNodes(false);
+					unsigned short oldDegree = neighbors.at(0)->getDegree();
+					localSolutions.push_back(
+							DegreeTwoReducer<T>::reduceDegreeTwo(node,
+									this->graph));
+					if (neighbors.at(0)->getDegree() != oldDegree) {
+						//this happens if the edge created by the R2 reduction is merged into an existing edge
+						queue.push(neighbors.at(0));
+						queue.push(neighbors.at(1));
+					}
+					break;
+				}
+				case 0:
+					localSolutions.push_back(
+							DegreeZeroReducer<T>::reduceDegreeZero(node,
+									this->graph));
+					break;
+				case 1: {
+					PBQPNode<T>* other = node->getAdjacentNodes().at(0);
+					localSolutions.push_back(
+							DegreeOneReducer<T>::reduceDegreeOne(node,
+									this->graph));
+					queue.push(other);
+					break;
+				}
+				}
+
+			}
+		}
+		PBQPSolution<T>* solution = new PBQPSolution<T>(
+				this->graph->getNodeIndexCounter());
+		for (auto iter = localSolutions.rbegin(); iter != localSolutions.rend();
+				iter++) {
+			(*iter)->solve(solution);
+		}
+		return solution;
+	}
+
+
+	PBQPSolution<T>* solveInf() {
+		auto iter = this->graph->getNodeBegin();
+		//standard r0-r2 as much as possible
+		std::queue<PBQPNode<T>*> queue;
+		while (iter != this->graph->getNodeEnd()) {
+			PBQPNode<T>* node = *iter;
+			queue.push(node);
+			while (!queue.empty()) {
+				node = queue.front();
+				queue.pop();
+				if (node->isDeleted()) {
+					continue;
+				}
+				if (node == *iter) {
+					iter++;
+				}
+				unsigned short degree = node->getDegree();
+				switch (degree) {
+				case 2: {
+					std::vector<PBQPNode<T>*> neighbors =
+							node->getAdjacentNodes(false);
+					unsigned short oldDegree = neighbors.at(0)->getDegree();
+					localSolutions.push_back(
+							DegreeTwoReducer<T>::reduceDegreeTwoInf(node,
+									this->graph));
+					if (neighbors.at(0)->getDegree() != oldDegree) {
+						//this happens if the edge created by the R2 reduction is merged into an existing edge
+						queue.push(neighbors.at(0));
+						queue.push(neighbors.at(1));
+					}
+					break;
+				}
+				case 0:
+					localSolutions.push_back(
+							DegreeZeroReducer<T>::reduceDegreeZeroInf(node,
+									this->graph));
+					break;
+				case 1: {
+					PBQPNode<T>* other = node->getAdjacentNodes().at(0);
+					localSolutions.push_back(
+							DegreeOneReducer<T>::reduceDegreeOneInf(node,
+									this->graph));
+					queue.push(other);
+					break;
+				}
+				default:
+					continue;
+				}
+			}
+		}
+		//start applying RN
 		//TODO priorize high degree nodes, follow PEO
 		iter = this->graph->getNodeBegin();
 		while (iter != this->graph->getNodeEnd()) {

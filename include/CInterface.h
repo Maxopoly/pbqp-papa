@@ -14,17 +14,21 @@ extern "C" {
 
 #define CINTERFACESIG(TYPENAME,SHORTNAME) \
 struct pbqp_ ## SHORTNAME ## _parsing; \
+struct pbqp_ ## SHORTNAME ## _solution { \
+unsigned short* selections; \
+unsigned int length; \
+}; \
 unsigned int pbqp_ ## SHORTNAME ## _addNode(pbqp_ ## SHORTNAME ## _parsing*, TYPENAME* data, \
 		unsigned short length, unsigned int index); \
 void pbqp_ ## SHORTNAME ## _addEdge(pbqp_ ## SHORTNAME ## _parsing*, unsigned int sourceIndex, \
 		unsigned int targetIndex, TYPENAME* data); \
-void pbqp_ ## SHORTNAME ## _solve(pbqp_ ## SHORTNAME ## _parsing*); \
+pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solve(pbqp_ ## SHORTNAME ## _parsing*); \
 pbqp_ ## SHORTNAME ## _parsing* pbqp_ ## SHORTNAME ## _createInstance( \
 		bool useNodeRemapping, unsigned int nodeAmount); \
 void pbqp_ ## SHORTNAME ## _addToPEO(pbqp_ ## SHORTNAME ## _parsing*, unsigned int index); \
 void pbqp_ ## SHORTNAME ## _dump(pbqp_ ## SHORTNAME ## _parsing*, char* path); \
-void pbqp_ ## SHORTNAME ## _free(pbqp_ ## SHORTNAME ## _parsing*);
-
+void pbqp_ ## SHORTNAME ## _free(pbqp_ ## SHORTNAME ## _parsing*); \
+pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(pbqp_ ## SHORTNAME ## _parsing*);
 
 CINTERFACESIG(unsigned int,uint)
 
@@ -33,11 +37,11 @@ CINTERFACESIG(unsigned short,ushort)
 CINTERFACESIG(unsigned long,ulong)
 
 /*
-CINTERFACESIG(unsigned char,uchar)
+ CINTERFACESIG(unsigned char,uchar)
 
-CINTERFACESIG(float,float)
+ CINTERFACESIG(float,float)
 
-CINTERFACESIG(double,double) */
+ CINTERFACESIG(double,double) */
 
 #ifdef __cplusplus
 } //end extern "C"

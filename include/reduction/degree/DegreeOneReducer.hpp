@@ -45,7 +45,8 @@ public:
 		while (iter != this->graph->getNodeEnd()) {
 			PBQPNode<T>* node = *iter++;
 			if (node->getDegree() == 1) {
-				NtoNDependentSolution<T>* sol = reduceDegreeOne(node, this->graph);
+				NtoNDependentSolution<T>* sol = reduceDegreeOne(node,
+						this->graph);
 				solutions.push_back(sol);
 			}
 		}
@@ -64,6 +65,7 @@ public:
 	static NtoNDependentSolution<T>* reduceDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		//will explode if node doesnt have an edge
+		assert(node->getDegree() == 1);
 		PBQPEdge<T>* edge = node->getAdjacentEdges().at(0);
 		PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
 		std::vector<PBQPNode<T>*> dependencyNodes;
@@ -75,31 +77,28 @@ public:
 		const bool isSource = edge->isSource(node);
 		const unsigned short otherEndDegree = otherEnd->getVectorDegree();
 		const unsigned short nodeDegree = node->getVectorDegree();
-		const T oneElement = T(1);
 		for (unsigned short i = 0; i < otherEndDegree; i++) {
 			//find minimum for this selection
 			T otherEndCost = otherEnd->getVector().get(i);
 			unsigned short minSelection = 0;
 			T minimum = otherEndCost;
-			if (otherEndCost + oneElement != otherEndCost) { //not infinite!
-				minimum += node->getVector().get(0);
+			minimum += node->getVector().get(0);
+			if (isSource) {
+				minimum += edge->getMatrix().get(0, i);
+			} else {
+				minimum += edge->getMatrix().get(i, 0);
+			}
+			for (unsigned short k = 1; k < nodeDegree; k++) {
+				T compSum = otherEndCost;
+				minimum += node->getVector().get(k);
 				if (isSource) {
-					minimum += edge->getMatrix().get(0, i);
+					compSum += edge->getMatrix().get(k, i);
 				} else {
-					minimum += edge->getMatrix().get(i, 0);
+					compSum += edge->getMatrix().get(i, k);
 				}
-				for (unsigned short k = 1; k < nodeDegree; k++) {
-					T compSum = otherEndCost;
-					minimum += node->getVector().get(k);
-					if (isSource) {
-						compSum += edge->getMatrix().get(k, i);
-					} else {
-						compSum += edge->getMatrix().get(i, k);
-					}
-					if (compSum < minimum) {
-						minimum = compSum;
-						minSelection = k;
-					}
+				if (compSum < minimum) {
+					minimum = compSum;
+					minSelection = k;
 				}
 			}
 			std::vector<unsigned short> dependencySelections;
@@ -114,7 +113,8 @@ public:
 		return solution;
 	}
 
-	static OnetoOneDependentSolution<T>* reduceDegreeOneInf(PBQPNode<InfinityWrapper<T>>* node,
+	static OnetoOneDependentSolution<T>* reduceDegreeOneInf(
+			PBQPNode<InfinityWrapper<T>>* node,
 			PBQPGraph<InfinityWrapper<T>>* graph) {
 		//ensure edge exists
 		assert(node->getDegree() == 1);
@@ -122,7 +122,8 @@ public:
 		PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
 		//ensure edge isnt a cycle
 		assert(otherEnd != node);
-		OnetoOneDependentSolution<T>* solution = new OnetoOneDependentSolution<T>(node,otherEnd);
+		OnetoOneDependentSolution<T>* solution =
+				new OnetoOneDependentSolution<T>(node, otherEnd);
 		const bool isSource = edge->isSource(node);
 		const unsigned short otherEndDegree = otherEnd->getVectorDegree();
 		const unsigned short nodeDegree = node->getVectorDegree();
@@ -157,7 +158,7 @@ public:
 		}
 		graph->removeNode(node);
 		bool found = false;
-		for(unsigned short i = 0; i < otherEndDegree; i++) {
+		for (unsigned short i = 0; i < otherEndDegree; i++) {
 			if (!otherEnd->getVector().get(i).isInfinite()) {
 				found = true;
 				break;

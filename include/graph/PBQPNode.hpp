@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "graph/Vector.hpp"
+
 namespace pbqppapa {
 
 template<typename T>

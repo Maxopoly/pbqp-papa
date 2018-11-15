@@ -149,7 +149,7 @@ public:
 	 * is up to the user when setting cleanUp to false
 	 */
 	void removeNode(PBQPNode<T>* node, bool cleanUp = true) {
-		for (PBQPEdge<T>* edge : node->getAdjacentEdges(false)) {
+		for (PBQPEdge<T>* edge : std::vector<PBQPEdge<T>*>(node->getAdjacentEdges(false))) {
 			edges.erase(edge);
 			if (cleanUp) {
 				edge->getOtherEnd(node)->removeEdge(edge);

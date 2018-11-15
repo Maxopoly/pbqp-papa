@@ -43,6 +43,7 @@ BOOST_AUTO_TEST_CASE(libTest) {
 			FullSolver<InfinityWrapper<unsigned int>> solver(graph);
 			PBQPSolution<InfinityWrapper<unsigned int>>* sol = solver.solve();
 			timer.stopTimer();
+			std::cout << std::to_string(sol->getTotalCost(ogGraph).getValue());
 			delete sol;
 			double duration = timer.getDuration();
 			sum += duration;

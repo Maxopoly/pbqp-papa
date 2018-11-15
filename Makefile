@@ -8,6 +8,8 @@ BUILD_PATH = build
 TEST_PATH = test
 TEST_BUILD_PATH = test_build
 
+GUROBI_PATH = ${GUROBI_HOME}
+
 # extensions #
 SRC_EXT = cpp
 TEST_EXEC = runtest
@@ -29,8 +31,8 @@ DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -std=c++17 -Wall -Wextra -g `pkg-config libgvc --cflags`
-LDFLAGS = `pkg-config libgvc --libs`
-INCLUDES = -I include/ -I submodules/json/single_include/
+LDFLAGS = `pkg-config libgvc --libs` -L$(GUROBI_PATH)/lib -lgurobi_c++ -lgurobi81
+INCLUDES = -I include/ -I submodules/json/single_include/ -I $(GUROBI_PATH)/include/
 # Space-separated pkg-config libraries used by this project
 LIBS = libgvc
 
@@ -69,7 +71,7 @@ $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
 #Compile tests
 $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
 	@echo "Compiling: $< -> $@"
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework `pkg-config libgvc --libs`
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $@ $^ -lboost_unit_test_framework $(LDFLAGS)
 	
 # Source file rules
 # After the first compilation they will be joined with the rules from the
