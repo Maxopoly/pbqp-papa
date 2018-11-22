@@ -230,7 +230,7 @@ public:
 	 * will have an index smaller than this counter. To ensure that every node has a unique number, even
 	 * if we split up graphs and parallelize work on the smaller pieces, this counter is global
 	 */
-	unsigned int getNodeIndexCounter() {
+	unsigned int getNodeIndexCounter() const {
 		return indexMaximum;
 	}
 

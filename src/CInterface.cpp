@@ -107,7 +107,7 @@ extern "C" pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(p
 		return new pbqp_ ## SHORTNAME ## _solution(); \
 	} \
 	GurobiConverter<TYPENAME> gurobi; \
-	PBQPSolution<InfinityWrapper<TYPENAME>>* cppLevelSol = gurobi.convert(pbqpparsing->graph); \
+	PBQPSolution<InfinityWrapper<TYPENAME>>* cppLevelSol = gurobi.solveGurobiLinear(pbqpparsing->graph); \
 	pbqp_ ## SHORTNAME ## _solution* cLevelSol = pbqp_ ## SHORTNAME ## _convertSolution(pbqpparsing, cppLevelSol); \
 	delete cppLevelSol; \
 	return cLevelSol; \

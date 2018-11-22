@@ -45,7 +45,7 @@ public:
 		return selection.at(nodeIndex);
 	}
 
-	T getTotalCost(PBQPGraph<T>* graph) {
+	T getTotalCost(const PBQPGraph<T>* graph) {
 		T result = T();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
