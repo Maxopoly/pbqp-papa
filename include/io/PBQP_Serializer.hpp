@@ -3,11 +3,13 @@
 
 #include <cstdio>
 #include <fstream>
+#include <vector>
 #include <string>
 #include <iomanip>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <iterator>
+#include <map>
 
 #include "io/TypeSerializers.hpp"
 #include "graph/PBQPGraph.hpp"
@@ -31,7 +33,7 @@ public:
 		out.close();
 	}
 
-	PBQPGraph<T>* loadFromFile(std::string path) {
+	PBQPGraph<T>* loadFromFile(std::string path) const {
 		std::ifstream in(path);
 		nlohmann::json json;
 		in >> json;
@@ -39,7 +41,8 @@ public:
 		return jsonToGraph(json);
 	}
 
-	std::string matrixToString(Matrix<T> matrix, std::string separator = " ") {
+	std::string matrixToString(Matrix<T> matrix,
+			std::string separator = " ") const {
 		std::string output;
 		for (unsigned short row = 0; row < matrix.getRowCount(); row++) {
 			for (unsigned short column = 0; column < matrix.getColumnCount();
@@ -54,7 +57,7 @@ public:
 
 private:
 
-	PBQPGraph<T>* jsonToGraph(nlohmann::json json) {
+	PBQPGraph<T>* jsonToGraph(nlohmann::json json) const {
 		nlohmann::json metaJson = json["meta"];
 		std::string parsedType = metaJson["type"];
 		if (parsedType.compare(getTypeName<T>()) != 0) {
@@ -82,10 +85,19 @@ private:
 					nodeByIndex.find(singleEdgeJson["target"])->second;
 			graph->addEdge(source, target, mat);
 		}
+		if (json.find("peo") != json.end()) {
+			nlohmann::json peoJson = json["peo"];
+			std::vector<PBQPNode<T>*> peoVector;
+			for (unsigned int i = 0; i < peoJson.size(); i++) {
+				PBQPNode<T>* peoNode = nodeByIndex.find(peoJson[i])->second;
+				peoVector.push_back(peoNode);
+			}
+			graph->setPEO(peoVector);
+		}
 		return graph;
 	}
 
-	Vector<T> parseVector(nlohmann::json json) {
+	Vector<T> parseVector(nlohmann::json json) const {
 		Vector<T> vek = Vector<T>((unsigned short) json.size());
 		for (unsigned short i = 0; i < json.size(); i++) {
 			vek.get(i) = deserializeElement<T>(json[i]);
@@ -93,7 +105,7 @@ private:
 		return vek;
 	}
 
-	Matrix<T> parseMatrix(nlohmann::json json) {
+	Matrix<T> parseMatrix(nlohmann::json json) const {
 		unsigned short rows = json["rows"];
 		unsigned short columns = json["columns"];
 		nlohmann::json valueJson = json["cost"];
@@ -104,9 +116,10 @@ private:
 		return mat;
 	}
 
-	nlohmann::json graphToJson(PBQPGraph<T>* graph, bool debug) {
+	nlohmann::json graphToJson(const PBQPGraph<T>* graph, bool debug) const {
 		nlohmann::json json;
 		json["meta"] = serializeMeta(graph);
+		//TODO PEO
 		nlohmann::json nodeJsons = nlohmann::json::array();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
@@ -150,10 +163,21 @@ private:
 			edgeJsons.push_back(edgeJson);
 		}
 		json["edges"] = edgeJsons;
+		if (graph->getPEO().size() > 0) {
+			json["peo"] = serializePEO(graph->getPEO());
+		}
 		return json;
 	}
 
-	nlohmann::json serializeMeta(PBQPGraph<T>* graph) {
+	nlohmann::json serializePEO(const std::vector<PBQPNode<T>*>& peo) const {
+		nlohmann::json peoVector = nlohmann::json::array();
+		for (auto peoIter = peo.begin(); peoIter != peo.end(); ++peoIter) {
+			peoVector.push_back((*peoIter)->getIndex());
+		}
+		return peoVector;
+	}
+
+	nlohmann::json serializeMeta(const PBQPGraph<T>* graph) const {
 		nlohmann::json json;
 		json["version"] = 1;
 		json["nodeCount"] = graph->getNodeCount();

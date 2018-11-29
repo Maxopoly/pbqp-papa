@@ -28,6 +28,7 @@ private:
 	std::set<PBQPNode<T>*> nodes;
 	std::set<PBQPEdge<T>*> edges;
 	std::set<PBQPNode<T>*> deletedNodes;
+	std::vector<PBQPNode<T>*> peo;
 
 public:
 
@@ -44,7 +45,7 @@ public:
 		clear();
 	}
 
-	PBQPGraph(const PBQPGraph<T>* graph) : indexMaximum(graph->indexMaximum) {
+	PBQPGraph(const PBQPGraph<T>* graph) : indexMaximum(graph->indexMaximum), peo(NULL) {
 		std::map<PBQPNode<T>*,PBQPNode<T>*> nodeReMapping;
 		for(PBQPNode<T>* node : graph->nodes) {
 			PBQPNode<T>* createdNode = new PBQPNode<T>(node);
@@ -232,6 +233,14 @@ public:
 	 */
 	unsigned int getNodeIndexCounter() const {
 		return indexMaximum;
+	}
+
+	const std::vector<PBQPNode<T>*>& getPEO() const {
+		return peo;
+	}
+
+	void setPEO(std::vector<PBQPNode<T>*> newPeo) {
+			peo = newPeo;
 	}
 
 };

@@ -65,6 +65,7 @@ BOOST_AUTO_TEST_CASE(generatorTest) {
 	serial.saveToFile("bigTestGraph.json", graph, true);
 	FullSolver<unsigned long> solver (graph);
 	PBQPSolution<unsigned long>* solution = solver.solve();
+	delete solution;
 	serial.saveToFile("reducedBigGraph.json", graph, true);
 	delete graph;
 }

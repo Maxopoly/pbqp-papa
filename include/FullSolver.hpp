@@ -127,9 +127,20 @@ public:
 			}
 		}
 		//start applying RN
-		iter = this->graph->getNodeBegin();
-		while (iter != this->graph->getNodeEnd()) {
-			PBQPNode<T>* node = *iter++;
+		auto peoIter = this->graph->getPEO().begin();
+		while (true) {
+			PBQPNode<T>* node;
+			if (peoIter == this->graph->getPEO().end()) {
+				if (this->graph->getNodeCount() == 0) {
+					break;
+				}
+				else {
+					node = *(this->graph->getNodeBegin());
+				}
+			}
+			else {
+				node = *peoIter++;
+			}
 			if (node->isDeleted()) {
 				continue;
 			}
@@ -144,9 +155,6 @@ public:
 				queue.pop();
 				if (node->isDeleted()) {
 					continue;
-				}
-				if (node == *iter) {
-					iter++;
 				}
 				unsigned short degree = node->getDegree();
 				switch (degree) {

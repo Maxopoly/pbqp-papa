@@ -40,7 +40,6 @@ class StepByStepSolver {
 private:
 
 	PBQPGraph<T>* graph;
-	std::vector<PBQPNode<T>*> peo;
 	std::vector<NtoNDependentSolution<T>*> localSolutions;
 	bool useRnAlready;
 	std::queue<PBQPNode<T>*> nodeQueue;
@@ -49,8 +48,9 @@ private:
 
 public:
 
-	StepByStepSolver(PBQPGraph<T>* graph, std::vector<PBQPNode<T>*> peo) :
-			graph(graph), peo(peo), useRnAlready(false), nodeIterator(graph->getNodeBegin()) {
+	StepByStepSolver(PBQPGraph<T>* graph) :
+			graph(graph), useRnAlready(false), nodeIterator(graph->getNodeBegin()) {
+		assert(graph->peo.size() == graph->getNodeCount());
 	}
 
 	~StepByStepSolver() {
@@ -60,7 +60,7 @@ public:
 		while (true) {
 			if (nodeQueue.empty()) {
 				if (useRnAlready) {
-					while(peoIterator != peo.end()) {
+					while(peoIterator != graph->getPEO().end()) {
 						PBQPNode<T>* peoNode = *peoIterator++;
 						if (!peoNode->isDeleted()) {
 							applyRN(peoNode);

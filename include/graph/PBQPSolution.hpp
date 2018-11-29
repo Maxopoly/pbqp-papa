@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <assert.h>
+#include <stdio.h>
 
 #include "graph/PBQPGraph.hpp"
 
@@ -18,7 +19,6 @@ class PBQPEdge;
 template<typename T>
 class PBQPSolution {
 private:
-	//TODO How do we represent positions that are not decided yet?
 	std::vector<unsigned short> selection;
 #ifndef NDEBUG
 	std::vector<bool> selectionsConfirmed;
@@ -37,11 +37,14 @@ public:
 	void setSolution(unsigned long nodeIndex, unsigned short solution) {
 #ifndef NDEBUG
 		selectionsConfirmed.at(nodeIndex) = true;
+		printf("Set %d\n", nodeIndex);
 #endif
 		selection.at(nodeIndex) = solution;
 	}
 	unsigned short getSolution(unsigned long nodeIndex) {
+		printf("Get check %d\n", nodeIndex);
 		assert(selectionsConfirmed.at(nodeIndex));
+		printf("Get %d\n", nodeIndex);
 		return selection.at(nodeIndex);
 	}
 

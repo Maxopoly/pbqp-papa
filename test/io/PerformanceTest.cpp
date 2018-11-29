@@ -19,8 +19,8 @@ namespace pbqppapa {
 BOOST_AUTO_TEST_CASE(libTest) {
 	PBQP_Serializer<InfinityWrapper<unsigned int>> serial;
 	std::vector<std::string> paths;
-	paths.push_back("test/testData/giantLibfirmGraph.json");
-	paths.push_back("test/testData/bigLibfirmGraph.json");
+	//paths.push_back("test/testData/giantLibfirmGraph.json");
+	//paths.push_back("test/testData/bigLibfirmGraph.json");
 	paths.push_back("test/testData/normalLibfirmGraph.json");
 	paths.push_back("test/testData/smallLibfirmGraph.json");
 	int testRuns = 20;

@@ -7,7 +7,7 @@
 #include "FullSolver.hpp"
 #include "math/InfinityWrapper.hpp"
 #include "io/PBQP_Serializer.hpp"
-#include "math/GurobiConverter.hpp"
+//#include "math/GurobiConverter.hpp"
 
 #include <stdio.h>
 #include <vector>
@@ -24,7 +24,7 @@ std::vector<PBQPNode<InfinityWrapper< TYPENAME >>*> peo; \
 bool remapIndices = false; \
 unsigned long maximumIndex = 0; \
 }; \
-extern "C" unsigned int pbqp_ ## SHORTNAME ## _addNode(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
+extern "C" unsigned int pbqp_ ## SHORTNAME ## _addNode(struct  pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
 		TYPENAME* data, unsigned short length, unsigned int index) { \
 	InfinityWrapper<TYPENAME> infData[length]; \
 	for (unsigned short i = 0; i < length; i++) { \
@@ -52,7 +52,7 @@ extern "C" unsigned int pbqp_ ## SHORTNAME ## _addNode(pbqp_ ## SHORTNAME ## _pa
 		return internalIndex; \
 	} \
 } \
-extern "C" void pbqp_ ## SHORTNAME ## _addEdge(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
+extern "C" void pbqp_ ## SHORTNAME ## _addEdge(struct  pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
 	unsigned int sourceIndex, unsigned int targetIndex, TYPENAME* data) { \
 	PBQPNode<InfinityWrapper<TYPENAME>>* source; \
 	PBQPNode<InfinityWrapper<TYPENAME>>* target; \
@@ -82,8 +82,8 @@ extern "C" void pbqp_ ## SHORTNAME ## _addEdge(pbqp_ ## SHORTNAME ## _parsing* p
 			target->getVectorDegree(), infData); \
 	pbqpparsing->graph->addEdge(source, target, mat); \
 } \
-pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _convertSolution(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
-PBQPSolution<InfinityWrapper<TYPENAME>>* cppSol) { \
+struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _convertSolution(struct  pbqp_ ## SHORTNAME ## _parsing* \
+		pbqpparsing, PBQPSolution<InfinityWrapper<TYPENAME>>* cppSol) { \
 	pbqp_ ## SHORTNAME ## _solution* cSol = new pbqp_ ## SHORTNAME ## _solution(); \
 	cSol->selections = new unsigned short [pbqpparsing->maximumIndex]; \
 	for(auto iter : pbqpparsing->nodes) { \
@@ -92,7 +92,8 @@ PBQPSolution<InfinityWrapper<TYPENAME>>* cppSol) { \
 	cSol->length = pbqpparsing->maximumIndex; \
 	return cSol; \
 } \
-extern "C" pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solve(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+extern "C" struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solve(struct pbqp_ ## SHORTNAME ## _parsing* \
+		pbqpparsing) { \
 	if (pbqpparsing->graph->getNodeCount() == 0) { \
 		return new pbqp_ ## SHORTNAME ## _solution(); \
 	} \
@@ -102,7 +103,7 @@ extern "C" pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solve(pbqp_ #
 	delete cppLevelSol; \
 	return cLevelSol; \
 } \
-extern "C" pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+/*extern "C" struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
 	if (pbqpparsing->graph->getNodeCount() == 0) { \
 		return new pbqp_ ## SHORTNAME ## _solution(); \
 	} \
@@ -111,27 +112,35 @@ extern "C" pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(p
 	pbqp_ ## SHORTNAME ## _solution* cLevelSol = pbqp_ ## SHORTNAME ## _convertSolution(pbqpparsing, cppLevelSol); \
 	delete cppLevelSol; \
 	return cLevelSol; \
-} \
-extern "C" pbqp_ ## SHORTNAME ## _parsing* pbqp_ ## SHORTNAME ## _createInstance( \
+} */ \
+extern "C" struct pbqp_ ## SHORTNAME ## _parsing* pbqp_ ## SHORTNAME ## _createInstance( \
 		bool useNodeRemapping, unsigned int nodeAmount) { \
 	pbqp_ ## SHORTNAME ## _parsing* result = new pbqp_ ## SHORTNAME ## _parsing (); \
 	result->remapIndices = useNodeRemapping; \
 	result->graph = new PBQPGraph<InfinityWrapper<TYPENAME>>(); \
 	return result; \
 } \
-extern "C" void pbqp_ ## SHORTNAME ## _addToPEO(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
+extern "C" void pbqp_ ## SHORTNAME ## _addToPEO(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, \
 		unsigned int index) { \
 		pbqpparsing->peo.push_back(pbqpparsing->nodes.find(index)->second); \
 } \
-extern "C" void pbqp_ ## SHORTNAME ## _dump(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, char* path) { \
+extern "C" void pbqp_ ## SHORTNAME ## _dump(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, char* path) { \
 	if (pbqpparsing->graph->getNodeCount() == 0) { \
 		std::cout << "Graph requested to dump to flat file was empty, did not dump"; \
 		return; \
 	} \
+	std::string stringPath; \
+	if(!path) { \
+		stringPath = std::to_string(std::clock()); \
+	} \
+	else { \
+		stringPath = std::string(path) + ".json";\
+	} \
+	pbqpparsing->graph->setPEO(pbqpparsing->peo); \
 	PBQP_Serializer<InfinityWrapper<TYPENAME>> serial; \
-	serial.saveToFile(path, pbqpparsing->graph); \
+	serial.saveToFile(stringPath, pbqpparsing->graph); \
 } \
-extern "C" void pbqp_ ## SHORTNAME ## _free(pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+extern "C" void pbqp_ ## SHORTNAME ## _free(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
 	delete pbqpparsing->graph; \
 	delete pbqpparsing; \
 }

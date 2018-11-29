@@ -14,9 +14,8 @@ BOOST_AUTO_TEST_CASE(empty) {
 	std::vector<std::string> paths;
 	paths.push_back("test/testData/smallLibfirmGraph.json");
 	paths.push_back("test/testData/normalLibfirmGraph.json");
-	paths.push_back("test/testData/bigLibfirmGraph.json");
-	paths.push_back("test/testData/giantLibfirmGraph.json");
-	/*
+	//paths.push_back("test/testData/bigLibfirmGraph.json");
+	//paths.push_back("test/testData/giantLibfirmGraph.json");
 	std::cout << "Linear solving: " << '\n';
 	for (std::string path : paths) {
 		std::cout << "Processing " << path << '\n';
@@ -32,7 +31,6 @@ BOOST_AUTO_TEST_CASE(empty) {
 				<< '\n';
 		delete solution;
 	}
-	*/
 	std::cout << "Quadratic solving: " << '\n';
 	for (std::string path : paths) {
 		std::cout << "Processing " << path << '\n';
