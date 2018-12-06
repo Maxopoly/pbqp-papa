@@ -3,6 +3,8 @@
 
 namespace pbqppapa {
 
+#include "graph/Matrix.hpp"
+
 template<typename T>
 class PBQPNode;
 template<typename T>

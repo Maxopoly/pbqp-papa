@@ -7,6 +7,7 @@
 
 #include "reduction/solutions/TwoToOneDependentSolution.hpp"
 #include "reduction/solutions/NtoNDependentSolution.hpp"
+#include "reduction/PBQPReduction.hpp"
 #include "math/InfinityWrapper.hpp"
 
 namespace pbqppapa {
@@ -142,7 +143,7 @@ public:
 		return solution;
 	}
 
-	static NtoNDependentSolution<T>* reduceDegreeTwoInf(
+	static TwotoOneDependentSolution<InfinityWrapper<T>>* reduceDegreeTwoInf(
 			PBQPNode<InfinityWrapper<T>>* node,
 			PBQPGraph<InfinityWrapper<T>>* graph) {
 		assert(node->getVectorDegree() > 0);
@@ -220,7 +221,7 @@ public:
 			}
 		}
 		if (!foundSolution) {
-			throw UnsolvablePBQPException();
+			return NULL;
 		}
 		graph->removeNode(node);
 		graph->addEdge(firstNode, secondNode, resultMatrix);

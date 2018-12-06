@@ -9,10 +9,13 @@ namespace pbqppapa {
 
 template<typename T>
 class Command;
+template<typename T>
+class CommandHandler;
 
 template<typename T>
 class StepBackwardCommand : public Command<T> {
 
+public:
 	StepBackwardCommand() :
 		Command<T>("back") {
 	}
@@ -20,9 +23,9 @@ class StepBackwardCommand : public Command<T> {
 	 ~StepBackwardCommand() {
 	}
 
-	 std::string run(std::string input, StepByStepSolver<T> solver) {
+	 std::string run(std::string input, CommandHandler<T>* cmdHandler) {
 		 //TODO multiple at once
-		 PBQPNode <T>* node = solver.stepBackward();
+		 PBQPNode <InfinityWrapper<T>>* node = cmdHandler->getSolver()->stepBackward();
 		 if (node == 0) {
 			 return "Nothing was done, nothing to revert";
 		 }

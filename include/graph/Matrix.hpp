@@ -5,8 +5,12 @@
 #include <algorithm>
 #include <iterator>
 #include <cstring>
+#include <assert.h>
 
 namespace pbqppapa {
+
+template<typename T>
+class InfinityWrapper;
 
 template<typename T>
 class Matrix {
@@ -31,6 +35,10 @@ public:
 		std::memcpy(content, data, sizeof(T) * rows * columns);
 	}
 
+	Matrix() :
+			rows(0), columns(0), content(new T[0]) {
+	}
+
 	/**
 	 * Creates a new matrix with uninitialized content
 	 */
@@ -51,7 +59,7 @@ public:
 	Matrix<T>* operator=(const Matrix<T>& other) {
 		rows = other.rows;
 		columns = other.columns;
-		delete [] content;
+		delete[] content;
 		content = new T[rows * columns];
 		memcpy(content, other.content, rows * columns * sizeof(T));
 		return this;
@@ -135,6 +143,10 @@ public:
 	 * Retrieves a single element by position
 	 */
 	inline T& get(unsigned short row, unsigned short column) const {
+		assert(row < rows);
+		assert(row >= 0);
+		assert(column < columns);
+		assert(column >= 0);
 		return content[(row * columns) + column];
 	}
 
@@ -142,6 +154,7 @@ public:
 	 * Retrieves an element by its raw index in the content array
 	 */
 	inline T& getRaw(unsigned int index) const {
+		assert(index < getElementCount());
 		return content[index];
 	}
 
@@ -206,15 +219,15 @@ public:
 	 *
 	 *
 	 */
-	Matrix<T> multiplyRowsIndividually(
-			const unsigned short multiplier) const {
+	Matrix<T> multiplyRowsIndividually(const unsigned short multiplier) const {
 		Matrix<T> result(rows * multiplier, columns);
 		const unsigned long rowLength = sizeof(T) * columns;
 		const unsigned long sectionLength = rowLength * multiplier;
 		for (unsigned short i = 0; i < rows; i++) {
 			for (unsigned short offset = 0; offset < multiplier; offset++) {
 				std::memcpy(
-						result.content + (rowLength * offset) + (sectionLength * i),
+						result.content + (rowLength * offset)
+								+ (sectionLength * i),
 						content + (rowLength * i), rowLength);
 			}
 		}
@@ -267,7 +280,8 @@ public:
 		for (unsigned short i = 0; i < rows; i++) {
 			for (int column = 0; column < multiplier; column++) {
 				std::memcpy(
-						result.content + (rowDataLength * i) + (column * rowLength),
+						result.content + (rowDataLength * i)
+								+ (column * rowLength),
 						content + (rowLength * i), rowLength);
 			}
 		}

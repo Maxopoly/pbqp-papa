@@ -71,7 +71,7 @@ public:
 		}
 	}
 
-	void revertChange(PBQPGraph<T>* graph) const {
+	void revertChange(PBQPGraph<T>* graph) override {
 		//TODO
 	}
 

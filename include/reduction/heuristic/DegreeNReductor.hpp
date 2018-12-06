@@ -4,6 +4,7 @@
 #include <vector>
 #include <reduction/PBQPReduction.hpp>
 #include <reduction/solutions/DependentSolution.hpp>
+#include "solve/UnsolvablePBQPException.hpp"
 
 namespace pbqppapa {
 
@@ -85,6 +86,69 @@ public:
 		std::vector<unsigned short> solutionSelections;
 		solutionSelections.push_back(minSelection);
 		sol->setSolution(dependencySelections, solutionSelections);
+		graph->removeNode(node);
+		return sol;
+	}
+
+	static ImmediateSolution<InfinityWrapper<T>>* reduceRNEarlyDecisionInf(PBQPNode<InfinityWrapper<T>>* node,
+			PBQPGraph<InfinityWrapper<T>>* graph) {
+		unsigned short minSelection = 0;
+		InfinityWrapper<T> minCost = node->getVector().get(0);
+		for (PBQPEdge<InfinityWrapper<T>>* edge : node->getAdjacentEdges()) {
+			bool isSource = edge->isSource(node);
+			InfinityWrapper<T> rowColMin = edge->getOtherEnd(node)->getVector().get(0);
+			rowColMin += edge->getMatrix().get(0, 0);
+			PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
+			for (unsigned short k = 1; k < otherEnd->getVectorDegree(); ++k) {
+				InfinityWrapper<T> localRowColMin = otherEnd->getVector().get(k);
+				if (isSource) {
+					localRowColMin += edge->getMatrix().get(0, k);
+				} else {
+					localRowColMin += edge->getMatrix().get(k, 0);
+				}
+				if (localRowColMin < rowColMin) {
+					rowColMin = localRowColMin;
+				}
+			}
+			minCost += rowColMin;
+		}
+		for (unsigned short i = 1; i < node->getVectorDegree(); i++) {
+			InfinityWrapper<T> curr = node->getVector().get(i);
+			if (curr >= minCost) {
+				continue;
+			}
+			for (PBQPEdge<InfinityWrapper<T>>* edge : node->getAdjacentEdges()) {
+				bool isSource = edge->isSource(node);
+				InfinityWrapper<T> rowColMin = edge->getOtherEnd(node)->getVector().get(0);
+				if (isSource) {
+					rowColMin += edge->getMatrix().get(i, 0);
+				} else {
+					rowColMin += edge->getMatrix().get(0, i);
+				}
+				PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
+				for (unsigned short k = 1; k < otherEnd->getVectorDegree();
+						k++) {
+					InfinityWrapper<T> localRowColMin = otherEnd->getVector().get(k);
+					if (isSource) {
+						localRowColMin += edge->getMatrix().get(i, k);
+					} else {
+						localRowColMin += edge->getMatrix().get(k, i);
+					}
+					if (localRowColMin < rowColMin) {
+						rowColMin = localRowColMin;
+					}
+				}
+				curr += rowColMin;
+			}
+			if (curr < minCost) {
+				minCost = curr;
+				minSelection = i;
+			}
+		}
+		if (minCost.isInfinite()) {
+			return NULL;
+		}
+		ImmediateSolution<InfinityWrapper<T>>* sol = new ImmediateSolution<InfinityWrapper<T>>(node, minSelection);
 		graph->removeNode(node);
 		return sol;
 	}

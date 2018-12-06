@@ -23,7 +23,7 @@ private :
 public:
 	ImmediateSolution(PBQPNode<T>* node, unsigned short selection) : selection(selection), node(node) {
 		for(PBQPEdge<T>* edge : node->getAdjacentEdges()) {
-			edges.push_back(&edge);
+			edges.push_back(*edge);
 		}
 	}
 
@@ -31,16 +31,18 @@ public:
 
 	}
 
-	void solve(PBQPSolution<T>* solution) const {
+	void solve(PBQPSolution<T>* solution) override {
 		solution->setSolution(node->getIndex(), selection);
 	}
 
 	void revertChange(PBQPGraph<T>* graph) const {
 		graph->addNode(node);
-		for(PBQPEdge<T>* edge : edges) {
-			graph->addEdge(edge->getSource, edge->getTarget, edge->getMatrix());
+		for(PBQPEdge<T> edge : edges) {
+			graph->addEdge(edge.getSource(), edge.getTarget(), edge.getMatrix());
 		}
 	}
+
+	PBQPNode<T>* const getReducedNode() const override {return node;}
 
 
 };

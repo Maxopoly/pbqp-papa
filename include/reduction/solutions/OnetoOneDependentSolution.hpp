@@ -31,9 +31,9 @@ private:
 public:
 	OnetoOneDependentSolution(PBQPNode<T>* toSolve, PBQPNode<T>* dependency) :
 			toSolve(toSolve), dependencyNode(dependency), dependencyVector(
-					dependency->getVector(),
-					selection(dependency->getVectorDegree())) {
+					dependency->getVector()) {
 		assert(toSolve->getDegree() == 1);
+		selection.resize(dependency->getVectorDegree());
 		PBQPEdge<T>* edge = toSolve->getAdjacentEdges().at(0);
 		edgeMatrix = edge->getMatrix();
 		dependencyIsSource = edge->getSource() == dependency;
@@ -52,12 +52,12 @@ public:
 		selection.at(dependencySelection) = solutionSelection;
 	}
 
-	void solve(PBQPSolution<T>* solution) const {
+	void solve(PBQPSolution<T>* solution)  override {
 		unsigned short dependencySelection = solution->getSolution(dependencyNode->getIndex());
 		solution->setSolution(toSolve->getIndex(), selection.at(dependencySelection));
 	}
 
-	void revertChange(PBQPGraph<T>* graph) const {
+	void revertChange(PBQPGraph<T>* graph) override {
 		dependencyNode->getVector() = dependencyVector;
 		graph->addNode(toSolve);
 		if (dependencyIsSource) {
@@ -67,6 +67,8 @@ public:
 			graph->addEdge(toSolve, dependencyNode,  edgeMatrix);
 		}
 	}
+
+	PBQPNode<T>* const getReducedNode() const override {return toSolve;}
 
 };
 }

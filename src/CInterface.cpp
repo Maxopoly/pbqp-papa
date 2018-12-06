@@ -131,10 +131,10 @@ extern "C" void pbqp_ ## SHORTNAME ## _dump(struct pbqp_ ## SHORTNAME ## _parsin
 	} \
 	std::string stringPath; \
 	if(!path) { \
-		stringPath = std::to_string(std::clock()); \
+		stringPath = std::to_string(std::clock()) + ".json"; \
 	} \
 	else { \
-		stringPath = std::string(path) + ".json";\
+		stringPath = std::string(path);\
 	} \
 	pbqpparsing->graph->setPEO(pbqpparsing->peo); \
 	PBQP_Serializer<InfinityWrapper<TYPENAME>> serial; \

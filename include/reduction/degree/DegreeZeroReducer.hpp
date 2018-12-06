@@ -78,12 +78,12 @@ public:
 		return solution;
 	}
 
-	static NtoNDependentSolution<InfinityWrapper<T>>* reduceDegreeZeroInf(
+	static ImmediateSolution<InfinityWrapper<T>>* reduceDegreeZeroInf(
 			PBQPNode<InfinityWrapper<T>>* node,
 			PBQPGraph<InfinityWrapper<T>>* graph) {
 		unsigned short minimum = node->getVector().getIndexOfSmallestElement();
 		if (node->getVector().get(minimum).isInfinite()) {
-			throw UnsolvablePBQPException();
+			return NULL;
 		}
 		ImmediateSolution<InfinityWrapper<T>>* solution = new ImmediateSolution<
 				InfinityWrapper<T>>(node, minimum);

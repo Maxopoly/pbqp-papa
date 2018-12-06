@@ -34,21 +34,22 @@ public:
 	{
 	}
 
+	virtual ~PBQPSolution() {
+
+	}
+
 	void setSolution(unsigned long nodeIndex, unsigned short solution) {
 #ifndef NDEBUG
 		selectionsConfirmed.at(nodeIndex) = true;
-		printf("Set %d\n", nodeIndex);
 #endif
 		selection.at(nodeIndex) = solution;
 	}
 	unsigned short getSolution(unsigned long nodeIndex) {
-		printf("Get check %d\n", nodeIndex);
 		assert(selectionsConfirmed.at(nodeIndex));
-		printf("Get %d\n", nodeIndex);
 		return selection.at(nodeIndex);
 	}
 
-	T getTotalCost(const PBQPGraph<T>* graph) {
+	virtual T getTotalCost(const PBQPGraph<T>* graph) {
 		T result = T();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {

@@ -11,19 +11,22 @@ template<typename T>
 class Command;
 template<typename T>
 class PBQPGraph;
+template<typename T>
+class CommandHandler;
 
 template<typename T>
 class InfoCommand : public Command<T> {
 
+public:
 	InfoCommand() :
-		Command<T>("forward") {
+		Command<T>("info") {
 	}
 
 	 ~InfoCommand() {
 	}
 
-	 std::string run(std::string input, StepByStepSolver<T> solver) {
-		 PBQPGraph<T>* graph = solver.getGraph();
+	 std::string run(std::string input, CommandHandler<T>* cmdHandler) override {
+		 PBQPGraph<InfinityWrapper<T>>* graph = cmdHandler->getSolver()->getGraph();
 		 std::string result;
 		 result += "Graph has ";
 		 result += std::to_string(graph->getNodeCount());

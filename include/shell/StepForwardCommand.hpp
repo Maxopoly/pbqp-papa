@@ -9,10 +9,13 @@ namespace pbqppapa {
 
 template<typename T>
 class Command;
+template<typename T>
+class CommandHandler;
 
 template<typename T>
 class StepForwardCommand : public Command<T> {
 
+public:
 	StepForwardCommand() :
 		Command<T>("forward") {
 	}
@@ -20,9 +23,9 @@ class StepForwardCommand : public Command<T> {
 	 ~StepForwardCommand() {
 	}
 
-	 std::string run(std::string input, StepByStepSolver<T> solver) {
+	 std::string run(std::string input, CommandHandler<T>* cmdHandler) {
 		 //TODO multiple at once and select specfic node
-		 PBQPNode <T>* node = solver.stepForward();
+		 PBQPNode <InfinityWrapper<T>>* node = cmdHandler->getSolver()->stepForward();
 		 if (node == 0) {
 			 return "Nothing was done, reduction already complete";
 		 }

@@ -113,7 +113,7 @@ public:
 		return solution;
 	}
 
-	static OnetoOneDependentSolution<T>* reduceDegreeOneInf(
+	static OnetoOneDependentSolution<InfinityWrapper<T>>* reduceDegreeOneInf(
 			PBQPNode<InfinityWrapper<T>>* node,
 			PBQPGraph<InfinityWrapper<T>>* graph) {
 		//ensure edge exists
@@ -122,8 +122,8 @@ public:
 		PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
 		//ensure edge isnt a cycle
 		assert(otherEnd != node);
-		OnetoOneDependentSolution<T>* solution =
-				new OnetoOneDependentSolution<T>(node, otherEnd);
+		OnetoOneDependentSolution<InfinityWrapper<T>>* solution =
+				new OnetoOneDependentSolution<InfinityWrapper<T>>(node, otherEnd);
 		const bool isSource = edge->isSource(node);
 		const unsigned short otherEndDegree = otherEnd->getVectorDegree();
 		const unsigned short nodeDegree = node->getVectorDegree();
@@ -140,7 +140,7 @@ public:
 					minimum += edge->getMatrix().get(i, 0);
 				}
 				for (unsigned short k = 1; k < nodeDegree; k++) {
-					T compSum = otherEndCost;
+					InfinityWrapper<T> compSum = otherEndCost;
 					minimum += node->getVector().get(k);
 					if (isSource) {
 						compSum += edge->getMatrix().get(k, i);
@@ -153,7 +153,7 @@ public:
 					}
 				}
 			}
-			solution->setSolution(i, minSelection);
+			solution->setSolutionSelection(i, minSelection);
 			otherEnd->getVector().get(i) = minimum;
 		}
 		graph->removeNode(node);
@@ -165,7 +165,7 @@ public:
 			}
 		}
 		if (!found) {
-			throw UnsolvablePBQPException();
+			return NULL;
 		}
 		return solution;
 	}

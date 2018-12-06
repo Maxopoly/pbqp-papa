@@ -20,6 +20,8 @@ template<typename T>
 class TypeSerializer;
 template<typename T>
 class PBQPGraph;
+template<typename T>
+class InfinityWrapper;
 
 template<typename T>
 class PBQP_Serializer {
@@ -116,7 +118,7 @@ private:
 		return mat;
 	}
 
-	nlohmann::json graphToJson(const PBQPGraph<T>* graph, bool debug) const {
+	nlohmann::json graphToJson(PBQPGraph<T>* graph, bool debug) const {
 		nlohmann::json json;
 		json["meta"] = serializeMeta(graph);
 		//TODO PEO

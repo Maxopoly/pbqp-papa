@@ -18,9 +18,11 @@ public:
 	virtual ~DependentSolution() {};
 
 
-	virtual void solve(PBQPSolution<T>* solution) const {}
+	virtual void solve(PBQPSolution<T>* solution) {}
 
-	virtual void revertChange(PBQPGraph<T>* graph) const {}
+	virtual void revertChange(PBQPGraph<T>* graph) {}
+
+	virtual PBQPNode<T>* const getReducedNode() const {return 0;}
 };
 
 }

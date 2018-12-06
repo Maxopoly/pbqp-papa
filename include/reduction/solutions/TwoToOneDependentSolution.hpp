@@ -6,6 +6,7 @@
 
 #include "reduction/solutions/DependentSolution.hpp"
 #include "math/InfinityWrapper.hpp"
+#include <memory>
 
 namespace pbqppapa {
 
@@ -29,9 +30,7 @@ private:
 	PBQPNode<T>* dependencyNode2;
 	Vector<T> firstDependencyVector;
 	Vector<T> secondDependencyVector;
-	PBQPEdge<T> firstEdge;
-	PBQPEdge<T> secondEdge;
-	PBQPEdge<T> originalDep1dep2Edge;
+	std::vector<PBQPEdge<T>> preservedEdges;
 	bool originalEdgeExisted = false;
 	std::vector<unsigned short> selection;
 
@@ -40,23 +39,21 @@ public:
 			PBQPNode<T>* dependencyNode1, PBQPNode<T>* dependencyNode2) :
 			toSolve(toSolve), dependencyNode1(dependencyNode1), dependencyNode2(
 					dependencyNode2), firstDependencyVector(
-					dependencyNode1->getVector(),
-					secondDependencyVector(dependencyNode2->getVector()),
-					selection(
-							dependencyNode1->getVectorDegree()
-									* dependencyNode2->getVectorDegree())) {
+					dependencyNode1->getVector()),
+					secondDependencyVector(dependencyNode2->getVector()) {
 		assert(toSolve->getDegree() == 2);
+		selection.resize(dependencyNode1->getVectorDegree() * dependencyNode2->getVectorDegree());
 		std::vector<PBQPEdge<T>*> edges = toSolve->getAdjacentEdges();
-		if (edges.at(0).getOtherEnd(toSolve) == dependencyNode1) {
-			firstEdge = &(edges.at(0));
-			secondEdge = &(edges.at(1));
+		if (edges.at(0)->getOtherEnd(toSolve) == dependencyNode1) {
+			preservedEdges.push_back(*(edges.at(0)));
+			preservedEdges.push_back(*(edges.at(1)));
 		} else {
-			firstEdge = &(edges.at(1));
-			secondEdge = &(edges.at(0));
+			preservedEdges.push_back(*(edges.at(1)));
+			preservedEdges .push_back(*(edges.at(0)));
 		}
 		for (PBQPEdge<T>* edge : dependencyNode1->getAdjacentEdges()) {
 			if (edge->getOtherEnd(dependencyNode1) == dependencyNode2) {
-				originalDep1dep2Edge = &edge;
+				preservedEdges.push_back(*edge);
 				originalEdgeExisted = true;
 				break;
 			}
@@ -80,7 +77,7 @@ public:
 				solutionSelection;
 	}
 
-	void solve(PBQPSolution<T>* solution) const {
+	void solve(PBQPSolution<T>* solution) override {
 		unsigned short dependency1Selection = solution->getSolution(
 				dependencyNode1->getIndex());
 		assert(dependency1Selection < dependencyNode1->getVectorDegree());
@@ -96,29 +93,33 @@ public:
 				selection.at(toSolveSelection));
 	}
 
-	void revertChange(PBQPGraph<T>* graph) const {
+	void revertChange(PBQPGraph<T>* graph) override {
 		assert(!dependencyNode1->isDeleted());
 		assert(!dependencyNode2->isDeleted());
 		assert(toSolve->isDeleted());
 		dependencyNode1->getVector() = firstDependencyVector;
 		dependencyNode2->getVector() = secondDependencyVector;
 		graph->addNode(toSolve);
+		PBQPEdge<T> firstEdge = preservedEdges.at(0);
+		PBQPEdge<T> secondEdge = preservedEdges.at(1);
 		graph->addEdge(firstEdge.getSource(), firstEdge.getTarget(),
 				firstEdge.getMatrix());
 		graph->addEdge(secondEdge.getSource(), secondEdge.getTarget(),
 				secondEdge.getMatrix());
 		if (originalEdgeExisted) {
-			for (PBQPEdge<T> edge : dependencyNode1->getAdjacentEdges()) {
-				if (edge.getOtherEnd(dependencyNode1) == dependencyNode2) {
-					edge.getMatrix() = originalDep1dep2Edge.matrix;
+			for (PBQPEdge<T>* edge : dependencyNode1->getAdjacentEdges()) {
+				if (edge->getOtherEnd(dependencyNode1) == dependencyNode2) {
+					edge->getMatrix() = preservedEdges.at(2).getMatrix();
 				}
 			}
 		}
 	}
 
+	PBQPNode<T>* const getReducedNode() const override {return toSolve;}
+
 private:
 	unsigned long inline resolveIndex(unsigned short first,
-			unsigned short second) {
+			unsigned short second) const {
 		return first * dependencyNode1->getVectorDegree() + second;
 	}
 

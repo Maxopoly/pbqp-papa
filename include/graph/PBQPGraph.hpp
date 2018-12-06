@@ -6,10 +6,15 @@
 #include <iterator>
 #include <map>
 
+#include "graph/PBQPNode.hpp"
+#include "graph/PBQPEdge.hpp"
+
 namespace pbqppapa {
 
 template<typename T>
 class PBQPEdge;
+template<typename T>
+class PBQPSolution;
 template<typename T>
 class PBQPNode;
 template<typename T>
@@ -29,6 +34,7 @@ private:
 	std::set<PBQPEdge<T>*> edges;
 	std::set<PBQPNode<T>*> deletedNodes;
 	std::vector<PBQPNode<T>*> peo;
+	PBQPSolution<T>* solution = 0;
 
 public:
 
@@ -45,17 +51,22 @@ public:
 		clear();
 	}
 
-	PBQPGraph(const PBQPGraph<T>* graph) : indexMaximum(graph->indexMaximum), peo(NULL) {
-		std::map<PBQPNode<T>*,PBQPNode<T>*> nodeReMapping;
-		for(PBQPNode<T>* node : graph->nodes) {
+	PBQPGraph(const PBQPGraph<T>* graph) :
+			indexMaximum(graph->indexMaximum), peo(NULL) {
+		std::map<PBQPNode<T>*, PBQPNode<T>*> nodeReMapping;
+		for (PBQPNode<T>* node : graph->nodes) {
 			PBQPNode<T>* createdNode = new PBQPNode<T>(node);
 			addNode(createdNode);
-			nodeReMapping.insert(std::pair<PBQPNode<T>*,PBQPNode<T>*>(node, createdNode));
+			nodeReMapping.insert(
+					std::pair<PBQPNode<T>*, PBQPNode<T>*>(node, createdNode));
 		}
-		for(PBQPEdge<T>* edge: graph->edges) {
-			PBQPNode<T>* newSource = nodeReMapping.find(edge->getSource())->second;
-			PBQPNode<T>* newTarget = nodeReMapping.find(edge->getTarget())->second;
-			PBQPEdge<T>* createdEdge = new PBQPEdge<T>(newSource, newTarget, edge);
+		for (PBQPEdge<T>* edge : graph->edges) {
+			PBQPNode<T>* newSource =
+					nodeReMapping.find(edge->getSource())->second;
+			PBQPNode<T>* newTarget =
+					nodeReMapping.find(edge->getTarget())->second;
+			PBQPEdge<T>* createdEdge = new PBQPEdge<T>(newSource, newTarget,
+					edge);
 			addEdge(createdEdge);
 			newSource->addEdge(createdEdge);
 			newTarget->addEdge(createdEdge);
@@ -82,8 +93,7 @@ public:
 	 * The new node will not have any edges initially
 	 */
 	PBQPNode<T>* addNode(Vector<T>& vector) {
-		PBQPNode<T>* node = new PBQPNode<T>(indexMaximum++,
-				vector);
+		PBQPNode<T>* node = new PBQPNode<T>(indexMaximum++, vector);
 		nodes.insert(node);
 		return node;
 	}
@@ -118,12 +128,11 @@ public:
 	 */
 	PBQPEdge<T>* addEdge(PBQPNode<T>* source, PBQPNode<T>* target,
 			Matrix<T>& matrix) {
-		for(PBQPEdge<T>* edge : source->getAdjacentEdges(false)) {
-			if(edge->getOtherEnd(source) == target) {
-				if(edge->getSource() == source) {
+		for (PBQPEdge<T>* edge : source->getAdjacentEdges(false)) {
+			if (edge->getOtherEnd(source) == target) {
+				if (edge->getSource() == source) {
 					edge->getMatrix() += matrix;
-				}
-				else {
+				} else {
 					edge->getMatrix() += matrix.transpose();
 				}
 				return edge;
@@ -150,7 +159,8 @@ public:
 	 * is up to the user when setting cleanUp to false
 	 */
 	void removeNode(PBQPNode<T>* node, bool cleanUp = true) {
-		for (PBQPEdge<T>* edge : std::vector<PBQPEdge<T>*>(node->getAdjacentEdges(false))) {
+		for (PBQPEdge<T>* edge : std::vector<PBQPEdge<T>*>(
+				node->getAdjacentEdges(false))) {
 			edges.erase(edge);
 			if (cleanUp) {
 				edge->getOtherEnd(node)->removeEdge(edge);
@@ -235,12 +245,19 @@ public:
 		return indexMaximum;
 	}
 
-	const std::vector<PBQPNode<T>*>& getPEO() const {
+	std::vector<PBQPNode<T>*>& getPEO() {
+		//this should return a const vector, but doesnt due because that'd make its
+		//iterators const_iterator which introduced problems in other places and led to
+		//code duplication
 		return peo;
 	}
 
 	void setPEO(std::vector<PBQPNode<T>*> newPeo) {
-			peo = newPeo;
+		peo = newPeo;
+	}
+
+	PBQPSolution<T>*& getSolution() {
+		return solution;
 	}
 
 };

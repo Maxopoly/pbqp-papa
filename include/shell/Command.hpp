@@ -8,7 +8,7 @@
 namespace pbqppapa {
 
 template<typename T>
-class StepByStepSolver;
+class CommandHandler;
 
 template<typename T>
 class Command {
@@ -25,7 +25,7 @@ public:
 	virtual ~Command() {
 	}
 
-	virtual std::string run(std::string input, StepByStepSolver<T> solver) {return "";}
+	virtual std::string run(std::string input, CommandHandler<T>* cmdHandler) {return "Should not see this";}
 
 	const std::string getIdentifier() {
 		return identifier;

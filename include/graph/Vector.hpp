@@ -5,6 +5,9 @@
 
 namespace pbqppapa {
 
+template<typename T>
+class InfinityWrapper;
+
 template<class T>
 class Matrix;
 
@@ -22,6 +25,8 @@ public:
 			Matrix<T>(length, 1, data) {
 		//super constructor does everything for us
 	}
+
+	Vector<T>() : Matrix<T>() {}
 
 	/**
 	 * Creates a new Vector with uninitialized content
