@@ -35,7 +35,7 @@ char* convertString(std::string string) {
 }
 
 template<typename T>
-void dump(PBQPGraph<T>* graph, std::string path) {
+void dump(PBQPGraph<T>* graph, std::string path, bool showVectors = false) {
 	init();
 	int arguments = 4;
 	char** args = new char*[arguments];
@@ -52,27 +52,37 @@ void dump(PBQPGraph<T>* graph, std::string path) {
 	agattr(graphVis, AGNODE, "tooltip", "TESTEST");
 	for(auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd(); ++iter) {
 		PBQPNode<T>* node = *iter;
-		char* name = convertString("N" + std::to_string(node->getIndex()) + "\n" + serial.matrixToString(node->getVector()));
-		Agnode_t* nodeVis = agnode(graphVis, convertString(std::to_string(node->getIndex())), 1);
+		char* name = convertString("N " + std::to_string(node->getIndex()) + "\n" + serial.matrixToString(node->getVector()));
+		Agnode_t* nodeVis;
+		if (showVectors) {
+			nodeVis = agnode(graphVis, name, 1);
+		}
+		else {
+			nodeVis = agnode(graphVis, convertString(std::to_string(node->getIndex())), 1);
+		}
 		agset(nodeVis, "URL", "TESTTEST");
 		agset(nodeVis, "tooltip", name);
 		//delete [] name;
 		nodeMapping.insert(std::pair<PBQPNode<T>*, Agnode_t*>(node,nodeVis));
 	}
-	//agattr(graphVis, AGEDGE, "label", "a");
+	if(showVectors) {
+		agattr(graphVis, AGEDGE, "label", "a");
+	}
 	agattr(graphVis, AGEDGE, "URL", "TESTEST");
 	agattr(graphVis, AGEDGE, "edgetooltip", "");
-	agattr(graphVis, AGEDGE, "penwidth", "5.0");
+	agattr(graphVis, AGEDGE, "penwidth", "1.0");
 	for(auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd(); ++iter) {
 			PBQPEdge<T>* edge = *iter;
 			Agnode_t* sourceVis = nodeMapping.find(edge->getSource())->second;
 			Agnode_t* targetVis = nodeMapping.find(edge->getTarget())->second;
 			char* name = convertString(serial.matrixToString(edge->getMatrix()));
 			Agedge_t* edgeVis = agedge(graphVis, sourceVis, targetVis, name, 1);
-			//agset(edgeVis, "label", name);
+			if(showVectors) {
+				agset(edgeVis, "label", name);
+			}
 			agset(edgeVis, "URL", "TESTEST");
 			agset(edgeVis, "edgetooltip", name);
-			agattr(graphVis, AGEDGE, "penwidth", "5.0");
+			agattr(graphVis, AGEDGE, "penwidth", "1.0");
 
 
 	}

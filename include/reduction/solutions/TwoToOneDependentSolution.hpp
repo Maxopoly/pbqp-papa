@@ -39,17 +39,19 @@ public:
 			PBQPNode<T>* dependencyNode1, PBQPNode<T>* dependencyNode2) :
 			toSolve(toSolve), dependencyNode1(dependencyNode1), dependencyNode2(
 					dependencyNode2), firstDependencyVector(
-					dependencyNode1->getVector()),
-					secondDependencyVector(dependencyNode2->getVector()) {
+					dependencyNode1->getVector()), secondDependencyVector(
+					dependencyNode2->getVector()) {
 		assert(toSolve->getDegree() == 2);
-		selection.resize(dependencyNode1->getVectorDegree() * dependencyNode2->getVectorDegree());
+		selection.resize(
+				dependencyNode1->getVectorDegree()
+						* dependencyNode2->getVectorDegree());
 		std::vector<PBQPEdge<T>*> edges = toSolve->getAdjacentEdges();
 		if (edges.at(0)->getOtherEnd(toSolve) == dependencyNode1) {
 			preservedEdges.push_back(*(edges.at(0)));
 			preservedEdges.push_back(*(edges.at(1)));
 		} else {
 			preservedEdges.push_back(*(edges.at(1)));
-			preservedEdges .push_back(*(edges.at(0)));
+			preservedEdges.push_back(*(edges.at(0)));
 		}
 		for (PBQPEdge<T>* edge : dependencyNode1->getAdjacentEdges()) {
 			if (edge->getOtherEnd(dependencyNode1) == dependencyNode2) {
@@ -79,18 +81,17 @@ public:
 
 	void solve(PBQPSolution<T>* solution) override {
 		unsigned short dependency1Selection = solution->getSolution(
-				dependencyNode1->getIndex());
+				dependencyNode1);
 		assert(dependency1Selection < dependencyNode1->getVectorDegree());
 		assert(dependency1Selection >= 0);
 		unsigned short dependency2Selection = solution->getSolution(
-				dependencyNode1->getIndex());
+				dependencyNode2);
 		assert(dependency2Selection < dependencyNode2->getVectorDegree());
 		assert(dependency2Selection >= 0);
 		unsigned long index = resolveIndex(dependency1Selection,
 				dependency2Selection);
 		unsigned short toSolveSelection = selection.at(index);
-		solution->setSolution(toSolve->getIndex(),
-				selection.at(toSolveSelection));
+		solution->setSolution(toSolve->getIndex(), toSolveSelection);
 	}
 
 	void revertChange(PBQPGraph<T>* graph) override {
@@ -115,7 +116,9 @@ public:
 		}
 	}
 
-	PBQPNode<T>* const getReducedNode() const override {return toSolve;}
+	PBQPNode<T>* const getReducedNode() const override {
+		return toSolve;
+	}
 
 private:
 	unsigned long inline resolveIndex(unsigned short first,

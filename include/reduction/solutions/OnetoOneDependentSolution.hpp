@@ -53,7 +53,7 @@ public:
 	}
 
 	void solve(PBQPSolution<T>* solution)  override {
-		unsigned short dependencySelection = solution->getSolution(dependencyNode->getIndex());
+		unsigned short dependencySelection = solution->getSolution(dependencyNode);
 		solution->setSolution(toSolve->getIndex(), selection.at(dependencySelection));
 	}
 

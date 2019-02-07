@@ -43,6 +43,10 @@ public:
 		return rhs.wrappedValue == this->wrappedValue;
 	}
 
+	inline bool operator==(T rhs) {
+		return operator==(InfinityWrapper<T>(rhs));
+	}
+
 	inline InfinityWrapper<T>& operator+=(InfinityWrapper<T> rhs) {
 		if (this->isInfinite()) {
 			return *this;
@@ -53,6 +57,10 @@ public:
 		}
 		this->wrappedValue += rhs.wrappedValue;
 		return *this;
+	}
+
+	inline InfinityWrapper<T>& operator+=(T rhs) {
+		return operator+=(InfinityWrapper<T>(rhs));
 	}
 
 	inline InfinityWrapper<T>& operator-=(InfinityWrapper<T> rhs) {
@@ -66,6 +74,10 @@ public:
 		}
 		this->wrappedValue -= rhs.wrappedValue;
 		return *this;
+	}
+
+	inline InfinityWrapper<T>& operator-=(T rhs) {
+		return operator-=(InfinityWrapper<T>(rhs));
 	}
 
 	inline bool isInfinite() {
@@ -82,10 +94,22 @@ inline InfinityWrapper<T> operator+(InfinityWrapper<T> lhs,
 }
 
 template<typename T>
+inline InfinityWrapper<T> operator+(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator+(lhs, InfinityWrapper<T>(rhs));
+}
+
+template<typename T>
 inline InfinityWrapper<T> operator-(InfinityWrapper<T> lhs,
 		const InfinityWrapper<T>& rhs) {
 	lhs -= rhs;
 	return lhs;
+}
+
+template<typename T>
+inline InfinityWrapper<T> operator-(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator-(lhs, InfinityWrapper<T>(rhs));
 }
 
 template<typename T>
@@ -95,8 +119,20 @@ inline bool operator==(const InfinityWrapper<T>& lhs,
 }
 
 template<typename T>
+inline bool operator==(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator==(lhs, InfinityWrapper<T>(rhs));
+}
+
+template<typename T>
 inline bool operator!=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
 	return lhs.getValue() != rhs.getValue();
+}
+
+template<typename T>
+inline bool operator!=(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator!=(lhs, InfinityWrapper<T>(rhs));
 }
 
 template<typename T>
@@ -105,8 +141,20 @@ inline bool operator<(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& r
 }
 
 template<typename T>
+inline bool operator<(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator<(lhs, InfinityWrapper<T>(rhs));
+}
+
+template<typename T>
 inline bool operator>(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
 	return operator<(rhs, lhs);
+}
+
+template<typename T>
+inline InfinityWrapper<T> operator>(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator>(lhs, InfinityWrapper<T>(rhs));
 }
 
 template<typename T>
@@ -115,8 +163,20 @@ inline bool operator<=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& 
 }
 
 template<typename T>
+inline bool operator<=(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator<=(lhs, InfinityWrapper<T>(rhs));
+}
+
+template<typename T>
 inline bool operator>=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
 	return !operator<(lhs, rhs);
+}
+
+template<typename T>
+inline bool operator>=(InfinityWrapper<T>& lhs,
+		const T& rhs) {
+	return operator>=(lhs, InfinityWrapper<T>(rhs));
 }
 
 }

@@ -13,6 +13,7 @@
 #include <vector>
 #include <time.h>
 #include <iostream>
+#include <algorithm>
 
 namespace pbqppapa {
 
@@ -143,6 +144,35 @@ extern "C" void pbqp_ ## SHORTNAME ## _dump(struct pbqp_ ## SHORTNAME ## _parsin
 extern "C" void pbqp_ ## SHORTNAME ## _free(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
 	delete pbqpparsing->graph; \
 	delete pbqpparsing; \
+} \
+extern "C" void pbqp_ ## SHORTNAME ## _finishPEO(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+	std::reverse(pbqpparsing->peo.begin(), pbqpparsing->peo.end()); \
+} \
+extern "C" pbqp_ ## SHORTNAME ## _node* pbqp_ ## SHORTNAME ## _getNode(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing, unsigned int index) { \
+	PBQPNode<InfinityWrapper<TYPENAME>>* node = pbqpparsing->nodes.at(index); \
+	pbqp_ ## SHORTNAME ## _node* result = new pbqp_ ## SHORTNAME ## _node (); \
+	result->index = node->getIndex(); \
+	result->vectorLength = node->getVectorDegree(); \
+	result->vectorData = new TYPENAME [result->vectorLength]; \
+	for(unsigned short i = 0; i < result->vectorLength; i++) { \
+		result->vectorData [i] = node->getVector().get(i).getValue(); \
+	} \
+	result->incidentEdgeCount = node->getDegree(); \
+	result->incidentEdges = new pbqp_ ## SHORTNAME ## _edge* [result->incidentEdgeCount]; \
+	unsigned int edgeCounter = 0; \
+	for(PBQPEdge<InfinityWrapper<TYPENAME>>* edge : node->getAdjacentEdges()) { \
+		pbqp_ ## SHORTNAME ## _edge* edgeStruct = new pbqp_ ## SHORTNAME ## _edge (); \
+		edgeStruct->sourceIndex = edge->getSource()->getIndex(); \
+		edgeStruct->targetIndex = edge->getTarget()->getIndex(); \
+		edgeStruct->sourceLength = edge->getSource()->getVectorDegree(); \
+		edgeStruct->targetLength = edge->getTarget()->getVectorDegree(); \
+		edgeStruct->matrixData = new TYPENAME [edgeStruct->sourceLength * edgeStruct->targetLength]; \
+		for(int i = 0; i < edge->getMatrix().getElementCount();i++) { \
+			edgeStruct->matrixData[i] = edge->getMatrix().getRaw(i).getValue(); \
+		} \
+		result->incidentEdges[edgeCounter++] = edgeStruct; \
+	} \
+	return result; \
 }
 
 CINTERFACEIMPL(unsigned int, uint)

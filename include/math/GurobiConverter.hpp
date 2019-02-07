@@ -9,6 +9,7 @@
 #include "graph/PBQPEdge.hpp"
 
 #include <map>
+#include <iostream>
 
 namespace pbqppapa {
 
@@ -226,7 +227,7 @@ private:
 			unsigned int nodeIndex = nodeToGrbVarMap.find(node)->second;
 			for (int i = 0; i < nodeVectorLengths[nodeIndex]; i++) {
 				if (nodeSelections[nodeIndex][i].get(GRB_DoubleAttr_X) == 1.0) {
-					solution->setSolution(nodeIndex, i);
+					solution->setSolution(node->getIndex(), i);
 				}
 			}
 		}

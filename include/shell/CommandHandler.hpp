@@ -13,6 +13,10 @@
 #include "shell/InfoCommand.hpp"
 #include "shell/StopCommand.hpp"
 #include "shell/FullySolveCommand.hpp"
+#include "shell/CheckSolvableCommand.hpp"
+#include "shell/VisualizeCommand.hpp"
+
+
 #include "math/InfinityWrapper.hpp"
 
 namespace pbqppapa {
@@ -35,6 +39,8 @@ template<typename T>
 class StopCommand;
 template<typename T>
 class FullySolveCommand;
+template<typename T>
+class VisualizeCommand;
 
 template<typename T>
 class CommandHandler {
@@ -55,6 +61,8 @@ public:
 		registerCommand(new LoadCommand<T>());
 		registerCommand(new StopCommand<T>());
 		registerCommand(new FullySolveCommand<T>());
+		registerCommand(new CheckSolvableCommand<T>());
+		registerCommand(new VisualizeCommand<T>());
 	}
 
 	std::string execute(std::string input) {

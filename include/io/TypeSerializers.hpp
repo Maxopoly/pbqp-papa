@@ -49,6 +49,24 @@ unsigned short deserializeElement2(dummyType<unsigned short>, std::string serial
 
 std::string getTypeName2(dummyType<unsigned short>);
 
+std::string serializeElement2(dummyType<signed long>, signed long element);
+
+unsigned long deserializeElement2(dummyType<signed long>, std::string serialized);
+
+std::string getTypeName2(dummyType<signed long>);
+
+std::string serializeElement2(dummyType<signed int>, signed int element);
+
+unsigned int deserializeElement2(dummyType<signed int>, std::string serialized);
+
+std::string getTypeName2(dummyType<signed int>);
+
+std::string serializeElement2(dummyType<signed short>, signed short element);
+
+unsigned short deserializeElement2(dummyType<signed short>, std::string serialized);
+
+std::string getTypeName2(dummyType<signed short>);
+
 
 //InfinityWrapper
 

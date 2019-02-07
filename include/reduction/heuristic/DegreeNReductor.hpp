@@ -78,6 +78,20 @@ public:
 				minSelection = i;
 			}
 		}
+		//add to each adjacent node
+		for (PBQPEdge<T>* edge : node->getAdjacentEdges()) {
+			bool isSource = edge->isSource(node);
+			PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
+			for(int i = 0; i < otherEnd->getVectorDegree(); i++) {
+				if (isSource) {
+					otherEnd->getVector().get(i) += edge->getMatrix().get(minSelection, i);
+				}
+				else {
+					otherEnd->getVector().get(i) += edge->getMatrix().get(i, minSelection);
+				}
+			}
+
+		}
 		std::vector<PBQPNode<T>*> dependencies;
 		std::vector<PBQPNode<T>*> nodeToSolve;
 		nodeToSolve.push_back(node);
@@ -145,8 +159,22 @@ public:
 				minSelection = i;
 			}
 		}
+		//add to each adjacent node
 		if (minCost.isInfinite()) {
 			return NULL;
+		}
+		for (PBQPEdge<InfinityWrapper<T>>* edge : node->getAdjacentEdges()) {
+			bool isSource = edge->isSource(node);
+			PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
+			for(int i = 0; i < otherEnd->getVectorDegree(); i++) {
+				if (isSource) {
+					otherEnd->getVector().get(i) += edge->getMatrix().get(minSelection, i);
+				}
+				else {
+					otherEnd->getVector().get(i) += edge->getMatrix().get(i, minSelection);
+				}
+			}
+
 		}
 		ImmediateSolution<InfinityWrapper<T>>* sol = new ImmediateSolution<InfinityWrapper<T>>(node, minSelection);
 		graph->removeNode(node);

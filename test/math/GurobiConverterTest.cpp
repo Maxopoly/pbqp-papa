@@ -13,7 +13,8 @@ BOOST_AUTO_TEST_CASE(empty) {
 	PBQP_Serializer<InfinityWrapper<unsigned int>> serial;
 	std::vector<std::string> paths;
 	paths.push_back("test/testData/smallLibfirmGraph.json");
-	paths.push_back("test/testData/normalLibfirmGraph.json");
+	paths.push_back("test/testData/problematic.json");
+	//paths.push_back("test/testData/normalLibfirmGraph.json");
 	//paths.push_back("test/testData/bigLibfirmGraph.json");
 	//paths.push_back("test/testData/giantLibfirmGraph.json");
 	std::cout << "Linear solving: " << '\n';
@@ -24,7 +25,8 @@ BOOST_AUTO_TEST_CASE(empty) {
 				path);
 		GurobiConverter<unsigned int> gConv;
 		timer.startTimer();
-		PBQPSolution<InfinityWrapper<unsigned int>>* solution =gConv.solveGurobiLinear(ogGraph);
+		PBQPSolution<InfinityWrapper<unsigned int>>* solution =
+				gConv.solveGurobiLinear(ogGraph);
 		timer.stopTimer();
 		std::cout << timer.getOutput()
 				<< std::to_string(solution->getTotalCost(ogGraph).getValue())

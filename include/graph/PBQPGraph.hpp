@@ -5,6 +5,7 @@
 #include <set>
 #include <iterator>
 #include <map>
+#include <iostream>
 
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"

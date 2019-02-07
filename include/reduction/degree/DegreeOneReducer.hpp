@@ -90,7 +90,7 @@ public:
 			}
 			for (unsigned short k = 1; k < nodeDegree; k++) {
 				T compSum = otherEndCost;
-				minimum += node->getVector().get(k);
+				compSum += node->getVector().get(k);
 				if (isSource) {
 					compSum += edge->getMatrix().get(k, i);
 				} else {
@@ -123,34 +123,36 @@ public:
 		//ensure edge isnt a cycle
 		assert(otherEnd != node);
 		OnetoOneDependentSolution<InfinityWrapper<T>>* solution =
-				new OnetoOneDependentSolution<InfinityWrapper<T>>(node, otherEnd);
+				new OnetoOneDependentSolution<InfinityWrapper<T>>(node,
+						otherEnd);
 		const bool isSource = edge->isSource(node);
 		const unsigned short otherEndDegree = otherEnd->getVectorDegree();
 		const unsigned short nodeDegree = node->getVectorDegree();
 		for (unsigned short i = 0; i < otherEndDegree; i++) {
 			//find minimum for this selection
 			InfinityWrapper<T> otherEndCost = otherEnd->getVector().get(i);
+			if (otherEndCost.isInfinite()) {
+				continue;
+			}
 			unsigned short minSelection = 0;
 			InfinityWrapper<T> minimum = otherEndCost;
-			if (!otherEndCost.isInfinite()) {
-				minimum += node->getVector().get(0);
+			minimum += node->getVector().get(0);
+			if (isSource) {
+				minimum += edge->getMatrix().get(0, i);
+			} else {
+				minimum += edge->getMatrix().get(i, 0);
+			}
+			for (unsigned short k = 1; k < nodeDegree; k++) {
+				InfinityWrapper<T> compSum = otherEndCost;
+				compSum += node->getVector().get(k);
 				if (isSource) {
-					minimum += edge->getMatrix().get(0, i);
+					compSum += edge->getMatrix().get(k, i);
 				} else {
-					minimum += edge->getMatrix().get(i, 0);
+					compSum += edge->getMatrix().get(i, k);
 				}
-				for (unsigned short k = 1; k < nodeDegree; k++) {
-					InfinityWrapper<T> compSum = otherEndCost;
-					minimum += node->getVector().get(k);
-					if (isSource) {
-						compSum += edge->getMatrix().get(k, i);
-					} else {
-						compSum += edge->getMatrix().get(i, k);
-					}
-					if (compSum < minimum) {
-						minimum = compSum;
-						minSelection = k;
-					}
+				if (compSum < minimum) {
+					minimum = compSum;
+					minSelection = k;
 				}
 			}
 			solution->setSolutionSelection(i, minSelection);

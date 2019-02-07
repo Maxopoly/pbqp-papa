@@ -174,7 +174,9 @@ private:
 	nlohmann::json serializePEO(const std::vector<PBQPNode<T>*>& peo) const {
 		nlohmann::json peoVector = nlohmann::json::array();
 		for (auto peoIter = peo.begin(); peoIter != peo.end(); ++peoIter) {
-			peoVector.push_back((*peoIter)->getIndex());
+			if (!(*peoIter)->isDeleted()) {
+				peoVector.push_back((*peoIter)->getIndex());
+			}
 		}
 		return peoVector;
 	}

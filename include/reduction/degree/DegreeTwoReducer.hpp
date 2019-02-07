@@ -72,7 +72,7 @@ public:
 			PBQPGraph<T>* graph) {
 		//TODO exception if vector degree of any is 0
 		std::vector<PBQPNode<T>*> dependencyNodes;
-		auto it = graph->getEdgeBegin();
+		auto it = node->getAdjacentEdges().begin();
 		PBQPEdge<T>* firstEdge = *it++;
 		PBQPNode<T>* firstNode = firstEdge->getOtherEnd(node);
 		PBQPEdge<T>* secondEdge = *it;
@@ -148,7 +148,7 @@ public:
 			PBQPGraph<InfinityWrapper<T>>* graph) {
 		assert(node->getVectorDegree() > 0);
 		assert(node->getDegree() == 2);
-		auto it = graph->getEdgeBegin();
+		auto it = node->getAdjacentEdges().begin();
 		PBQPEdge<InfinityWrapper<T>>* const firstEdge = *it++;
 		PBQPNode<InfinityWrapper<T>>* const firstNode = firstEdge->getOtherEnd(
 				node);
