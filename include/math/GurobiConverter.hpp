@@ -221,14 +221,18 @@ private:
 			const PBQPGraph<InfinityWrapper<T>>* graph) {
 		PBQPSolution<InfinityWrapper<T>>* solution = new PBQPSolution<
 				InfinityWrapper<T>>(graph->getNodeIndexCounter());
+		unsigned int inc  = 0;
+		unsigned int loops  = 0;
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				++iter) {
 			PBQPNode<InfinityWrapper<T>>* node = *iter;
 			unsigned int nodeIndex = nodeToGrbVarMap.find(node)->second;
 			for (int i = 0; i < nodeVectorLengths[nodeIndex]; i++) {
-				if (nodeSelections[nodeIndex][i].get(GRB_DoubleAttr_X) == 1.0) {
+				if (nodeSelections[nodeIndex][i].get(GRB_DoubleAttr_X) > 0.5) {
 					solution->setSolution(node->getIndex(), i);
+					inc++;
 				}
+				loops++;
 			}
 		}
 		return solution;

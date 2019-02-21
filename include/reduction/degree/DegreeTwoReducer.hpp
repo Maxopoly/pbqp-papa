@@ -220,9 +220,6 @@ public:
 						minimalNodeSelection);
 			}
 		}
-		if (!foundSolution) {
-			return NULL;
-		}
 		graph->removeNode(node);
 		graph->addEdge(firstNode, secondNode, resultMatrix);
 		return solution;

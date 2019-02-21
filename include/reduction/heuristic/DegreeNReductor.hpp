@@ -110,9 +110,9 @@ public:
 		InfinityWrapper<T> minCost = node->getVector().get(0);
 		for (PBQPEdge<InfinityWrapper<T>>* edge : node->getAdjacentEdges()) {
 			bool isSource = edge->isSource(node);
-			InfinityWrapper<T> rowColMin = edge->getOtherEnd(node)->getVector().get(0);
-			rowColMin += edge->getMatrix().get(0, 0);
 			PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
+			InfinityWrapper<T> rowColMin = otherEnd->getVector().get(0);
+			rowColMin += edge->getMatrix().get(0, 0);
 			for (unsigned short k = 1; k < otherEnd->getVectorDegree(); ++k) {
 				InfinityWrapper<T> localRowColMin = otherEnd->getVector().get(k);
 				if (isSource) {
@@ -160,9 +160,6 @@ public:
 			}
 		}
 		//add to each adjacent node
-		if (minCost.isInfinite()) {
-			return NULL;
-		}
 		for (PBQPEdge<InfinityWrapper<T>>* edge : node->getAdjacentEdges()) {
 			bool isSource = edge->isSource(node);
 			PBQPNode<InfinityWrapper<T>>* otherEnd = edge->getOtherEnd(node);
@@ -174,7 +171,6 @@ public:
 					otherEnd->getVector().get(i) += edge->getMatrix().get(i, minSelection);
 				}
 			}
-
 		}
 		ImmediateSolution<InfinityWrapper<T>>* sol = new ImmediateSolution<InfinityWrapper<T>>(node, minSelection);
 		graph->removeNode(node);

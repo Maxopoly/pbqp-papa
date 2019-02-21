@@ -31,7 +31,7 @@ DEPS = $(OBJECTS:.o=.d)
 
 # flags #
 COMPILE_FLAGS = -std=c++17 -Wall -Wextra -g `pkg-config libgvc --cflags`
-LDFLAGS = `pkg-config libgvc --libs` -L$(GUROBI_PATH)/lib -lgurobi_c++ -lgurobi81 -lreadline
+LDFLAGS = `pkg-config libgvc --libs` -L$(GUROBI_PATH)/lib -lgurobi_c++ -lgurobi81 -lreadline -lstdc++fs
 INCLUDES = -I include/ -I submodules/json/single_include/ -I $(GUROBI_PATH)/include/
 # Space-separated pkg-config libraries used by this project
 LIBS = libgvc

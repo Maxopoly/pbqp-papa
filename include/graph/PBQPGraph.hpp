@@ -53,7 +53,7 @@ public:
 	}
 
 	PBQPGraph(const PBQPGraph<T>* graph) :
-			indexMaximum(graph->indexMaximum), peo(NULL) {
+			indexMaximum(graph->indexMaximum) {
 		std::map<PBQPNode<T>*, PBQPNode<T>*> nodeReMapping;
 		for (PBQPNode<T>* node : graph->nodes) {
 			PBQPNode<T>* createdNode = new PBQPNode<T>(node);
@@ -72,6 +72,10 @@ public:
 			newSource->addEdge(createdEdge);
 			newTarget->addEdge(createdEdge);
 		}
+		for (PBQPNode<T>* oldNode : graph->peo) {
+			PBQPNode<T>* newNode = nodeReMapping.find(oldNode)->second;
+			peo.push_back(newNode);
+		}
 	}
 
 	void clear() {
@@ -86,6 +90,7 @@ public:
 		for (PBQPNode<T>* node : deletedNodes) {
 			delete node;
 		}
+		peo.clear();
 		deletedNodes.clear();
 	}
 

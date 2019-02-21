@@ -9,8 +9,8 @@ namespace pbqppapa {
 class DebugTimer {
 
 private:
-	std::clock_t start;
-	std::clock_t end;
+	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+	std::chrono::time_point<std::chrono::high_resolution_clock> end;
 	std::string name;
 
 public:

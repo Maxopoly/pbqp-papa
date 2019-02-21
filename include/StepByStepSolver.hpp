@@ -125,9 +125,6 @@ public:
 
 	bool applyR0R1R2(PBQPNode<InfinityWrapper<T>>* node) {
 		unsigned short degree = node->getDegree();
-		if (node->getIndex() == 3) {
-			int temp = 1+1;
-		}
 		switch (degree) {
 		case 2: {
 			std::vector<PBQPNode<InfinityWrapper<T>>*> neighbors =
@@ -167,8 +164,11 @@ public:
 		for (PBQPNode<InfinityWrapper<T>>* neighbor : node->getAdjacentNodes()) {
 			nodeQueue.push(neighbor);
 		}
-		localSolutions.push_back(
-				DegreeNReducer<T>::reduceRNEarlyDecisionInf(node, this->graph));
+		DependentSolution<InfinityWrapper<T>>* sol = DegreeNReducer<T>::reduceRNEarlyDecisionInf(node, this->graph);
+		if (!sol) {
+			std::cout << "EROR, could not solve node";
+		}
+		localSolutions.push_back(sol);
 		lastReduction = RN;
 	}
 
@@ -179,7 +179,6 @@ public:
 	PBQPSolution<InfinityWrapper<T>>* solveFully() {
 		while(stepForward()) {
 		}
-		std::cout << std::to_string(originalGraph->getNodeCount());
 		return retrieveSolution();
 	}
 
@@ -249,9 +248,9 @@ public:
 	PBQPSolution<InfinityWrapper<T>>* retrieveSolution() {
 		PBQPSolution<InfinityWrapper<T>>* solution = new PBQPSolution<InfinityWrapper<T>>(
 				this->graph->getNodeIndexCounter());
-		for (auto iter = localSolutions.rbegin(); iter != localSolutions.rend();
-				iter++) {
-			(*iter)->solve(solution);
+		for (int i =  localSolutions.size() -1 ; i >= 0; i--) {
+			DependentSolution<InfinityWrapper<T>>* sol = localSolutions.at(i);
+			sol->solve(solution);
 		}
 		return solution;
 	}

@@ -109,7 +109,6 @@ public:
 			otherEnd->getVector().get(i) = minimum;
 		}
 		graph->removeNode(node);
-		//TODO chain effect?
 		return solution;
 	}
 
@@ -165,9 +164,6 @@ public:
 				found = true;
 				break;
 			}
-		}
-		if (!found) {
-			return NULL;
 		}
 		return solution;
 	}

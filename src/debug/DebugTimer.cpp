@@ -11,18 +11,20 @@ DebugTimer::DebugTimer(std::string name) : name(name) {
 }
 
 void DebugTimer::startTimer() {
-	start = clock();
+	start = std::chrono::high_resolution_clock::now();
 }
 
 void DebugTimer::stopTimer() {
-	end = clock();
+	end = std::chrono::high_resolution_clock::now();
+
 }
 
 /**
  * Returns duration in seconds
  */
 double DebugTimer::getDuration() {
-	return double(end - start) / CLOCKS_PER_SEC;
+	std::chrono::duration<double> elapsed = end - start;
+	return elapsed.count();
 }
 
 std::string DebugTimer::getOutput() {

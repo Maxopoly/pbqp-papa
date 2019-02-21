@@ -24,6 +24,7 @@ template<typename T>
 class PBQPSolution {
 private:
 	std::vector<unsigned short> selection;
+	unsigned int solvedCount = 0;
 #ifndef NDEBUG
 	std::vector<bool> selectionsConfirmed;
 #endif
@@ -36,6 +37,8 @@ public:
 	{
 	}
 
+
+
 	virtual ~PBQPSolution() {
 
 	}
@@ -43,6 +46,7 @@ public:
 	void setSolution(unsigned int nodeIndex, unsigned short solution) {
 		selectionsConfirmed.at(nodeIndex) = true;
 		selection.at(nodeIndex) = solution;
+		solvedCount++;
 	}
 
 	unsigned short getSolution(unsigned int nodeIndex) {

@@ -83,7 +83,7 @@ public:
 			PBQPGraph<InfinityWrapper<T>>* graph) {
 		unsigned short minimum = node->getVector().getIndexOfSmallestElement();
 		if (node->getVector().get(minimum).isInfinite()) {
-			return NULL;
+
 		}
 		ImmediateSolution<InfinityWrapper<T>>* solution = new ImmediateSolution<
 				InfinityWrapper<T>>(node, minimum);
