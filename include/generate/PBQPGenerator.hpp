@@ -10,6 +10,9 @@ namespace pbqppapa {
 template<typename T>
 class PBQPGraph;
 
+/**
+ * Utility class for testing purposes which can generated randomized PBQP instances
+ */
 template<typename T>
 class PBQPGenerator {
 

@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(advancedNodeTest) {
 	std::set<int> nodeIndices = std::set<int>();
 	for (int i = 0; i < subgraphs; i++) {
 		PBQPGraph<int>* retrievedGraph = components[i];
-		BOOST_CHECK_EQUAL(edgeCount, retrievedGraph->getEdgeCount());
+		BOOST_CHECK_EQUAL(edgeCount - localSize, retrievedGraph->getEdgeCount());
 		BOOST_CHECK_EQUAL(localSize, retrievedGraph->getNodeCount());
 		//ensure each node is only in one subgraph
 		for (auto iter = retrievedGraph->getNodeBegin();

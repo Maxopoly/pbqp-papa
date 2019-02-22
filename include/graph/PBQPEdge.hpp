@@ -12,7 +12,7 @@ class Matrix;
 
 /**
  * Represents a directed edge in a PBQP, leading from one node to another with an associated cost matrix.
- * The template corresponds to the data type used in the cost matrix */
+ * The template type corresponds to the data type used in the cost matrix */
 template<typename T>
 class PBQPEdge {
 
@@ -35,6 +35,14 @@ public:
 			source(source), target(target), matrix(matrix) {
 	}
 
+	/**
+	 * Creates a new directed edge from the given source node to the given target node.
+	 * The matrix associated with this edge will be a copy of the one in the edge given
+	 *
+	 * For a valid PBQP, the amount of rows in the matrix must match the length
+	 * of the Vector associated with the source node and the amount of columns
+	 * in the matrix must match the length of the Vector associated with the target node
+	 */
 	PBQPEdge(PBQPNode<T>* source, PBQPNode<T>* target, PBQPEdge<T>* edge) :
 			source(source), target(target), matrix(edge->matrix) {
 	}
@@ -81,7 +89,7 @@ public:
 	}
 
 	/**
-	 * Gets whether this edge is a cycle, meaning source and target are identical
+	 * Checks whether this edge is a cycle, meaning source and target are identical
 	 */
 	bool isCycle() const {
 		return source == target;

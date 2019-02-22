@@ -60,7 +60,11 @@ public:
 		return minimumIndex;
 	}
 
+	/**
+	 * Gets an element in the vector by its index/row
+	 */
 	T& get(unsigned short index) const {
+		assert(index < this->rows);
 		return this->content[index];
 	}
 };

@@ -1,9 +1,12 @@
 #ifndef DEBUG_GRAPHVISUALIZER_HPP_
 #define DEBUG_GRAPHVISUALIZER_HPP_
 
-#include <gvc.h>
+
 #include <map>
 #include "io/PBQP_Serializer.hpp"
+
+#if PBQP_USE_GVC
+#include <gvc.h>
 
 namespace pbqppapa {
 
@@ -15,19 +18,19 @@ template<typename T>
 class PBQPEdge;
 
 bool wasGvcInited = false;
-static GVC_t* gvc;
+GVC_t* gvcGlobalContext;
 
-void init() {
+void initializeGVC_PBQP() {
 	if (!wasGvcInited) {
 		wasGvcInited = true;
 		/* set up a graphviz context - but only once even for multiple graphs */
-		if (!gvc) {
-			gvc = gvContext();
+		if (!gvcGlobalContext) {
+			gvcGlobalContext = gvContext();
 		}
 	}
 }
 
-char* convertString(std::string string) {
+char* convertStringToC(std::string string) {
 	char * writable = new char[string.size() + 1];
 	std::copy(string.begin(), string.end(), writable);
 	writable[string.size()] = '\0'; // don't forget the terminating 0
@@ -35,65 +38,79 @@ char* convertString(std::string string) {
 }
 
 template<typename T>
-void dump(PBQPGraph<T>* graph, std::string path, bool showVectors = false) {
-	init();
-	int arguments = 4;
-	char** args = new char*[arguments];
-	args [0] = convertString("-Tsvg");
-	args [1] = convertString("-o" + path);
-	args [2] = convertString("-Kdot");
-	args [3] = convertString("-Tsvg");
-	gvParseArgs(gvc, arguments, args);
-	delete [] args;
-	Agraph_t* graphVis = agopen("g", Agdirected, 0);
-	std::map<PBQPNode<T>*, Agnode_t*> nodeMapping;
-	PBQP_Serializer<T> serial;
-	agattr(graphVis, AGNODE, "URL", "TESTEST");
-	agattr(graphVis, AGNODE, "tooltip", "TESTEST");
-	for(auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd(); ++iter) {
-		PBQPNode<T>* node = *iter;
-		char* name = convertString("N " + std::to_string(node->getIndex()) + "\n" + serial.matrixToString(node->getVector()));
-		Agnode_t* nodeVis;
+class GraphVisualizer {
+
+
+
+public:
+	static void dump(PBQPGraph<T>* graph, std::string path, bool showVectors = false) {
+		initializeGVC_PBQP();
+		int arguments = 4;
+		char** args = new char*[arguments];
+		args[0] = convertStringToC("-Tsvg");
+		args[1] = convertStringToC("-o" + path);
+		args[2] = convertStringToC("-Kdot");
+		args[3] = convertStringToC("-Tsvg");
+		gvParseArgs(gvcGlobalContext, arguments, args);
+		delete[] args;
+		Agraph_t* graphVis = agopen(convertStringToC("g"), Agdirected, 0);
+		std::map<PBQPNode<T>*, Agnode_t*> nodeMapping;
+		PBQP_Serializer<T> serial;
+		agattr(graphVis, AGNODE, convertStringToC("URL"),
+				convertStringToC("URLVALUE"));
+		agattr(graphVis, AGNODE, convertStringToC("tooltip"),
+				convertStringToC("tooltipValue"));
+		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
+				++iter) {
+			PBQPNode<T>* node = *iter;
+			char* name = convertStringToC(
+					"N " + std::to_string(node->getIndex()) + "\n"
+							+ serial.matrixToString(node->getVector()));
+			Agnode_t* nodeVis;
+			if (showVectors) {
+				nodeVis = agnode(graphVis, name, 1);
+			} else {
+				nodeVis = agnode(graphVis,
+						convertStringToC(std::to_string(node->getIndex())), 1);
+			}
+			agset(nodeVis, convertStringToC("URL"), convertStringToC("URLVALUE"));
+			agset(nodeVis, convertStringToC("tooltip"), name);
+			nodeMapping.insert(
+					std::pair<PBQPNode<T>*, Agnode_t*>(node, nodeVis));
+		}
 		if (showVectors) {
-			nodeVis = agnode(graphVis, name, 1);
+			agattr(graphVis, AGEDGE, convertStringToC("label"), convertStringToC("a"));
 		}
-		else {
-			nodeVis = agnode(graphVis, convertString(std::to_string(node->getIndex())), 1);
-		}
-		agset(nodeVis, "URL", "TESTTEST");
-		agset(nodeVis, "tooltip", name);
-		//delete [] name;
-		nodeMapping.insert(std::pair<PBQPNode<T>*, Agnode_t*>(node,nodeVis));
-	}
-	if(showVectors) {
-		agattr(graphVis, AGEDGE, "label", "a");
-	}
-	agattr(graphVis, AGEDGE, "URL", "TESTEST");
-	agattr(graphVis, AGEDGE, "edgetooltip", "");
-	agattr(graphVis, AGEDGE, "penwidth", "1.0");
-	for(auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd(); ++iter) {
+		agattr(graphVis, AGEDGE, convertStringToC("URL"),
+				convertStringToC("URLVALUE"));
+		agattr(graphVis, AGEDGE, convertStringToC("edgetooltip"),
+				convertStringToC(""));
+		agattr(graphVis, AGEDGE, convertStringToC("penwidth"),
+				convertStringToC("1.0"));
+		for (auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd();
+				++iter) {
 			PBQPEdge<T>* edge = *iter;
 			Agnode_t* sourceVis = nodeMapping.find(edge->getSource())->second;
 			Agnode_t* targetVis = nodeMapping.find(edge->getTarget())->second;
-			char* name = convertString(serial.matrixToString(edge->getMatrix()));
+			char* name = convertStringToC(
+					serial.matrixToString(edge->getMatrix()));
 			Agedge_t* edgeVis = agedge(graphVis, sourceVis, targetVis, name, 1);
-			if(showVectors) {
-				agset(edgeVis, "label", name);
+			if (showVectors) {
+				agset(edgeVis, convertStringToC("label"), name);
 			}
-			agset(edgeVis, "URL", "TESTEST");
-			agset(edgeVis, "edgetooltip", name);
-			agattr(graphVis, AGEDGE, "penwidth", "1.0");
-
-
+			agset(edgeVis, convertStringToC("URL"), convertStringToC("URLVALUE"));
+			agset(edgeVis, convertStringToC("edgetooltip"), name);
+			agattr(graphVis, AGEDGE, convertStringToC("penwidth"),
+					convertStringToC("1.0"));
+		}
+		gvLayoutJobs(gvcGlobalContext, graphVis);
+		gvRenderJobs(gvcGlobalContext, graphVis);
+		gvFreeLayout(gvcGlobalContext, graphVis);
+		agclose(graphVis);
 	}
-	gvLayoutJobs(gvc, graphVis);
-	gvRenderJobs(gvc, graphVis);
-	gvFreeLayout(gvc, graphVis);
-	agclose(graphVis);
+};
 }
 
-
-
-}
+#endif
 
 #endif /* DEBUG_GRAPHVISUALIZER_HPP_ */

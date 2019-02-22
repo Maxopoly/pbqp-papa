@@ -5,6 +5,11 @@
 #include <algorithm>
 #include <iterator>
 #include <cstring>
+
+#define PBQP_USE_GUROBI 0
+#define PBQP_USE_GVC 0
+//#define NDEBUG
+
 #include <assert.h>
 
 namespace pbqppapa {
@@ -66,22 +71,24 @@ public:
 	}
 
 	/**
-	 * Adds the given matrix to this one. Dimensions aren't explicitly checked and expected to be identical.
-	 * If they're not, you're at fault
+	 * Adds the given matrix to this one
 	 */
 	Matrix<T>* operator+=(const Matrix<T>& other) {
-		int length = rows * columns;
-		for (int i = 0; i < length; i++) {
+		assert(other.rows == this->rows);
+		assert(other.columns == this->columns);
+		const unsigned long length = rows * columns;
+		for (unsigned long i = 0; i < length; i++) {
 			content[i] += other.content[i];
 		}
 		return this;
 	}
 
 	/**
-	 * Subtracts the given matrix from this one. Dimensions aren't explicitly checked and expected to be identical.
-	 * If they're not, you're at fault
+	 * Subtracts the given matrix from this one
 	 */
 	Matrix<T>* operator-=(const Matrix<T>& other) {
+		assert(other.rows == this->rows);
+		assert(other.columns == this->columns);
 		const unsigned long length = rows * columns;
 		for (unsigned long i = 0; i < length; i++) {
 			content[i] -= other.content[i];
@@ -129,6 +136,7 @@ public:
 	 *  Creates a transposed version of this matrix.
 	 */
 	Matrix<T> transpose() const {
+		//thank you stackoverflow
 		const unsigned long size = columns * rows;
 		Matrix<T> result = Matrix<T>(columns, rows);
 		for (unsigned long n = 0; n < size; n++) {

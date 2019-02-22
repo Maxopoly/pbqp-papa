@@ -14,21 +14,21 @@
 namespace pbqppapa {
 
 BOOST_AUTO_TEST_CASE(basic) {
+#if PBQP_USE_GVC
 	PBQP_Serializer<InfinityWrapper<unsigned int>> serial;
 	PBQPGraph<InfinityWrapper<unsigned int>>* graph = serial.loadFromFile(
 			"test/testData/smallLibfirmGraph.json");
-	dump<InfinityWrapper<unsigned int>>(graph, "mintput.svg");
+	GraphVisualizer<InfinityWrapper<unsigned int>>::dump(graph, "test_build/mintput.svg");
 }
 
 BOOST_AUTO_TEST_CASE(loaded) {
 	PBQP_Serializer<InfinityWrapper<unsigned int>> serial;
 	PBQPGraph<InfinityWrapper<unsigned int>>* graph = serial.loadFromFile(
 			"test/testData/normalLibfirmGraph.json");
-	dump<InfinityWrapper<unsigned int>>(graph, "basicOutput.svg");
+	GraphVisualizer<InfinityWrapper<unsigned int>>::dump(graph, "test_build/basicOutput.svg");
 }
 
 BOOST_AUTO_TEST_CASE(manual) {
-	PBQP_Serializer<InfinityWrapper<unsigned int>> serial;
 	PBQPGraph<InfinityWrapper<unsigned int>>* graph = new PBQPGraph<
 			InfinityWrapper<unsigned int>>();
 	InfinityWrapper<unsigned int> arr[2];
@@ -46,9 +46,10 @@ BOOST_AUTO_TEST_CASE(manual) {
 	arr3[1] = InfinityWrapper<unsigned int>(1);
 	arr3[2] = InfinityWrapper<unsigned int>(0);
 	arr3[3] = InfinityWrapper<unsigned int>(1);
-	Matrix<InfinityWrapper<unsigned int>> mat(2, 3, arr3);
+	Matrix<InfinityWrapper<unsigned int>> mat(2, 2, arr3);
 	graph->addEdge(node, node2, mat);
-	dump<InfinityWrapper<unsigned int>>(graph, "the.svg", true);
+	GraphVisualizer<InfinityWrapper<unsigned int>>::dump(graph, "test_build/the.svg", true);
+#endif
 }
 
 }

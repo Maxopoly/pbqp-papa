@@ -30,11 +30,16 @@ public:
 			values(values), index(index), deleted(false) {
 	}
 
+	/**
+	 * Copy constructor will not copy edges, that would not make sense
+	 */
 	PBQPNode(PBQPNode<T>* node) :
 			values(node->values), index(node->index), deleted(false) {
 	}
 
-	//TODO make proper iterators here
+	/**
+	 * Gets all incident edges, optionally only the outgoing ones
+	 */
 	const std::vector<PBQPEdge<T>*>& getAdjacentEdges(
 			const bool respectDirection = false) const {
 		if (respectDirection) {
@@ -44,12 +49,15 @@ public:
 		}
 	}
 
+	/**
+	 * Gets all adjacent nodes, optionally only the ones that are the target of the edge connecting them to this node
+	 */
 	std::vector<PBQPNode<T>*> getAdjacentNodes(const bool respectDirection =
 			false) {
 		std::set<PBQPNode<T>*> resultSet;
 		std::vector<PBQPNode<T>*> nodes;
-		const std::vector<PBQPEdge<T>*>& edgesToLookAt =
-				(respectDirection ? outgoingEdges : incidentEdges);
+		const std::vector<PBQPEdge<T>*>& edgesToLookAt = (
+				respectDirection ? outgoingEdges : incidentEdges);
 		for (PBQPEdge<T>* edge : edgesToLookAt) {
 			PBQPNode<T>* other = edge->getOtherEnd(this);
 			if (resultSet.insert(other).second) {
@@ -120,9 +128,9 @@ public:
 				std::remove(incidentEdges.begin(), incidentEdges.end(), edge),
 				incidentEdges.end());
 		if (edge->getSource() == this) {
-		outgoingEdges.erase(
-				std::remove(outgoingEdges.begin(), outgoingEdges.end(), edge),
-				outgoingEdges.end());
+			outgoingEdges.erase(
+					std::remove(outgoingEdges.begin(), outgoingEdges.end(),
+							edge), outgoingEdges.end());
 		}
 	}
 

@@ -3,13 +3,16 @@
 
 #include <string>
 
-#include "StepByStepSolver.hpp"
+#include "solve/StepByStepSolver.hpp"
 
 namespace pbqppapa {
 
 template<typename T>
 class CommandHandler;
 
+/**
+ * Used for step by step debugging this is a super class to any command doing something
+ */
 template<typename T>
 class Command {
 private:

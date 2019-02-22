@@ -2,7 +2,6 @@
 #define GRAPH_PBQPSolution_HPP_
 
 #include <vector>
-#include <assert.h>
 #include <stdio.h>
 #include <iostream>
 
@@ -20,6 +19,10 @@ class PBQPEdge;
 template<typename T>
 class TypeSerializers;
 
+/**
+ * Represents a solution for a PBQP instances. Must be instantiated with a length higher than the highest index
+ * of any node in the belonging graph
+ */
 template<typename T>
 class PBQPSolution {
 private:
@@ -30,36 +33,72 @@ private:
 #endif
 
 public:
+	/**
+	 * Creates a new blank solution with no selection assigned. Given length must be bigger than the index
+	 * of any node for which a solution will be put in this instance
+	 */
 	PBQPSolution(unsigned int length) :
-			selection(std::vector<unsigned short>(length)), selectionsConfirmed(
-					std::vector<bool>(length, false))
+			selection(std::vector<unsigned short>(length))
+#ifndef NDEBUG
+			,selectionsConfirmed(std::vector<bool>(length, false))
+#endif
 
 	{
 	}
-
-
 
 	virtual ~PBQPSolution() {
 
 	}
 
-	void setSolution(unsigned int nodeIndex, unsigned short solution) {
-		selectionsConfirmed.at(nodeIndex) = true;
-		selection.at(nodeIndex) = solution;
+	/**
+	 * Sets the selection for a node with the given index to the given selection
+	 */
+	void setSolution(unsigned int nodeIndex, unsigned short selectionToSetTo) {
+		assert(nodeIndex < selectionsConfirmed.size());
+		#ifndef NDEBUG
+		if (selectionsConfirmed.at(nodeIndex)) {
+			solvedCount--;
+		}
+		else {
+			selectionsConfirmed.at(nodeIndex) = true;
+		}
+		#endif
+		selection.at(nodeIndex) = selectionToSetTo;
 		solvedCount++;
 	}
 
-	unsigned short getSolution(unsigned int nodeIndex) {
+	/**
+	 * Sets the selection for the given node to the given selection
+	 */
+	void setSolution(PBQPNode<T>* node, unsigned short selection) {
+		assert(node);
+		setSolution(node->getIndex(), selection);
+	}
+
+	/**
+	 * Gets the selection solution for the node with the given index. Use 'hasSolutution()' first if you are not
+	 * sure whether this node was solved!
+	 */
+	unsigned short getSolution(unsigned int nodeIndex) const {
+		assert(nodeIndex < selection.size());
 		assert(selectionsConfirmed.at(nodeIndex));
 		return selection.at(nodeIndex);
 	}
 
-	unsigned short getSolution(PBQPNode<T>* node) {
+	/**
+	 * Gets the selection solution for the node given. Use 'hasSolutution()' first if you are not
+	 * sure whether this node was solved!
+	 */
+	unsigned short getSolution(PBQPNode<T>* node) const {
 		assert(node);
 		return getSolution(node->getIndex());
 	}
 
-	virtual T getTotalCost(const PBQPGraph<T>* graph) {
+	/**
+	 * Assumes all nodes in the given graph are solved and calculates the total cost created by this solution in the given graph.
+	 * Will explode if not all nodes in the given graph have a selection assigned in this instance
+	 */
+	virtual T getTotalCost(const PBQPGraph<T>* graph) const {
 		T result = T();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
@@ -80,7 +119,12 @@ public:
 		return result;
 	}
 
-	virtual T getCurrentCost(const PBQPGraph<T>* graph) {
+#ifndef NDEBUG
+	/**
+	 * Calculates the total cost created by the nodes which currently have a selection assigned in this instance.
+	 * Nodes not assigned a selection will be ignored and edges which dont have both sides solved will as well be ignored
+	 */
+	virtual T getCurrentCost(const PBQPGraph<T>* graph) const {
 		T result = T();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
@@ -109,23 +153,30 @@ public:
 		return result;
 	}
 
-	bool hasSolution(unsigned int nodeIndex) {
+	/**
+	 * Checks whether the node with the given index had a selection assigned yet
+	 */
+	bool hasSolution(unsigned int nodeIndex) const {
 		return selectionsConfirmed.at(nodeIndex);
 	}
 
-	unsigned int getNodesSolvedCount() {
-		unsigned int result = 0;
-		for(const bool& value: selectionsConfirmed) {
-			if (value) {
-				result++;
-			}
-		}
-		return result;
-	}
-
-	bool hasSolution(PBQPNode<T>* node) {
+	/**
+	 * Checks whether the given node had a selection assigned yet
+	 */
+	bool hasSolution(PBQPNode<T>* node) const {
 		assert(node);
-		return hasSolution(node->getIndex());
+		return selectionsConfirmed.at(node->getIndex());
+	}
+#endif
+
+	/**
+	 * Gets the total amount of selection assigned so far.
+	 * If NDEBUG is not set, this counter will be incremented every time a node has a selection assigned, even if the same node
+	 * is assigned multiple times
+	 * If NDEBUG is set, the counter will only be incremented when a node not given a selection yet is given a selection
+	 */
+	unsigned int getNodesSolvedCount() {
+		return solvedCount;
 	}
 };
 

@@ -116,7 +116,7 @@ public:
 		}
 	}
 
-	PBQPNode<T>* const getReducedNode() const override {
+	PBQPNode<T>* getReducedNode() override {
 		return toSolve;
 	}
 

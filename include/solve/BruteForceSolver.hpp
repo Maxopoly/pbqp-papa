@@ -182,7 +182,7 @@ private:
 	 * Increments the internal gray code selection by one
 	 */
 	long incrementSolution() {
-		for (int i = 0; i < this->graph->getNodeCount(); i++) {
+		for (unsigned int i = 0; i < this->graph->getNodeCount(); i++) {
 			unsigned int index = (nodes[i])->getIndex();
 			if (trend[i]) {
 				//ascending

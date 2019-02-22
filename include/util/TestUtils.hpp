@@ -8,7 +8,7 @@
 
 namespace pbqppapa {
 
-//Generates a Kn (n nodes, each connected with each other and themselves)
+//Generates a Kn (n nodes, each connected with each other and themselves), useful for testing
 PBQPGraph<int>* genGraph(unsigned int size) {
 	PBQPGraph<int>* graph = new PBQPGraph<int>();
 	for (unsigned int i = 1; i <= size; i++) {

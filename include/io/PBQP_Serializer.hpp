@@ -23,19 +23,32 @@ class PBQPGraph;
 template<typename T>
 class InfinityWrapper;
 
+/**
+ * Saves PBQP instances to JSON files and loads them from them
+ */
 template<typename T>
 class PBQP_Serializer {
 
 public:
 
-	void saveToFile(std::string path, PBQPGraph<T>* graph, bool debug = false) {
+	/**
+	 * Saves a PBQP instance to the given path. No checks are done on how valid the path is
+	 * Optionally additional debug information can written out, which is useful for humans sometimes
+	 * This debug information is ignored when reading PBQP instances from files
+	 */
+	static void saveToFile(std::string path, PBQPGraph<T>* graph, bool debug =
+			false) {
 		std::ofstream out(path);
 		nlohmann::json json = graphToJson(graph, debug);
 		out << json << std::endl;
 		out.close();
 	}
 
-	PBQPGraph<T>* loadFromFile(std::string path) const {
+	/**
+	 * Loads a PBQP instances from a json file. No checks are done whether the given path is valid or if
+	 * it contains a proper JSON PBQP. If not, this will explode
+	 */
+	static PBQPGraph<T>* loadFromFile(std::string path) {
 		std::ifstream in(path);
 		nlohmann::json json;
 		in >> json;
@@ -43,8 +56,11 @@ public:
 		return jsonToGraph(json);
 	}
 
-	std::string matrixToString(Matrix<T> matrix,
-			std::string separator = " ") const {
+	/**
+	 * Gets a nice printable version of a matrix. Useful for debugging
+	 */
+	static std::string matrixToString(Matrix<T> matrix, std::string separator =
+			" ") {
 		std::string output;
 		for (unsigned short row = 0; row < matrix.getRowCount(); row++) {
 			for (unsigned short column = 0; column < matrix.getColumnCount();
@@ -59,13 +75,14 @@ public:
 
 private:
 
-	PBQPGraph<T>* jsonToGraph(nlohmann::json json) const {
+	static PBQPGraph<T>* jsonToGraph(nlohmann::json json) {
 		nlohmann::json metaJson = json["meta"];
 		std::string parsedType = metaJson["type"];
 		if (parsedType.compare(getTypeName<T>()) != 0) {
-			//TODO exception
-			//std::cout << "Invalid type loading";
-			//return NULL;
+			std::cout << "Invalid type loading, expected type: "
+					<< getTypeName<T>() << ", but got type: " << parsedType
+					<< "\nAttempting to load anyway...\n";
+
 		}
 		PBQPGraph<T>* graph = new PBQPGraph<T>();
 		std::map<unsigned int, PBQPNode<T>*> nodeByIndex = std::map<
@@ -99,7 +116,7 @@ private:
 		return graph;
 	}
 
-	Vector<T> parseVector(nlohmann::json json) const {
+	static Vector<T> parseVector(nlohmann::json json) {
 		Vector<T> vek = Vector<T>((unsigned short) json.size());
 		for (unsigned short i = 0; i < json.size(); i++) {
 			vek.get(i) = deserializeElement<T>(json[i]);
@@ -107,7 +124,7 @@ private:
 		return vek;
 	}
 
-	Matrix<T> parseMatrix(nlohmann::json json) const {
+	static Matrix<T> parseMatrix(nlohmann::json json) {
 		unsigned short rows = json["rows"];
 		unsigned short columns = json["columns"];
 		nlohmann::json valueJson = json["cost"];
@@ -118,10 +135,9 @@ private:
 		return mat;
 	}
 
-	nlohmann::json graphToJson(PBQPGraph<T>* graph, bool debug) const {
+	static nlohmann::json graphToJson(PBQPGraph<T>* graph, bool debug) {
 		nlohmann::json json;
 		json["meta"] = serializeMeta(graph);
-		//TODO PEO
 		nlohmann::json nodeJsons = nlohmann::json::array();
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
 				iter++) {
@@ -171,7 +187,7 @@ private:
 		return json;
 	}
 
-	nlohmann::json serializePEO(const std::vector<PBQPNode<T>*>& peo) const {
+	static nlohmann::json serializePEO(const std::vector<PBQPNode<T>*>& peo) {
 		nlohmann::json peoVector = nlohmann::json::array();
 		for (auto peoIter = peo.begin(); peoIter != peo.end(); ++peoIter) {
 			if (!(*peoIter)->isDeleted()) {
@@ -181,7 +197,7 @@ private:
 		return peoVector;
 	}
 
-	nlohmann::json serializeMeta(const PBQPGraph<T>* graph) const {
+	static nlohmann::json serializeMeta(const PBQPGraph<T>* graph) {
 		nlohmann::json json;
 		json["version"] = 1;
 		json["nodeCount"] = graph->getNodeCount();

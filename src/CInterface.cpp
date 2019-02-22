@@ -4,10 +4,12 @@
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
 #include "CInterface.h"
-#include "StepByStepSolver.hpp"
+#include "solve/StepByStepSolver.hpp"
 #include "math/InfinityWrapper.hpp"
 #include "io/PBQP_Serializer.hpp"
-//#include "math/GurobiConverter.hpp"
+#if PBQP_USE_GUROBI
+	#include "math/GurobiConverter.hpp"
+#endif
 
 #include <stdio.h>
 #include <vector>
@@ -72,16 +74,6 @@ extern "C" struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solve(
 	delete cppLevelSol; \
 	return cLevelSol; \
 } \
-/*extern "C" struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
-	if (pbqpparsing->graph->getNodeCount() == 0) { \
-		return new pbqp_ ## SHORTNAME ## _solution(); \
-	} \
-	GurobiConverter<TYPENAME> gurobi; \
-	PBQPSolution<InfinityWrapper<TYPENAME>>* cppLevelSol = gurobi.solveGurobiLinear(pbqpparsing->graph); \
-	pbqp_ ## SHORTNAME ## _solution* cLevelSol = pbqp_ ## SHORTNAME ## _convertSolution(pbqpparsing, cppLevelSol); \
-	delete cppLevelSol; \
-	return cLevelSol; \
-} */ \
 extern "C" struct pbqp_ ## SHORTNAME ## _parsing* pbqp_ ## SHORTNAME ## _createInstance( \
 		unsigned int maximumIndex) { \
 	pbqp_ ## SHORTNAME ## _parsing* result = new pbqp_ ## SHORTNAME ## _parsing (); \
@@ -111,8 +103,7 @@ extern "C" void pbqp_ ## SHORTNAME ## _dump(struct pbqp_ ## SHORTNAME ## _parsin
 	} \
 	std::cout << "Dumping to " << stringPath << "\n"; \
 	pbqpparsing->graph->setPEO(pbqpparsing->peo); \
-	PBQP_Serializer<InfinityWrapper<TYPENAME>> serial; \
-	serial.saveToFile(stringPath, pbqpparsing->graph); \
+	PBQP_Serializer<InfinityWrapper<TYPENAME>>::saveToFile(stringPath, pbqpparsing->graph); \
 } \
 extern "C" void pbqp_ ## SHORTNAME ## _free(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
 	delete pbqpparsing->graph; \
@@ -147,17 +138,30 @@ extern "C" unsigned int pbqp_ ## SHORTNAME ## _getAdjacentNodeIndex(struct pbqp_
 	return node->getAdjacentNodes().at(adjacencyIndex)->getIndex(); \
 }
 
+#if PBQP_USE_GUROBI
+#define CGUROBI(TYPENAME,SHORTNAME) \
+extern "C" struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(struct pbqp_ ## SHORTNAME ## _parsing* pbqpparsing) { \
+	if (pbqpparsing->graph->getNodeCount() == 0) { \
+		return new pbqp_ ## SHORTNAME ## _solution(); \
+	} \
+	GurobiConverter<TYPENAME> gurobi (pbqpparsing->graph); \
+	PBQPSolution<InfinityWrapper<TYPENAME>>* cppLevelSol = gurobi.solveGurobiQuadratic(); \
+	pbqp_ ## SHORTNAME ## _solution* cLevelSol = pbqp_ ## SHORTNAME ## _convertSolution(pbqpparsing, cppLevelSol); \
+	delete cppLevelSol; \
+	return cLevelSol; \
+}
+#endif
+
 CINTERFACEIMPL(unsigned int, uint)
 
 CINTERFACEIMPL(unsigned short, ushort)
 
 CINTERFACEIMPL(unsigned long, ulong)
 
-/*
- CINTERFACEIMPL(unsigned char,uchar)
-
- CINTERFACEIMPL(float,float)
-
- CINTERFACEIMPL(double,double) */
+#if PBQP_USE_GUROBI
+CGUROBI(unsigned int, uint)
+CGUROBI(unsigned short, ushort)
+CGUROBI(unsigned long, ulong)
+#endif
 
 }

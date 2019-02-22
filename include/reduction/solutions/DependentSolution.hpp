@@ -22,7 +22,7 @@ public:
 
 	virtual void revertChange(PBQPGraph<T>* graph) {}
 
-	virtual PBQPNode<T>* const getReducedNode() const {return 0;}
+	virtual PBQPNode<T>* getReducedNode() {return 0;}
 };
 
 }

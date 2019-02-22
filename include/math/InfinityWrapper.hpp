@@ -7,7 +7,21 @@ namespace pbqppapa {
 
 /**
  * Decorates an arithmetic type by representing infinity as the biggest number displayable in the type
- * and implementing comparison and addition accordingly
+ * and implementing comparison, addition and subtraction accordingly.
+ * For example:
+ *
+ * ∞ + 5 = ∞
+ * ∞ + ∞ = ∞
+ * ∞ - 4 = ∞
+ * 4 + ∞ = ∞
+ * etc.
+ *
+ * Special is:
+ * ∞ > ∞ = true
+ * ∞ < ∞ = true
+ * ∞ >= ∞ = true
+ *
+ * DOES NOT IMPLEMENT MULTIPLICATION OR DIVISION. DO NOT USE IT
  */
 template<typename T>
 class InfinityWrapper {
@@ -28,13 +42,18 @@ public:
 		wrappedValue = value;
 	}
 
+	/**
+	 * Infinity for this template type
+	 */
 	static InfinityWrapper<T> getInfinite() {
 		InfinityWrapper<T> result;
 		result.wrappedValue = magicInfiniteNumber;
 		return result;
 	}
 
-
+	/**
+	 * True artithemtic value wrapped by this instance
+	 */
 	inline const T& getValue() const {
 		return wrappedValue;
 	}
@@ -80,7 +99,7 @@ public:
 		return operator-=(InfinityWrapper<T>(rhs));
 	}
 
-	inline bool isInfinite() {
+	inline bool isInfinite() const {
 		return wrappedValue == magicInfiniteNumber;
 	}
 
@@ -137,6 +156,9 @@ inline bool operator!=(InfinityWrapper<T>& lhs,
 
 template<typename T>
 inline bool operator<(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	if (lhs.isInfinite() && rhs.isInfinite()) {
+		return true;
+	}
 	return lhs.getValue() < rhs.getValue();
 }
 
@@ -159,6 +181,10 @@ inline InfinityWrapper<T> operator>(InfinityWrapper<T>& lhs,
 
 template<typename T>
 inline bool operator<=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	//need special handling if both are infinite
+	if (lhs.getValue() == rhs.getValue()) {
+		return true;
+	}
 	return !operator>(lhs, rhs);
 }
 
@@ -170,6 +196,10 @@ inline bool operator<=(InfinityWrapper<T>& lhs,
 
 template<typename T>
 inline bool operator>=(const InfinityWrapper<T>& lhs, const InfinityWrapper<T>& rhs) {
+	//need special handling if both are infinite
+	if (lhs.getValue() == rhs.getValue()) {
+		return true;
+	}
 	return !operator<(lhs, rhs);
 }
 

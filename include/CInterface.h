@@ -40,18 +40,23 @@ unsigned int pbqp_ ## SHORTNAME ## _getAdjacentNodeIndex(struct pbqp_ ## SHORTNA
 				unsigned int nodeIndex, unsigned int adjacencyIndex);
 //struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(struct pbqp_ ## SHORTNAME ## _parsing*);
 
+#if PBQP_USE_GUROBI
+#define CGUROBIINTERFACE(TYPENAME,SHORTNAME) \
+struct pbqp_ ## SHORTNAME ## _solution* pbqp_ ## SHORTNAME ## _solveGurobi(struct pbqp_ ## SHORTNAME ## _parsing*);
+#endif
+
+
 CINTERFACESIG(unsigned int,uint)
 
 CINTERFACESIG(unsigned short,ushort)
 
 CINTERFACESIG(unsigned long,ulong)
 
-/*
- CINTERFACESIG(unsigned char,uchar)
-
- CINTERFACESIG(float,float)
-
- CINTERFACESIG(double,double) */
+#if PBQP_USE_GUROBI
+CGUROBIINTERFACE(unsigned int,uint)
+CGUROBIINTERFACE(unsigned short,ushort)
+CGUROBIINTERFACE(unsigned long,ulong)
+#endif
 
 #ifdef __cplusplus
 } //end extern "C"

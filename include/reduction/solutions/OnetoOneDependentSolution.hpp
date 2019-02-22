@@ -2,9 +2,9 @@
 #define REDUCTION_SOLUTIONS_ONETOONEDEPENDENTSOLUTION_HPP_
 
 #include <vector>
-#include <assert.h>
 
 #include "reduction/solutions/DependentSolution.hpp"
+#include "graph/PBQPGraph.hpp"
 
 namespace pbqppapa {
 
@@ -35,6 +35,7 @@ public:
 		assert(toSolve->getDegree() == 1);
 		selection.resize(dependency->getVectorDegree());
 		PBQPEdge<T>* edge = toSolve->getAdjacentEdges().at(0);
+		assert(edge);
 		edgeMatrix = edge->getMatrix();
 		dependencyIsSource = edge->getSource() == dependency;
 	}
@@ -68,7 +69,7 @@ public:
 		}
 	}
 
-	PBQPNode<T>* const getReducedNode() const override {return toSolve;}
+	PBQPNode<T>* getReducedNode() override {return toSolve;}
 
 };
 }

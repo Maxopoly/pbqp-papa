@@ -1,6 +1,7 @@
 CXX ?= g++
 
 #Based on a template from https://gist.github.com/mauriciopoppe/de8908f67923091982c8c8136a063ea6
+#Compiler variables to toggle asserts, gurobi etc. are all located in 'include/graph/Matrix.hpp'
 
 # path #
 SRC_PATH = src
@@ -30,11 +31,12 @@ TEST_OBJECTS = $(TESTS:$(TEST_PATH)/%.$(SRC_EXT)=$(TEST_BUILD_PATH)/%.o)
 DEPS = $(OBJECTS:.o=.d)
 
 # flags #
-COMPILE_FLAGS = -std=c++17 -Wall -Wextra -g `pkg-config libgvc --cflags`
-LDFLAGS = `pkg-config libgvc --libs` -L$(GUROBI_PATH)/lib -lgurobi_c++ -lgurobi81 -lreadline -lstdc++fs
-INCLUDES = -I include/ -I submodules/json/single_include/ -I $(GUROBI_PATH)/include/
-# Space-separated pkg-config libraries used by this project
-LIBS = libgvc
+COMPILE_FLAGS = -std=c++17 -Wall -Wextra -g
+EXTRA_COMPILE_FLAGS = $(COMPILE_FLAGS) `pkg-config libgvc --cflags`
+LDFLAGS = -lstdc++fs
+EXTRA_LDFLAGS = $(LDFLAGS) `pkg-config libgvc --libs` -L$(GUROBI_PATH)/lib -lgurobi_c++ -lgurobi81
+INCLUDES = -I include/ -I submodules/json/single_include/ 
+EXTRA_INCLUDES = $(INCLUDES) -I $(GUROBI_PATH)/include/
 
 .PHONY: default_target
 default_target: release
@@ -42,7 +44,7 @@ default_target: release
 .PHONY: release
 release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
 release: dirs
-	@$(MAKE) test
+	@$(MAKE) basic
 
 .PHONY: dirs
 dirs:
@@ -58,10 +60,10 @@ clean:
 	@$(RM) -r $(TEST_BUILD_PATH)
 
 #Builds and runs tests
-.PHONY: test
-test: dirs
-test: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
-test: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
+.PHONY: basic
+basic: dirs
+basic: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
+basic: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
 
 #Run tests
 $(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
@@ -79,6 +81,31 @@ $(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	@echo "Compiling: $< -> $@"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
+	
+# Add dependency files, if they exist
+-include $(DEPS)
+
+.PHONY: all
+all: dirs
+all: export CXXFLAGS := $(CXXFLAGS) $(EXTRA_COMPILE_FLAGS)
+all: $(TEST_OBJECTS) $(addsuffix $(TEST_EXEC),$(TEST_OBJECTS))
+
+#Run tests
+$(TEST_BUILD_PATH)/%.o$(TEST_EXEC): $(TEST_BUILD_PATH)/%.o
+	@echo "Running test: $^"
+	@./$^ --output_format=HRF --log_level=message > $(^)-report.txt
+	
+#Compile tests
+$(TEST_BUILD_PATH)/%.o: $(TEST_PATH)/%.$(SRC_EXT) $(OBJECTS)
+	@echo "Compiling: $< -> $@"
+	$(CXX) $(CXXFLAGS) $(EXTRA_INCLUDES) -o $@ $^ -lboost_unit_test_framework $(EXTRA_LDFLAGS)
+	
+# Source file rules
+# After the first compilation they will be joined with the rules from the
+# dependency files to provide header dependencies
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
+	@echo "Compiling: $< -> $@"
+	$(CXX) $(CXXFLAGS) $(EXTRA_INCLUDES) -MP -MMD -c $< -o $@
 	
 # Add dependency files, if they exist
 -include $(DEPS)

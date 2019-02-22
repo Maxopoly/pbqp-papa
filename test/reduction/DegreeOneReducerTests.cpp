@@ -60,26 +60,19 @@ BOOST_AUTO_TEST_CASE(simpleCalculation) {
 	int edge1Arr[] {2,6,2,0};
 	Matrix<int> mat1 (2, 2, edge1Arr);
 	graph.addEdge(first, second, mat1);
-	//force the second one to be reduced into the first one
-	graph.addEdge(first, first, mat1);
-	graph.addEdge(first, first, mat1);
-	DegreeOneReducer<int> oneReducer(&graph);
-	std::vector<PBQPGraph<int>*> result = oneReducer.reduce();
-	BOOST_CHECK_EQUAL(result.size(), 1);
-	PBQPGraph<int>* resultGraph = result[0];
-	BOOST_CHECK_EQUAL(resultGraph->getNodeCount(), 1);
-	BOOST_CHECK_EQUAL(resultGraph->getEdgeCount(), 1);
-	PBQPNode<int>* reducedNode = *(resultGraph->getNodeBegin());
-	BOOST_CHECK_EQUAL(reducedNode->getVectorDegree(), 2);
-	BOOST_CHECK_EQUAL(reducedNode->getVector().get(0), 5);
-	BOOST_CHECK_EQUAL(reducedNode->getVector().get(1), 5);
+	OnetoOneDependentSolution<int>* retSol = DegreeOneReducer<int>::reduceDegreeOne(second, &graph);
+	BOOST_CHECK_EQUAL(graph.getNodeCount(), 1);
+	BOOST_CHECK_EQUAL(graph.getEdgeCount(), 0);
+	BOOST_CHECK_EQUAL(first->getVectorDegree(), 2);
+	BOOST_CHECK_EQUAL(first->getVector().get(0), 5);
+	BOOST_CHECK_EQUAL(first->getVector().get(1), 5);
 	PBQPSolution<int> sol (2);
 	sol.setSolution(firstIndex, 0);
-	oneReducer.solve(sol);
+	retSol->solve(&sol);
 	BOOST_CHECK_EQUAL(sol.getSolution(secondIndex), 0);
 	PBQPSolution<int> sol2 (2);
 	sol2.setSolution(firstIndex, 1);
-	oneReducer.solve(sol2);
+	retSol->solve(&sol2);
 	BOOST_CHECK_EQUAL(sol2.getSolution(secondIndex), 1);
 }
 

@@ -7,6 +7,10 @@
 
 namespace pbqppapa {
 
+/**
+ * Dark magic to allow serialization to properly handle both int and InfinityWrapper<int>.
+ * I'm blaming C++ for this one
+ */
 template <typename T>
 struct dummyType{};
 

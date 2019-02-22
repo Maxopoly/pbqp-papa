@@ -2,19 +2,18 @@
 #define REDUCTION_DEGREEONEREDUCTOR_HPP_
 
 #include <vector>
-#include <assert.h>
 
 #include "reduction/PBQPReduction.hpp"
 #include "reduction/solutions/OnetoOneDependentSolution.hpp"
-#include "reduction/solutions/NtoNDependentSolution.hpp"
 #include "math/InfinityWrapper.hpp"
+#include "graph/PBQPGraph.hpp"
 
 namespace pbqppapa {
 
 template<typename T>
 class PBQPGraph;
 template<typename T>
-class NtoNDependentSolution;
+class OnetoOneDependentSolution;
 template<typename T>
 class PBQPSolution;
 template<typename T>
@@ -27,7 +26,7 @@ class PBQPNode;
 template<typename T>
 class DegreeOneReducer: public PBQP_Reduction<T> {
 private:
-	std::vector<NtoNDependentSolution<T>*> solutions;
+	std::vector<OnetoOneDependentSolution<T>*> solutions;
 
 public:
 	DegreeOneReducer(PBQPGraph<T>* graph) :
@@ -35,7 +34,7 @@ public:
 	}
 
 	~DegreeOneReducer() {
-		for (NtoNDependentSolution<T>* sol : solutions) {
+		for (OnetoOneDependentSolution<T>* sol : solutions) {
 			delete sol;
 		}
 	}
@@ -45,7 +44,7 @@ public:
 		while (iter != this->graph->getNodeEnd()) {
 			PBQPNode<T>* node = *iter++;
 			if (node->getDegree() == 1) {
-				NtoNDependentSolution<T>* sol = reduceDegreeOne(node,
+				OnetoOneDependentSolution<T>* sol = reduceDegreeOne(node,
 						this->graph);
 				solutions.push_back(sol);
 			}
@@ -57,23 +56,21 @@ public:
 	void solve(PBQPSolution<T>& solution) {
 		auto iter = solutions.rbegin();
 		while (iter != solutions.rend()) {
-			NtoNDependentSolution<T>* sol = *iter++;
+			OnetoOneDependentSolution<T>* sol = *iter++;
 			sol->solve(&solution);
 		}
 	}
 
-	static NtoNDependentSolution<T>* reduceDegreeOne(PBQPNode<T>* node,
+	static OnetoOneDependentSolution<T>* reduceDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
 		//will explode if node doesnt have an edge
 		assert(node->getDegree() == 1);
 		PBQPEdge<T>* edge = node->getAdjacentEdges().at(0);
 		PBQPNode<T>* otherEnd = edge->getOtherEnd(node);
-		std::vector<PBQPNode<T>*> dependencyNodes;
-		std::vector<PBQPNode<T>*> solutionNodes;
-		dependencyNodes.push_back(otherEnd);
-		solutionNodes.push_back(node);
-		NtoNDependentSolution<T>* solution = new NtoNDependentSolution<T>(
-				dependencyNodes, solutionNodes);
+		assert(otherEnd != node);
+		OnetoOneDependentSolution<T>* solution =
+						new OnetoOneDependentSolution<T>(node,
+								otherEnd);
 		const bool isSource = edge->isSource(node);
 		const unsigned short otherEndDegree = otherEnd->getVectorDegree();
 		const unsigned short nodeDegree = node->getVectorDegree();
@@ -101,11 +98,7 @@ public:
 					minSelection = k;
 				}
 			}
-			std::vector<unsigned short> dependencySelections;
-			std::vector<unsigned short> solutionSelections;
-			dependencySelections.push_back(i);
-			solutionSelections.push_back(minSelection);
-			solution->setSolution(dependencySelections, solutionSelections);
+			solution->setSolutionSelection(i, minSelection);
 			otherEnd->getVector().get(i) = minimum;
 		}
 		graph->removeNode(node);

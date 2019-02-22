@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include "solve/UnsolvablePBQPException.hpp"
-
 namespace pbqppapa {
 
 template<typename T>

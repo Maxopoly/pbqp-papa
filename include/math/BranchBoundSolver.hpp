@@ -2,17 +2,10 @@
 #define MATH_BRANCHBOUNDSOLVER_HPP_
 
 #include <vector>
-#include <queue>
 
 #include "graph/PBQPGraph.hpp"
 #include "reduction/solutions/NtoNDependentSolution.hpp"
 #include "graph/PBQPSolution.hpp"
-#include "reduction/degree/DegreeOneReducer.hpp"
-#include "reduction/degree/DegreeTwoReducer.hpp"
-#include "reduction/degree/DegreeZeroReducer.hpp"
-#include "reduction/heuristic/DegreeNReductor.hpp"
-#include "debug/StatKeeper.hpp"
-#include "debug/DebugTimer.hpp"
 #include "math/InfinityWrapper.hpp"
 
 namespace pbqppapa {
@@ -24,20 +17,12 @@ class PBQPSolution;
 template<typename T>
 class PBQPNode;
 template<typename T>
-class VektorDegreeOneReducer;
-template<typename T>
-class VectorDegreeZeroReducer;
-template<typename T>
-class VectorDegreeZeroReducer;
-template<typename T>
-class DegreeOneReducer;
-template<typename T>
-class DegreeZeroReducer;
-template<typename T>
-class DegreeTwoReducer;
-template<typename T>
 class InfinityWrapper;
 
+/**
+ * Attempts to solve a PBQP instance through a branch and bound approach.
+ * Note that this does not work for bigger graph or graphs with very little cost variation
+ */
 template<typename T>
 class BranchBoundSolver {
 
@@ -48,6 +33,9 @@ private:
 
 public:
 
+	/**
+	 * Creates a new instance to solve the given graph
+	 */
 	BranchBoundSolver(PBQPGraph<InfinityWrapper<T>>* graph) :
 			graph(graph) {
 		for (auto iter = graph->getNodeBegin(); iter != graph->getNodeEnd();
@@ -61,14 +49,17 @@ public:
 	}
 
 public:
-
+	/**
+	 * Attempts to find a solution. May not finish before the heat death of the universe if your graph is big
+	 */
 	PBQPSolution<InfinityWrapper<T>>* solve() {
 		InfinityWrapper<T> localCost = InfinityWrapper<T>(0);
 		PBQPSolution<InfinityWrapper<T>>* localSolution = new PBQPSolution<
-						InfinityWrapper<T>>(graph->getNodeIndexCounter());
+				InfinityWrapper<T>>(graph->getNodeIndexCounter());
 		return recursiveSolve(localCost, localSolution, 0);
 	}
 
+private:
 	PBQPSolution<InfinityWrapper<T>>* recursiveSolve(
 			InfinityWrapper<T> currentCost,
 			PBQPSolution<InfinityWrapper<T>>* sol, unsigned int nodeCounter) {
@@ -111,7 +102,7 @@ public:
 			localSolution->setSolution(node->getIndex(), index);
 			localCost += value;
 			localCost += edgeSum;
-			if (nodeCounter == nodes.size() -1) {
+			if (nodeCounter == nodes.size() - 1) {
 				return localSolution;
 			}
 			PBQPSolution<InfinityWrapper<T>>* retSolution = recursiveSolve(
@@ -127,8 +118,7 @@ public:
 					delete minSolution;
 				}
 				minSolution = retSolution;
-			}
-			else {
+			} else {
 				delete retSolution;
 			}
 		}

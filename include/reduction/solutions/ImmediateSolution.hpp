@@ -42,7 +42,7 @@ public:
 		}
 	}
 
-	PBQPNode<T>* const getReducedNode() const override {return node;}
+	PBQPNode<T>* getReducedNode() override {return node;}
 
 
 };

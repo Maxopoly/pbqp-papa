@@ -1,9 +1,12 @@
 #ifndef MATH_GUROBICONVERTER_HPP_
 #define MATH_GUROBICONVERTER_HPP_
 
+#include "graph/PBQPGraph.hpp"
+
+#if PBQP_USE_GUROBI
+
 #include <gurobi_c++.h>
 #include "math/InfinityWrapper.hpp"
-#include "graph/PBQPGraph.hpp"
 #include "graph/PBQPSolution.hpp"
 #include "graph/PBQPNode.hpp"
 #include "graph/PBQPEdge.hpp"
@@ -37,14 +40,29 @@ private:
 	unsigned short* nodeVectorLengths;
 	std::map<PBQPNode<InfinityWrapper<T>>*, unsigned int> nodeToGrbVarMap;
 	unsigned int nodeCount;
+	const PBQPGraph<InfinityWrapper<T>>* graph;
+
+#ifndef NDEBUG
+	bool ranYet = false;
+#endif
 
 public:
-	GurobiConverter() {
+	/**
+	 * Createa a new instance to solve the given graph. Note that you can only call a solve function ONCE.
+	 * If you call one multiple times on the same instance bad things will happen
+	 */
+	GurobiConverter(const PBQPGraph<InfinityWrapper<T>>* graph) : graph(graph){
 
 	}
 
-	PBQPSolution<InfinityWrapper<T>>* solveGurobiLinear(
-			const PBQPGraph<InfinityWrapper<T>>* graph) {
+	/**
+	 * Attempts to solve the PBQP instance using Gurobi linear programming
+	 */
+	PBQPSolution<InfinityWrapper<T>>* solveGurobiLinear() {
+#ifndef NDEBUG
+		assert(!ranYet);
+		ranYet = true;
+#endif
 		setup(graph);
 		//create variables
 		createNodeSelection(graph);
@@ -70,8 +88,14 @@ public:
 		return solution;
 	}
 
-	PBQPSolution<InfinityWrapper<T>>* solveGurobiQuadratic(
-			const PBQPGraph<InfinityWrapper<T>>* graph) {
+	/**
+	 * Attempts to solve the PBQP instance using Gurobi quadratic programming
+	 */
+	PBQPSolution<InfinityWrapper<T>>* solveGurobiQuadratic() {
+#ifndef NDEBUG
+		assert(!ranYet);
+		ranYet = true;
+#endif
 		setup(graph);
 		//create variables
 		createNodeSelection(graph);
@@ -113,7 +137,6 @@ private:
 	}
 
 	void tearDownEdgesLinear(const PBQPGraph<InfinityWrapper<T>>* graph) {
-		unsigned const int edgeCount = graph->getEdgeCount();
 		unsigned int counter = 0;
 		for (auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd();
 				++iter) {
@@ -263,7 +286,6 @@ private:
 
 	GRBLinExpr getEdgeSelectionLinear(
 			const PBQPGraph<InfinityWrapper<T>>* graph) {
-		unsigned const int edgeCount = graph->getEdgeCount();
 		GRBLinExpr totalCost = 0;
 		unsigned int counter = 0;
 		for (auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd();
@@ -293,7 +315,6 @@ private:
 	}
 
 	void limitEdgeSelectionLinear(const PBQPGraph<InfinityWrapper<T>>* graph) {
-		unsigned const int edgeCount = graph->getEdgeCount();
 		unsigned int counter = 0;
 		for (auto iter = graph->getEdgeBegin(); iter != graph->getEdgeEnd();
 				++iter) {
@@ -331,5 +352,7 @@ private:
 };
 
 }
+
+#endif
 
 #endif /* MATH_GUROBICONVERTER_HPP_ */

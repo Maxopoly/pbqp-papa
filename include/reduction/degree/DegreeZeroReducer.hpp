@@ -6,7 +6,6 @@
 #include "reduction/PBQPReduction.hpp"
 #include "reduction/solutions/ImmediateSolution.hpp"
 #include "reduction/solutions/NtoNDependentSolution.hpp"
-#include "solve/UnsolvablePBQPException.hpp"
 #include "math/InfinityWrapper.hpp"
 
 namespace pbqppapa {

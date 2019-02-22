@@ -42,6 +42,10 @@ class FullySolveCommand;
 template<typename T>
 class VisualizeCommand;
 
+/**
+ * Used for step by step debugging this is command handler will take text input and call the method associated
+ * with the given input if one is known
+ */
 template<typename T>
 class CommandHandler {
 private:

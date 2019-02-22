@@ -35,9 +35,12 @@ BOOST_AUTO_TEST_CASE(basicEdgeGeneration) {
 	int counter = 0;
 	for (std::set<PBQPNode<int>*>::iterator it = graph.getNodeBegin();
 			it != graph.getNodeEnd(); it++) {
+		PBQPNode<int>* node2 = *it;
+		if (node2 == node1) {
+			continue;
+		}
 		int matArr [] = {3,2,5,8};
 		Matrix<int> matrix = Matrix<int>(2, 2, matArr);
-		PBQPNode<int>* node2 = *it;
 		BOOST_CHECK_EQUAL(0, node2->getDegree());
 		std::vector<PBQPNode<int>*> adjaNodes = node1->getAdjacentNodes(true);
 		BOOST_CHECK(
@@ -84,18 +87,17 @@ BOOST_AUTO_TEST_CASE(basicEdgeGeneration) {
 BOOST_AUTO_TEST_CASE(advancedEdgeGeneration) {
 	int size = 20;
 	PBQPGraph<int>* graph = genGraph(size);
-	BOOST_CHECK_EQUAL(graph->getEdgeCount(), size / 2 * size + size/2 );
+	BOOST_CHECK_EQUAL(graph->getEdgeCount(), size * (size - 1) / 2);
 	BOOST_CHECK_EQUAL(graph->getNodeCount(), size);
 	for (std::set<PBQPNode<int>*>::iterator it = graph->getNodeBegin();
 			it != graph->getNodeEnd(); it++) {
 		PBQPNode<int>* node = *it;
-		BOOST_CHECK_EQUAL(node->getDegree(), size);
-		BOOST_CHECK_EQUAL(node->getAdjacentNodes(false).size(), size);
-		BOOST_CHECK_EQUAL(node->getAdjacentEdges(false).size(), size);
+		BOOST_CHECK_EQUAL(node->getDegree(), size - 1);
+		BOOST_CHECK_EQUAL(node->getAdjacentNodes(false).size(), size - 1);
 	}
 	delete graph;
 }
-/* TODO fix this
+/* TODO fix this maybe some day
 BOOST_AUTO_TEST_CASE(advancedEdgeRemoval) {
 	int size = 20;
 	PBQPGraph<int>* graph = genGraph(size);

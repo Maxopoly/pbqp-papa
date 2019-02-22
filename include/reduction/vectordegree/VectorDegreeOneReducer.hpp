@@ -64,14 +64,11 @@ public:
 
 	static NtoNDependentSolution<T>* reduceVectorDegreeOne(PBQPNode<T>* node,
 			PBQPGraph<T>* graph) {
-		std::vector<PBQPNode<T>*> dependencyNodes;
-		std::vector<PBQPNode<T>*> solutionNodes;
-		solutionNodes.push_back(node);
-		NtoNDependentSolution<T>* solution = new NtoNDependentSolution<T>(
-				dependencyNodes, solutionNodes);
-		std::vector<unsigned short> nodeSolution (1, 0);
-		solution->setSolution(emptyIntVector, nodeSolution);
-		return solution;
+		assert(graph);
+		assert(node);
+		assert(node->getVectorDegree() == 1);
+		graph->removeNode(node);
+		return new ImmediateSolution<T>(node, 0);
 	}
 };
 
