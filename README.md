@@ -8,6 +8,8 @@ Made as part of my bachelor thesis at KIT in February 2019
 
 ## Building instructions:
 
+`git clone --recursive https://github.com/Maxopoly/pbqp-papa.git`
+
 `make` will build the core functionality and run the tests involving it
 
 `make all` will build everything, but requires you to have [graphviz](https://graphviz.gitlab.io/) and [Gurobi](http://www.gurobi.com/) installed
